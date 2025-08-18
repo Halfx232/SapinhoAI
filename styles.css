@@ -84,7 +84,7 @@ button:focus {
   text-align: center;
   font-size: 14px;
   white-space: nowrap;
-  margin-right: 20px;
+  margin-right: 10px;
 }
 
 @media (max-width: 768px) {
@@ -414,3 +414,4 @@ canvas {
     margin: 10px;
   }
 }
+
