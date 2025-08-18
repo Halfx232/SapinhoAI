@@ -78,13 +78,19 @@ button:focus {
   color: #00ff00;
 }
 
+.weather-clock {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 40px;
+}
+
 #weather, #clock {
   width: auto;
   padding: 0 10px;
   text-align: center;
   font-size: 14px;
   white-space: nowrap;
-  margin-right: 38px;
 }
 
 @media (max-width: 768px) {
@@ -100,11 +106,16 @@ button:focus {
     padding: 5px;
   }
 
+  .weather-clock {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 10px;
+    margin-top: 5px;
+  }
+
   #weather, #clock {
     padding: 5px;
     font-size: 12px;
-    margin-right: 10px;
-    margin-top: 5px;
   }
 }
 
@@ -414,5 +425,3 @@ canvas {
     margin: 10px;
   }
 }
-
-
