@@ -12,20 +12,20 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
 </head>
 <body>
- <div id="top-bar">
-  <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="sobre.html">Sobre</a></li>
-      <li><a href="contato.html">Contato</a></li>
-      <li><a href="politicas.html">Políticas</a></li>
-    </ul>
-    <div class="weather-clock">
-      <div id="weather">Previsão do Tempo</div>
-      <div id="clock">Relógio</div>
-    </div>
-  </nav>
-</div>
+  <div id="top-bar">
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li><a href="politicas.html">Políticas</a></li>
+      </ul>
+      <div class="weather-clock">
+        <div id="weather">Previsão do Tempo</div>
+        <div id="clock">Relógio</div>
+      </div>
+    </nav>
+  </div>
   <div id="about-section">
     <h2>Sobre o Jogo do Sapinho</h2>
     <p>O Jogo do Sapinho é um projeto divertido criado com auxílio de inteligência artificial. Nesta versão de teste, você controla um sapo que pula obstáculos em diferentes estações do ano. Fique ligado para atualizações!</p>
@@ -40,12 +40,69 @@
       });
     });
   </script>
+  <script>
+    const weatherElement = document.getElementById("weather");
+    const clockElement = document.getElementById("clock");
+
+    let lastWeatherData = null;
+    let lastWeatherFetch = 0;
+    const CACHE_DURATION = 10 * 60 * 1000;
+
+    let lastTimeData = null;
+    let lastTimeFetch = 0;
+    const TIME_CACHE_DURATION = 60 * 1000;
+
+    async function fetchWeather() {
+      try {
+        const now = Date.now();
+        if (lastWeatherData && now - lastWeatherFetch < CACHE_DURATION) {
+          weatherElement.textContent = lastWeatherData;
+          return;
+        }
+        const API_KEY = "b8a0cd03c689322da2746720be31d534";
+        const city = "São Paulo";
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&lang=pt_br&units=metric`);
+        if (!response.ok) throw new Error(`Falha na API OpenWeatherMap: ${response.status}`);
+        const data = await response.json();
+        const temp = Math.round(data.main.temp);
+        const description = data.weather[0].description;
+        lastWeatherData = ` ${city}: ${temp}°C, ${description}`;
+        lastWeatherFetch = now;
+        weatherElement.textContent = lastWeatherData;
+      } catch (error) {
+        console.error("Erro ao buscar previsão do tempo:", error);
+        weatherElement.textContent = "Clima indisponível";
+      }
+    }
+
+    async function atualizarHora() {
+      try {
+        const now = Date.now();
+        if (lastTimeData && now - lastTimeFetch < TIME_CACHE_DURATION) {
+          clockElement.textContent = lastTimeData;
+          return;
+        }
+        const response = await fetch("https://worldtimeapi.org/api/timezone/America/Sao_Paulo");
+        if (!response.ok) throw new Error(`Falha na API WorldTimeAPI: ${response.status}`);
+        const data = await response.json();
+        const dateTime = new Date(data.datetime);
+        lastTimeData = ` ${dateTime.toLocaleDateString('pt-BR')} - ${dateTime.toLocaleTimeString('pt-BR')}`;
+        lastTimeFetch = now;
+        clockElement.textContent = lastTimeData;
+      } catch (error) {
+        console.error("Erro ao buscar hora:", error);
+        const now = new Date();
+        lastTimeData = ` ${now.toLocaleDateString('pt-BR')} - ${now.toLocaleTimeString('pt-BR')}`;
+        clockElement.textContent = lastTimeData;
+      }
+    }
+
+    window.addEventListener('load', () => {
+      fetchWeather();
+      atualizarHora();
+      setInterval(fetchWeather, 10 * 60 * 1000);
+      setInterval(atualizarHora, 60 * 1000);
+    });
+  </script>
 </body>
-
 </html>
-
-
-
-
-
-
