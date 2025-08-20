@@ -195,7 +195,7 @@ canvas {
   color: #000;
   border-radius: 8px;
 }
-#about-section {
+#contact-section {
   padding: 20px;
   background: #fff;
   text-align: center;
@@ -450,4 +450,5 @@ canvas {
     margin: 10px;
   }
 }
+
 
