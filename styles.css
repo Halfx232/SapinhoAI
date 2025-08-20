@@ -195,6 +195,14 @@ canvas {
   color: #000;
   border-radius: 8px;
 }
+#about-section {
+  padding: 20px;
+  background: #fff;
+  text-align: center;
+  margin: 20px 0;
+  color: #000;
+  border-radius: 8px;
+}
 
 #about-section h2 {
   font-size: 24px;
@@ -442,3 +450,4 @@ canvas {
     margin: 10px;
   }
 }
+
