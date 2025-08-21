@@ -99,43 +99,6 @@ button:focus {
   text-overflow: ellipsis;
 }
 
-@media (min-width: 769px) {
-  .weather-clock {
-    flex-direction: row !important;
-    right: 100px;
-    margin-left: 20px;
-  }
-}
-
-@media (max-width: 768px) {
-  #top-bar nav {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px;
-  }
-
-  #top-bar ul {
-    flex-direction: column;
-    gap: 10px;
-    padding: 5px;
-  }
-
-  .weather-clock {
-    flex-direction: column;
-    align-items: flex-start;
-    position: static;
-    margin-left: 0;
-    margin-right: 10px;
-    margin-top: 5px;
-  }
-
-  #weather, #clock {
-    padding: 5px;
-    font-size: 12px;
-    max-width: 100%;
-  }
-}
-
 #game-container {
   position: relative;
   display: flex;
@@ -384,6 +347,38 @@ canvas {
 }
 
 @media (orientation: landscape) and (max-width: 1023px) {
+  #top-bar nav {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px;
+  }
+
+  #top-bar ul {
+    flex-direction: row;
+    gap: 20px;
+    padding: 10px;
+  }
+
+  .weather-clock {
+    flex-direction: row;
+    align-items: center;
+    position: absolute;
+    right: 20px;
+    margin-left: 20px;
+    margin-top: 0;
+  }
+
+  #weather, #clock {
+    padding: 0 10px;
+    font-size: 14px;
+    max-width: 200px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   #game-container {
     flex-direction: row;
     align-items: flex-start;
@@ -444,7 +439,34 @@ canvas {
   }
 }
 
-@media (orientation: portrait) and (max-width: 1023px) {
+@media (orientation: portrait) and (max-width: 768px) {
+  #top-bar nav {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  #top-bar ul {
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px;
+  }
+
+  .weather-clock {
+    flex-direction: column;
+    align-items: flex-start;
+    position: static;
+    margin-left: 0;
+    margin-right: 10px;
+    margin-top: 5px;
+  }
+
+  #weather, #clock {
+    padding: 5px;
+    font-size: 12px;
+    max-width: 100%;
+  }
+
   #game-container {
     display: none;
   }
