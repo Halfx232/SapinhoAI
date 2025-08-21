@@ -45,7 +45,7 @@ button:focus {
   justify-content: space-between;
   background: #1b5e20;
   color: white;
-  padding: 10px;
+  padding: 3px;
   width: 100%;
   box-sizing: border-box;
   position: sticky;
@@ -63,15 +63,16 @@ button:focus {
 #top-bar ul {
   list-style: none;
   display: flex;
-  gap: 20px;
+  gap: 12px;
   margin: 0;
-  padding: 10px;
+  padding: 3px;
 }
 
 #top-bar a {
   color: white;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 12px;
+  line-height: 1.2;
 }
 
 #top-bar a:hover {
@@ -82,18 +83,19 @@ button:focus {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 15px;
-  margin-left: 20px;
+  gap: 8px;
+  margin-left: 12px;
   position: absolute;
   right: 100px;
 }
 
 #weather, #clock {
   width: auto;
-  max-width: 200px;
-  padding: 0 10px;
+  max-width: 160px;
+  padding: 0 3px;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
+  line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -346,37 +348,46 @@ canvas {
   }
 }
 
+@media (min-width: 769px) {
+  .weather-clock {
+    flex-direction: row !important;
+    right: 100px;
+    margin-left: 12px;
+  }
+}
+
 @media (orientation: landscape) and (max-width: 1023px) {
   #top-bar nav {
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    padding: 10px;
+    padding: 3px;
   }
 
   #top-bar ul {
     flex-direction: row;
-    gap: 20px;
-    padding: 10px;
+    gap: 12px;
+    padding: 3px;
   }
 
   .weather-clock {
     flex-direction: row;
     align-items: center;
     position: absolute;
-    right: 20px;
-    margin-left: 20px;
+    right: 15px;
+    margin-left: 12px;
     margin-top: 0;
   }
 
   #weather, #clock {
-    padding: 0 10px;
-    font-size: 14px;
-    max-width: 200px;
+    padding: 0 3px;
+    font-size: 12px;
+    max-width: 160px;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1.2;
   }
 
   #game-container {
