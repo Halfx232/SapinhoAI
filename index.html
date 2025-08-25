@@ -150,17 +150,20 @@
 
     const PONTUACAO_VITORIA = 5000;
     const GRAVIDADE = 1.5;
-    let ALTURA_CHAO = 300; // Alinhado com CSS height: 300px
+    const BASE_WIDTH = 800; // Resolução base do jogo
+    const BASE_HEIGHT = 400;
+    let ALTURA_CHAO = 300;
     const ALTURA_SAPO = 40;
     const ESPESSURA_CHAO = 50;
     const SAPO_OFFSET_VISUAL = 47;
+    let scaleX = 1;
+    let scaleY = 1;
 
     let gameStarted = false;
     let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
     let poeira = [];
     let jumpButton;
     let animationFrameId;
-    let cameraX = 0; // Adicionado para gerenciar câmera
 
     function positionBanners() {
       const canvasRect = canvas.getBoundingClientRect();
@@ -183,9 +186,11 @@
       canvas.width = width;
       canvas.height = height;
       ALTURA_CHAO = height;
+      scaleX = width / BASE_WIDTH;
+      scaleY = height / BASE_HEIGHT;
       if (sapo) {
+        sapo.x = BASE_WIDTH * 0.2;
         sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL;
-        sapo.x = width * 0.2; // Sapo posicionado a 20% da largura
       }
       positionBanners();
     }
@@ -241,18 +246,18 @@
 
     function handleJump() {
       if (gameStarted && !sapo.jumping) {
-        sapo.vy = -20;
+        sapo.vy = -20 * scaleY;
         sapo.jumping = true;
         jumpSound.currentTime = 0;
         jumpSound.play().catch(e => console.log("Erro ao tocar som:", e));
         for (let i = 0; i < 10; i++) {
           poeira.push({
-            x: sapo.x + 15 + Math.random() * 10,
-            y: sapo.y + 30,
-            raio: 3 + Math.random() * 5,
+            x: sapo.x + 15 * scaleX + Math.random() * 10 * scaleX,
+            y: sapo.y + 30 * scaleY,
+            raio: (3 + Math.random() * 5) * scaleX,
             alpha: 0.7,
-            vy: -1 - Math.random() * 2,
-            vx: Math.random() * 2 - 1
+            vy: (-1 - Math.random() * 2) * scaleY,
+            vx: (Math.random() * 2 - 1) * scaleX
           });
         }
       }
@@ -278,14 +283,13 @@
         cancelAnimationFrame(animationFrameId);
       }
       ALTURA_CHAO = canvas.height;
-      sapo = { x: canvas.width * 0.2, y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
+      sapo = { x: BASE_WIDTH * 0.2, y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL, width: 40 * scaleX, height: ALTURA_SAPO * scaleY, vy: 0, jumping: false };
       obstaculos = [];
       poeira = [];
       tempo = 0;
       intervaloObstaculo = 120;
       faseAtual = 0;
       pontuacao = 0;
-      cameraX = 0;
       gameOverBanner.style.display = "none";
       victoryBanner.style.display = "none";
       startBanner.style.display = "block";
@@ -323,83 +327,83 @@
 
     function drawSapo() {
       ctx.save();
-      ctx.translate(-cameraX, 0);
+      ctx.scale(scaleX, scaleY);
       const { x, y, jumping } = sapo;
       ctx.fillStyle = "green";
       ctx.beginPath();
-      ctx.ellipse(x + 25, y + 18, 22, 15, 0, 0, Math.PI * 2);
+      ctx.ellipse(x / scaleX + 25, y / scaleY + 18, 22, 15, 0, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.strokeStyle = "green";
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 3 / scaleX;
       const armAngle = jumping ? Math.PI/2 : Math.PI/4;
       ctx.beginPath();
-      ctx.moveTo(x + 18, y + 20);
-      ctx.lineTo(x + 5, y + 20);
-      ctx.lineTo(x + 5 - Math.cos(armAngle) * 18, y + 20 + Math.sin(armAngle) * 18);
+      ctx.moveTo(x / scaleX + 18, y / scaleY + 20);
+      ctx.lineTo(x / scaleX + 5, y / scaleY + 20);
+      ctx.lineTo(x / scaleX + 5 - Math.cos(armAngle) * 18, y / scaleY + 20 + Math.sin(armAngle) * 18);
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.moveTo(x + 32, y + 20);
-      ctx.lineTo(x + 45, y + 20);
-      ctx.lineTo(x + 45 + Math.cos(armAngle) * 18, y + 20 + Math.sin(armAngle) * 18);
+      ctx.moveTo(x / scaleX + 32, y / scaleY + 20);
+      ctx.lineTo(x / scaleX + 45, y / scaleY + 20);
+      ctx.lineTo(x / scaleX + 45 + Math.cos(armAngle) * 18, y / scaleY + 20 + Math.sin(armAngle) * 18);
       ctx.stroke();
 
       ctx.fillStyle = "yellow";
       ctx.beginPath();
-      ctx.arc(x + 15, y + 8, 6, 0, Math.PI * 2);
-      ctx.arc(x + 35, y + 8, 6, 0, Math.PI * 2);
+      ctx.arc(x / scaleX + 15, y / scaleY + 8, 6, 0, Math.PI * 2);
+      ctx.arc(x / scaleX + 35, y / scaleY + 8, 6, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.fillStyle = "black";
       ctx.beginPath();
-      ctx.arc(x + 15, y + 8, 2, 0, Math.PI * 2);
-      ctx.arc(x + 35, y + 8, 2, 0, Math.PI * 2);
+      ctx.arc(x / scaleX + 15, y / scaleY + 8, 2, 0, Math.PI * 2);
+      ctx.arc(x / scaleX + 35, y / scaleY + 8, 2, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.strokeStyle = "black";
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2 / scaleX;
       ctx.beginPath();
-      ctx.arc(x + 25, y + 18, 8, 0.3, Math.PI - 0.3);
+      ctx.arc(x / scaleX + 25, y / scaleY + 18, 8, 0.3, Math.PI - 0.3);
       ctx.stroke();
 
       ctx.strokeStyle = "green";
-      ctx.lineWidth = 4;
+      ctx.lineWidth = 4 / scaleX;
       const legAngle = jumping ? Math.PI/2 : Math.PI/4;
       ctx.beginPath();
-      ctx.moveTo(x + 15, y + 30);
-      ctx.lineTo(x + 5 - Math.cos(legAngle) * 12, y + 30 + Math.sin(legAngle) * 25);
-      ctx.moveTo(x + 35, y + 30);
-      ctx.lineTo(x + 45 + Math.cos(legAngle) * 12, y + 30 + Math.sin(legAngle) * 25);
+      ctx.moveTo(x / scaleX + 15, y / scaleY + 30);
+      ctx.lineTo(x / scaleX + 5 - Math.cos(legAngle) * 12, y / scaleY + 30 + Math.sin(legAngle) * 25);
+      ctx.moveTo(x / scaleX + 35, y / scaleY + 30);
+      ctx.lineTo(x / scaleX + 45 + Math.cos(legAngle) * 12, y / scaleY + 30 + Math.sin(legAngle) * 25);
       ctx.stroke();
       ctx.restore();
     }
 
     function drawObstaculo(obs) {
       ctx.save();
-      ctx.translate(-cameraX, 0);
+      ctx.scale(scaleX, scaleY);
       ctx.fillStyle = obs.color;
-      ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+      ctx.fillRect(obs.x / scaleX, obs.y / scaleY, obs.width / scaleX, obs.height / scaleY);
       ctx.restore();
     }
 
     function atualizarPoeira() {
       ctx.save();
-      ctx.translate(-cameraX, 0);
+      ctx.scale(scaleX, scaleY);
       for (let i = 0; i < poeira.length; i++) {
         const p = poeira[i];
         ctx.fillStyle = `rgba(143, 188, 143, ${p.alpha})`;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.raio, 0, Math.PI * 2);
+        ctx.arc(p.x / scaleX, p.y / scaleY, p.raio / scaleX, 0, Math.PI * 2);
         ctx.fill();
         p.x += p.vx;
         p.y += p.vy;
-        p.raio -= 0.1;
+        p.raio -= 0.1 * scaleX;
         p.alpha -= 0.02;
         p.vy *= 0.98;
       }
       ctx.restore();
-      poeira = poeira.filter(p => p.raio > 0.2 && p.alpha > 0.05);
+      poeira = poeira.filter(p => p.raio > 0.2 * scaleX && p.alpha > 0.05);
     }
 
     function atualizarJogo() {
@@ -408,47 +412,48 @@
       canvas.style.background = coresFase[fase].fundo;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawChao();
-      sapo.vy += GRAVIDADE;
+      sapo.vy += GRAVIDADE * scaleY;
       sapo.y += sapo.vy;
       if (sapo.y > ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL) {
         sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL;
         sapo.vy = 0;
         sapo.jumping = false;
       }
-      // Atualizar câmera para centralizar sapo
-      cameraX = sapo.x - canvas.width * 0.2; // Sapo fica a 20% da esquerda
       drawSapo();
       atualizarPoeira();
       if (tempo % intervaloObstaculo === 0 && tempo >= 120) {
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
         let cor = cores[Math.floor(Math.random() * cores.length)];
-        obstaculos.push({ x: canvas.width + cameraX, y: ALTURA_CHAO - ESPESSURA_CHAO - 30, width: 30, height: 30, color: cor });
+        obstaculos.push({ x: BASE_WIDTH, y: ALTURA_CHAO - ESPESSURA_CHAO - 30, width: 30 * scaleX, height: 30 * scaleY, color: cor });
       }
       for (let i = 0; i < obstaculos.length; i++) {
         let obs = obstaculos[i];
-        obs.x -= 5;
+        obs.x -= 5 * scaleX;
         drawObstaculo(obs);
       }
-      obstaculos = obstaculos.filter(obs => obs.x + obs.width + cameraX > 0);
+      obstaculos = obstaculos.filter(obs => obs.x + obs.width > 0);
       tempo++;
       pontuacao++;
       if (tempo % 1500 === 0) {
         faseAtual++;
         intervaloObstaculo = Math.max(60, intervaloObstaculo - 10);
       }
+      ctx.save();
+      ctx.scale(scaleX, scaleY);
       ctx.fillStyle = "#000";
       ctx.font = "bold 18px Arial";
-      ctx.fillText("Score: " + pontuacao, 10, 25);
+      ctx.fillText("Score: " + pontuacao, 10 / scaleX, 25 / scaleY);
+      ctx.restore();
     }
 
     function verificarColisao() {
       for (let obs of obstaculos) {
-        const sapoHitboxY = sapo.y + 7;
+        const sapoHitboxY = sapo.y + 7 * scaleY;
         if (
           sapo.x < obs.x + obs.width &&
           sapo.x + sapo.width > obs.x &&
           sapoHitboxY < obs.y + obs.height &&
-          sapoHitboxY + ALTURA_SAPO > obs.y
+          sapoHitboxY + ALTURA_SAPO * scaleY > obs.y
         ) {
           return true;
         }
