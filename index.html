@@ -18,19 +18,19 @@
 </head>
 <body>
   <div id="top-bar">
-  <nav>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="sobre.html">Sobre</a></li>
-      <li><a href="contato.html">Contato</a></li>
-      <li><a href="politicas.html">Políticas</a></li>
-    </ul>
-    <div class="weather-clock">
-      <div id="weather">Previsão do Tempo</div>
-      <div id="clock">Relógio</div>
-    </div>
-  </nav>
-</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li><a href="politicas.html">Políticas</a></li>
+      </ul>
+      <div class="weather-clock">
+        <div id="weather">Previsão do Tempo</div>
+        <div id="clock">Relógio</div>
+      </div>
+    </nav>
+  </div>
 
   <div id="orientation-message">
     <p>GIRE SEU DISPOSITIVO NA HORIZONTAL PARA JOGAR.</p>
@@ -49,7 +49,7 @@
         (adsbygoogle = window.adsbygoogle || []).push({});
       </script>
     </div>
-    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <canvas id="gameCanvas"></canvas>
     <div id="right-ad">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
       <ins class="adsbygoogle"
@@ -150,7 +150,7 @@
 
     const PONTUACAO_VITORIA = 5000;
     const GRAVIDADE = 1.5;
-    let ALTURA_CHAO = canvas.height;
+    let ALTURA_CHAO = 300; // Alinhado com CSS height: 300px
     const ALTURA_SAPO = 40;
     const ESPESSURA_CHAO = 50;
     const SAPO_OFFSET_VISUAL = 47;
@@ -160,6 +160,7 @@
     let poeira = [];
     let jumpButton;
     let animationFrameId;
+    let cameraX = 0; // Adicionado para gerenciar câmera
 
     function positionBanners() {
       const canvasRect = canvas.getBoundingClientRect();
@@ -173,6 +174,20 @@
         banner.style.top = `${top}px`;
         banner.style.left = `${left}px`;
       });
+    }
+
+    function resizeCanvas() {
+      const computedStyle = getComputedStyle(canvas);
+      const width = parseInt(computedStyle.width);
+      const height = parseInt(computedStyle.height);
+      canvas.width = width;
+      canvas.height = height;
+      ALTURA_CHAO = height;
+      if (sapo) {
+        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL;
+        sapo.x = width * 0.2; // Sapo posicionado a 20% da largura
+      }
+      positionBanners();
     }
 
     function handleOrientation() {
@@ -198,6 +213,7 @@
       window.addEventListener('resize', debounce(() => {
         checkOrientation();
         positionBanners();
+        resizeCanvas();
       }, 100));
       if (screen.orientation && screen.orientation.lock) {
         screen.orientation.lock('landscape').catch(e => console.log('Erro ao travar orientação:', e));
@@ -262,13 +278,14 @@
         cancelAnimationFrame(animationFrameId);
       }
       ALTURA_CHAO = canvas.height;
-      sapo = { x: 100, y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
+      sapo = { x: canvas.width * 0.2, y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL, width: 40, height: ALTURA_SAPO, vy: 0, jumping: false };
       obstaculos = [];
       poeira = [];
       tempo = 0;
       intervaloObstaculo = 120;
       faseAtual = 0;
       pontuacao = 0;
+      cameraX = 0;
       gameOverBanner.style.display = "none";
       victoryBanner.style.display = "none";
       startBanner.style.display = "block";
@@ -305,6 +322,8 @@
     }
 
     function drawSapo() {
+      ctx.save();
+      ctx.translate(-cameraX, 0);
       const { x, y, jumping } = sapo;
       ctx.fillStyle = "green";
       ctx.beginPath();
@@ -353,14 +372,20 @@
       ctx.moveTo(x + 35, y + 30);
       ctx.lineTo(x + 45 + Math.cos(legAngle) * 12, y + 30 + Math.sin(legAngle) * 25);
       ctx.stroke();
+      ctx.restore();
     }
 
     function drawObstaculo(obs) {
+      ctx.save();
+      ctx.translate(-cameraX, 0);
       ctx.fillStyle = obs.color;
       ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+      ctx.restore();
     }
 
     function atualizarPoeira() {
+      ctx.save();
+      ctx.translate(-cameraX, 0);
       for (let i = 0; i < poeira.length; i++) {
         const p = poeira[i];
         ctx.fillStyle = `rgba(143, 188, 143, ${p.alpha})`;
@@ -373,6 +398,7 @@
         p.alpha -= 0.02;
         p.vy *= 0.98;
       }
+      ctx.restore();
       poeira = poeira.filter(p => p.raio > 0.2 && p.alpha > 0.05);
     }
 
@@ -389,19 +415,21 @@
         sapo.vy = 0;
         sapo.jumping = false;
       }
+      // Atualizar câmera para centralizar sapo
+      cameraX = sapo.x - canvas.width * 0.2; // Sapo fica a 20% da esquerda
       drawSapo();
       atualizarPoeira();
       if (tempo % intervaloObstaculo === 0 && tempo >= 120) {
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
         let cor = cores[Math.floor(Math.random() * cores.length)];
-        obstaculos.push({ x: canvas.width, y: ALTURA_CHAO - ESPESSURA_CHAO - 30, width: 30, height: 30, color: cor });
+        obstaculos.push({ x: canvas.width + cameraX, y: ALTURA_CHAO - ESPESSURA_CHAO - 30, width: 30, height: 30, color: cor });
       }
       for (let i = 0; i < obstaculos.length; i++) {
         let obs = obstaculos[i];
         obs.x -= 5;
         drawObstaculo(obs);
       }
-      obstaculos = obstaculos.filter(obs => obs.x + obs.width > 0);
+      obstaculos = obstaculos.filter(obs => obs.x + obs.width + cameraX > 0);
       tempo++;
       pontuacao++;
       if (tempo % 1500 === 0) {
@@ -411,35 +439,6 @@
       ctx.fillStyle = "#000";
       ctx.font = "bold 18px Arial";
       ctx.fillText("Score: " + pontuacao, 10, 25);
-    }
-
-    function resizeCanvas() {
-      if (isMobile) {
-        const isLandscape = window.innerWidth > window.innerHeight;
-        if (!isLandscape) {
-          return;
-        }
-        const bannerWidth = 200;
-        const gap = 10;
-        const totalBannerWidth = 2 * (bannerWidth + gap);
-        const maxWidth = Math.min(800, window.innerWidth - totalBannerWidth - 20);
-        const maxHeight = Math.min(300, window.innerHeight * 0.85);
-        canvas.width = maxWidth;
-        canvas.height = maxHeight;
-        ALTURA_CHAO = canvas.height;
-        canvas.style.margin = '10px auto';
-        canvas.style.display = 'block';
-      } else {
-        canvas.width = 800;
-        canvas.height = 400;
-        ALTURA_CHAO = canvas.height;
-        canvas.style.margin = '0 auto';
-        canvas.style.display = 'block';
-      }
-      if (sapo) {
-        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL;
-      }
-      positionBanners();
     }
 
     function verificarColisao() {
@@ -589,14 +588,4 @@
     playAgainButton.addEventListener("click", resetGame);
   </script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
