@@ -43,10 +43,14 @@
            style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;"
            data-ad-client="ca-pub-SEU-ID"
            data-ad-slot="SEU-SLOT-ID"
-           data-ad-format="auto"
+           data-ad-format="rectangle"
            data-full-width-responsive="false"></ins>
       <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
+        (adsbygoogle = window.adsbygoogle || []).push({
+          onAdLoaded: function() {
+            document.getElementById('left-ad').classList.add('ads-loaded');
+          }
+        });
       </script>
     </div>
     <canvas id="gameCanvas"></canvas>
@@ -56,10 +60,14 @@
            style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;"
            data-ad-client="ca-pub-SEU-ID"
            data-ad-slot="SEU-SLOT-ID"
-           data-ad-format="auto"
+           data-ad-format="rectangle"
            data-full-width-responsive="false"></ins>
       <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
+        (adsbygoogle = window.adsbygoogle || []).push({
+          onAdLoaded: function() {
+            document.getElementById('right-ad').classList.add('ads-loaded');
+          }
+        });
       </script>
     </div>
 
@@ -99,13 +107,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
   <script>
-    window.addEventListener("load", function(){
-      window.cookieconsent.initialise({
-        "palette": { "popup": { "background": "#1b5e20" }, "button": { "background": "#00ff00" } },
-        "content": { "message": "Este site usa cookies para melhorar sua experiência.", "dismiss": "Entendido", "link": "Saiba mais", "href": "/politicas.html" }
-      });
-
-      // Forçar tamanho dos banners no desktop após carregamento do AdSense
+    document.addEventListener('DOMContentLoaded', function() {
+      // Forçar tamanho dos banners no desktop imediatamente
       if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         const ads = document.querySelectorAll('#left-ad > ins, #right-ad > ins');
         ads.forEach(ad => {
@@ -115,8 +118,31 @@
           ad.style.maxHeight = '400px';
           ad.style.minWidth = '300px';
           ad.style.minHeight = '400px';
+          ad.style.overflow = 'hidden';
         });
-        console.log('Banners forçados para 300x400px no desktop');
+        console.log('Banners forçados para 300x400px no DOMContentLoaded');
+      }
+    });
+
+    window.addEventListener("load", function() {
+      window.cookieconsent.initialise({
+        "palette": { "popup": { "background": "#1b5e20" }, "button": { "background": "#00ff00" } },
+        "content": { "message": "Este site usa cookies para melhorar sua experiência.", "dismiss": "Entendido", "link": "Saiba mais", "href": "/politicas.html" }
+      });
+
+      // Verificar novamente após o carregamento completo
+      if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        const ads = document.querySelectorAll('#left-ad > ins, #right-ad > ins');
+        ads.forEach(ad => {
+          ad.style.width = '300px';
+          ad.style.height = '400px';
+          ad.style.maxWidth = '300px';
+          ad.style.maxHeight = '400px';
+          ad.style.minWidth = '300px';
+          ad.style.minHeight = '400px';
+          ad.style.overflow = 'hidden';
+        });
+        console.log('Banners forçados para 300x400px no load');
       }
     });
 
