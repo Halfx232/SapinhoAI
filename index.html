@@ -40,7 +40,7 @@
     <div id="left-ad">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
       <ins class="adsbygoogle"
-           style="display:block"
+           style="display:block; width:300px !important; height:400px !important;"
            data-ad-client="ca-pub-SEU-ID"
            data-ad-slot="SEU-SLOT-ID"
            data-ad-format="auto"
@@ -53,7 +53,7 @@
     <div id="right-ad">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
       <ins class="adsbygoogle"
-           style="display:block"
+           style="display:block; width:300px !important; height:400px !important;"
            data-ad-client="ca-pub-SEU-ID"
            data-ad-slot="SEU-SLOT-ID"
            data-ad-format="auto"
@@ -177,6 +177,9 @@
         banner.style.top = `${top}px`;
         banner.style.left = `${left}px`;
       });
+      // Log para verificar tamanhos dos banners
+      console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
+      console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
     }
 
     function resizeCanvas() {
@@ -196,6 +199,7 @@
         sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL;
       }
       positionBanners();
+      console.log('Canvas:', canvas.width, canvas.height, 'Scale:', scaleX, scaleY);
     }
 
     function handleOrientation() {
