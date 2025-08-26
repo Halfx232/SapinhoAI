@@ -150,7 +150,7 @@
 
     const PONTUACAO_VITORIA = 5000;
     const GRAVIDADE = 1.5;
-    const BASE_WIDTH = 800; // Resolução base do jogo
+    const BASE_WIDTH = 800;
     const BASE_HEIGHT = 400;
     let ALTURA_CHAO = 300;
     const ALTURA_SAPO = 40;
@@ -180,14 +180,17 @@
     }
 
     function resizeCanvas() {
-      const computedStyle = getComputedStyle(canvas);
-      const width = parseInt(computedStyle.width);
-      const height = parseInt(computedStyle.height);
-      canvas.width = width;
-      canvas.height = height;
-      ALTURA_CHAO = height;
-      scaleX = width / BASE_WIDTH;
-      scaleY = height / BASE_HEIGHT;
+      if (isMobile) {
+        const computedStyle = getComputedStyle(canvas);
+        canvas.width = parseInt(computedStyle.width);
+        canvas.height = parseInt(computedStyle.height);
+      } else {
+        canvas.width = BASE_WIDTH;
+        canvas.height = BASE_HEIGHT;
+      }
+      ALTURA_CHAO = canvas.height;
+      scaleX = canvas.width / BASE_WIDTH;
+      scaleY = canvas.height / BASE_HEIGHT;
       if (sapo) {
         sapo.x = BASE_WIDTH * 0.2;
         sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL;
