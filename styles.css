@@ -128,11 +128,6 @@ button:focus {
   flex-shrink: 0;
   overflow: hidden;
   box-sizing: border-box;
-  visibility: hidden; /* Ocultar até o AdSense carregar */
-}
-
-#left-ad.ads-loaded, #right-ad.ads-loaded {
-  visibility: visible; /* Mostrar após o carregamento */
 }
 
 #left-ad > ins, #right-ad > ins {
@@ -453,7 +448,6 @@ canvas {
     margin: 0;
     overflow: hidden;
     box-sizing: border-box;
-    visibility: visible; /* Visível no mobile */
   }
 
   #left-ad > ins, #right-ad > ins {
