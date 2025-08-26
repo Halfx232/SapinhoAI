@@ -105,7 +105,7 @@ button:focus {
   justify-content: center;
   align-items: center;
   flex-grow: 1;
-  gap: 5px;
+  gap: 30px;
   padding: 5px;
   box-sizing: border-box;
   overflow: hidden;
@@ -114,8 +114,6 @@ button:focus {
 }
 
 #left-ad, #right-ad {
-  width: 160px;
-  height: 300px;
   background: #cfd8dc;
   display: flex;
   justify-content: center;
@@ -128,12 +126,14 @@ button:focus {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 #left-ad > ins, #right-ad > ins {
   width: 100% !important;
   height: 100% !important;
   display: block !important;
+  overflow: hidden !important;
 }
 
 canvas {
@@ -291,11 +291,14 @@ canvas {
     padding: 0 20px;
     max-width: 1460px; /* 300 + 800 + 300 + 60px gap */
     overflow: visible;
+    box-sizing: border-box;
   }
 
   #left-ad, #right-ad {
     width: 300px !important;
     height: 400px !important;
+    max-width: 300px !important;
+    max-height: 400px !important;
     font-size: 14px;
     padding: 0 !important;
     background: #cfd8dc;
@@ -304,12 +307,16 @@ canvas {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     flex-shrink: 0;
     position: relative !important;
+    overflow: hidden;
   }
 
   #left-ad > ins, #right-ad > ins {
     width: 300px !important;
     height: 400px !important;
+    max-width: 300px !important;
+    max-height: 400px !important;
     display: block !important;
+    overflow: hidden !important;
   }
 
   canvas {
@@ -408,6 +415,8 @@ canvas {
   #left-ad, #right-ad {
     width: 90px !important;
     height: 300px !important;
+    max-width: 90px !important;
+    max-height: 300px !important;
     font-size: 10px;
     padding: 0 !important;
     background: #cfd8dc;
@@ -417,12 +426,16 @@ canvas {
     flex-shrink: 0;
     position: relative !important;
     margin: 0;
+    overflow: hidden;
   }
 
   #left-ad > ins, #right-ad > ins {
     width: 90px !important;
     height: 300px !important;
+    max-width: 90px !important;
+    max-height: 300px !important;
     display: block !important;
+    overflow: hidden !important;
   }
 
   canvas {
