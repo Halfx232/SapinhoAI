@@ -40,7 +40,7 @@
     <div id="left-ad">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
       <ins class="adsbygoogle"
-           style="display:block; width:300px !important; height:400px !important;"
+           style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;"
            data-ad-client="ca-pub-SEU-ID"
            data-ad-slot="SEU-SLOT-ID"
            data-ad-format="auto"
@@ -53,7 +53,7 @@
     <div id="right-ad">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
       <ins class="adsbygoogle"
-           style="display:block; width:300px !important; height:400px !important;"
+           style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;"
            data-ad-client="ca-pub-SEU-ID"
            data-ad-slot="SEU-SLOT-ID"
            data-ad-format="auto"
@@ -104,6 +104,20 @@
         "palette": { "popup": { "background": "#1b5e20" }, "button": { "background": "#00ff00" } },
         "content": { "message": "Este site usa cookies para melhorar sua experiência.", "dismiss": "Entendido", "link": "Saiba mais", "href": "/politicas.html" }
       });
+
+      // Forçar tamanho dos banners no desktop após carregamento do AdSense
+      if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        const ads = document.querySelectorAll('#left-ad > ins, #right-ad > ins');
+        ads.forEach(ad => {
+          ad.style.width = '300px';
+          ad.style.height = '400px';
+          ad.style.maxWidth = '300px';
+          ad.style.maxHeight = '400px';
+          ad.style.minWidth = '300px';
+          ad.style.minHeight = '400px';
+        });
+        console.log('Banners forçados para 300x400px no desktop');
+      }
     });
 
     function debounce(func, wait) {
@@ -200,6 +214,8 @@
       }
       positionBanners();
       console.log('Canvas:', canvas.width, canvas.height, 'Scale:', scaleX, scaleY);
+      console.log('Left Ad Size:', document.getElementById('left-ad').getBoundingClientRect());
+      console.log('Right Ad Size:', document.getElementById('right-ad').getBoundingClientRect());
     }
 
     function handleOrientation() {
