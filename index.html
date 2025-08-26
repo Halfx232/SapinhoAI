@@ -46,11 +46,7 @@
            data-ad-format="rectangle"
            data-full-width-responsive="false"></ins>
       <script>
-        (adsbygoogle = window.adsbygoogle || []).push({
-          onAdLoaded: function() {
-            document.getElementById('left-ad').classList.add('ads-loaded');
-          }
-        });
+        (adsbygoogle = window.adsbygoogle || []).push({});
       </script>
     </div>
     <canvas id="gameCanvas"></canvas>
@@ -63,11 +59,7 @@
            data-ad-format="rectangle"
            data-full-width-responsive="false"></ins>
       <script>
-        (adsbygoogle = window.adsbygoogle || []).push({
-          onAdLoaded: function() {
-            document.getElementById('right-ad').classList.add('ads-loaded');
-          }
-        });
+        (adsbygoogle = window.adsbygoogle || []).push({});
       </script>
     </div>
 
@@ -121,6 +113,12 @@
           ad.style.overflow = 'hidden';
         });
         console.log('Banners forçados para 300x400px no DOMContentLoaded');
+        // Fallback para garantir visibilidade após 3 segundos
+        setTimeout(() => {
+          document.getElementById('left-ad').style.visibility = 'visible';
+          document.getElementById('right-ad').style.visibility = 'visible';
+          console.log('Banners forçados visíveis após timeout');
+        }, 3000);
       }
     });
 
