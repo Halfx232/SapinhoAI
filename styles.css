@@ -286,16 +286,16 @@ canvas {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 400px;
+    height: 600px; /* Ajustado para banners de 600px de altura */
     position: relative;
     padding: 0 20px;
-    max-width: 2060px; /* 600 + 800 + 600 + 60px gap */
+    max-width: 1660px; /* 400 + 800 + 400 + 60px gap */
     overflow: visible;
   }
 
   #left-ad, #right-ad {
-    width: 600px !important;
-    height: 400px !important;
+    width: 400px !important;
+    height: 600px !important;
     font-size: 14px;
     padding: 0 !important;
     background: #cfd8dc;
@@ -307,8 +307,8 @@ canvas {
   }
 
   #left-ad > ins, #right-ad > ins {
-    width: 600px !important;
-    height: 400px !important;
+    width: 400px !important;
+    height: 600px !important;
     display: block !important;
   }
 
