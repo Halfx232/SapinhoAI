@@ -127,6 +127,7 @@ button:focus {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   flex-shrink: 0;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 #left-ad > ins, #right-ad > ins {
@@ -134,6 +135,7 @@ button:focus {
   height: 100% !important;
   display: block !important;
   overflow: hidden !important;
+  box-sizing: border-box;
 }
 
 canvas {
@@ -299,6 +301,8 @@ canvas {
     height: 400px !important;
     max-width: 300px !important;
     max-height: 400px !important;
+    min-width: 300px !important;
+    min-height: 400px !important;
     font-size: 14px;
     padding: 0 !important;
     background: #cfd8dc;
@@ -308,6 +312,7 @@ canvas {
     flex-shrink: 0;
     position: relative !important;
     overflow: hidden;
+    box-sizing: border-box;
   }
 
   #left-ad > ins, #right-ad > ins {
@@ -315,8 +320,20 @@ canvas {
     height: 400px !important;
     max-width: 300px !important;
     max-height: 400px !important;
+    min-width: 300px !important;
+    min-height: 400px !important;
     display: block !important;
     overflow: hidden !important;
+    box-sizing: border-box;
+  }
+
+  .adsbygoogle {
+    width: 300px !important;
+    height: 400px !important;
+    max-width: 300px !important;
+    max-height: 400px !important;
+    min-width: 300px !important;
+    min-height: 400px !important;
   }
 
   canvas {
@@ -417,6 +434,8 @@ canvas {
     height: 300px !important;
     max-width: 90px !important;
     max-height: 300px !important;
+    min-width: 90px !important;
+    min-height: 300px !important;
     font-size: 10px;
     padding: 0 !important;
     background: #cfd8dc;
@@ -427,6 +446,7 @@ canvas {
     position: relative !important;
     margin: 0;
     overflow: hidden;
+    box-sizing: border-box;
   }
 
   #left-ad > ins, #right-ad > ins {
@@ -434,8 +454,11 @@ canvas {
     height: 300px !important;
     max-width: 90px !important;
     max-height: 300px !important;
+    min-width: 90px !important;
+    min-height: 300px !important;
     display: block !important;
     overflow: hidden !important;
+    box-sizing: border-box;
   }
 
   canvas {
