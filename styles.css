@@ -113,6 +113,31 @@ button:focus {
   min-height: 300px;
 }
 
+#top-ad, #bottom-ad {
+  display: none; /* Ocultos no desktop */
+  width: 100%;
+  max-width: 100%;
+  height: 100px;
+  background: #cfd8dc;
+  text-align: center;
+  font-size: 12px;
+  color: #455a64;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+#top-ad > ins, #bottom-ad > ins {
+  width: 100% !important;
+  height: 100px !important;
+  max-width: 100% !important;
+  max-height: 100px !important;
+  display: block !important;
+  overflow: hidden !important;
+  box-sizing: border-box;
+}
+
 #left-ad, #right-ad {
   background: #cfd8dc;
   display: flex;
@@ -145,8 +170,7 @@ canvas {
   z-index: 1;
   width: 100%;
   max-width: 100%;
-  height: 300px;
-  max-height: 300px;
+  height: auto;
 }
 
 #test-version {
@@ -249,33 +273,6 @@ canvas {
   cursor: pointer;
 }
 
-#orientation-message {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  font-size: 24px;
-  text-align: center;
-  z-index: 1000;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-#orientation-message p {
-  margin: 0;
-  padding: 0 20px;
-  text-align: center;
-  max-width: 90%;
-  line-height: 1.4;
-}
-
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
@@ -288,15 +285,21 @@ canvas {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 400px; /* Alinhado com canvas e banners de 400px */
+    height: 400px;
     position: relative;
     padding: 0 20px;
     max-width: 1460px; /* 300 + 800 + 300 + 60px gap */
     overflow: visible;
     box-sizing: border-box;
+    flex-direction: row;
+  }
+
+  #top-ad, #bottom-ad {
+    display: none !important; /* Ocultos no desktop */
   }
 
   #left-ad, #right-ad {
+    display: flex;
     width: 300px !important;
     height: 400px !important;
     max-width: 300px !important;
@@ -374,21 +377,66 @@ canvas {
   }
 }
 
-@media (orientation: landscape) and (max-width: 1023px) {
+@media (max-width: 1023px) {
+  #game-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px;
+    gap: 10px;
+    max-width: 100vw;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-top: 0;
+    min-height: calc(100vh - 60px); /* Reservar espaço para top-bar e footer */
+  }
+
+  #top-ad {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    height: 100px;
+    margin-bottom: 10px;
+  }
+
+  #bottom-ad {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    height: 100px;
+    margin-top: 10px;
+    position: sticky;
+    bottom: 0;
+  }
+
+  #left-ad, #right-ad {
+    display: none !important; /* Ocultos no mobile */
+  }
+
+  canvas {
+    width: 100%;
+    max-width: calc(100vw - 20px); /* Margem de 10px de cada lado */
+    height: auto; /* Altura ajustada via JS */
+    max-height: 400px;
+  }
+
   #top-bar {
     padding: 5px;
   }
 
   #top-bar nav {
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
+    flex-direction: column;
+    align-items: flex-start;
     padding: 5px;
   }
 
   #top-bar ul {
-    flex-direction: row;
-    gap: 12px;
+    flex-direction: column;
+    gap: 10px;
     padding: 5px;
   }
 
@@ -398,122 +446,43 @@ canvas {
   }
 
   .weather-clock {
-    flex-direction: row;
-    align-items: center;
-    position: absolute;
-    right: 15px;
-    margin-left: 12px;
-    margin-top: 0;
-    gap: 8px;
-  }
-
-  #weather, #clock {
-    padding: 0 3px;
-    font-size: 12px;
-    max-width: 160px;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 1.3;
-  }
-
-  #game-container {
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
-    gap: 5px;
-    max-width: 100vw;
-    overflow-x: auto;
-    box-sizing: border-box;
-    margin-top: 10px;
-  }
-
-  #left-ad, #right-ad {
-    width: 90px !important;
-    height: 300px !important;
-    max-width: 90px !important;
-    max-height: 300px !important;
-    min-width: 90px !important;
-    min-height: 300px !important;
-    font-size: 10px;
-    padding: 0 !important;
-    background: #cfd8dc;
-    color: #455a64;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    flex-shrink: 0;
-    position: relative !important;
-    margin: 0;
-    overflow: hidden;
-    box-sizing: border-box;
-  }
-
-  #left-ad > ins, #right-ad > ins {
-    width: 90px !important;
-    height: 300px !important;
-    max-width: 90px !important;
-    max-height: 300px !important;
-    min-width: 90px !important;
-    min-height: 300px !important;
-    display: block !important;
-    overflow: hidden !important;
-    box-sizing: border-box;
-  }
-
-  canvas {
-    width: 100%;
-    max-width: calc(100vw - 190px);
-    height: 300px;
-    max-height: 300px;
-    flex-shrink: 0;
-    box-sizing: border-box;
-    margin: 0;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-}
-
-@media (orientation: portrait) and (max-width: 768px) {
-  #top-bar nav {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px;
-  }
-
-  #top-bar ul {
-    flex-direction: column;
-    gap: 10px;
-    padding: 5px;
-  }
-
-  .weather-clock {
     flex-direction: column;
     align-items: flex-start;
     position: static;
     margin-left: 0;
     margin-right: 10px;
     margin-top: 5px;
+    gap: 8px;
   }
 
   #weather, #clock {
     padding: 5px;
     font-size: 12px;
     max-width: 100%;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  #game-container {
-    display: none;
-  }
-
-  #orientation-message {
-    display: flex;
-  }
-}
-
-@media (max-width: 400px) {
-  #orientation-message {
+  #start-banner h1 {
     font-size: 20px;
+  }
+
+  #start-banner p {
+    font-size: 16px;
+  }
+
+  #game-over-banner h2, #victory-banner h2 {
+    font-size: 18px;
+  }
+
+  #game-over-banner p, #victory-banner p {
+    font-size: 14px;
+  }
+
+  #restart-button, #play-again-button {
+    padding: 8px 16px;
+    font-size: 14px;
   }
 }
