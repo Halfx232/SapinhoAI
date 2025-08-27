@@ -422,6 +422,7 @@ canvas {
     max-width: calc(100vw - 20px); /* Margem de 10px de cada lado */
     height: auto; /* Altura ajustada via JS */
     max-height: 400px;
+    margin: 10px 0; /* Margem para centralizar verticalmente */
   }
 
   #top-bar {
