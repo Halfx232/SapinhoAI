@@ -246,22 +246,13 @@
     let animationFrameId;
 
     function positionBanners() {
-      // Garantir que o banner seja reposicionado após o DOM estar estável
+      // Apenas tornar banners visíveis após garantir renderização
       setTimeout(() => {
-        const canvasRect = canvas.getBoundingClientRect();
-        const gameContainerRect = document.getElementById('game-container').getBoundingClientRect();
         const banners = [startBanner, gameOverBanner, victoryBanner];
         banners.forEach(banner => {
           if (banner.style.display !== 'none') {
-            const bannerRect = banner.getBoundingClientRect();
-            const top = (canvasRect.height - bannerRect.height) / 2 + canvasRect.top - gameContainerRect.top;
-            const left = (canvasRect.width - bannerRect.width) / 2 + canvasRect.left - gameContainerRect.left;
-            banner.style.position = 'absolute';
-            banner.style.top = `${top}px`;
-            banner.style.left = `${left}px`;
-            banner.style.transform = 'translate(-50%, -50%)'; // Centralizar robustamente
-            banner.style.visibility = 'visible'; // Tornar visível após posicionamento
-            console.log(`Posicionando banner ${banner.id}: top=${top}px, left=${left}px`);
+            banner.style.visibility = 'visible'; // Tornar visível
+            console.log(`Banner ${banner.id} visível, posicionado via CSS: left=50%, top=50%, transform=translate(-50%, -50%)`);
           }
         });
         // Logs para debug
@@ -272,7 +263,7 @@
           console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
           console.log('Bottom Ad:', document.getElementById('bottom-ad').getBoundingClientRect());
         }
-      }, 200); // Aumentado para 200ms
+      }, 300); // Aumentado para 300ms
     }
 
     function resizeCanvas() {
@@ -388,7 +379,7 @@
       gameOverBanner.style.display = "none";
       victoryBanner.style.display = "none";
       startBanner.style.display = "block";
-      startBanner.style.visibility = "hidden"; // Ocultar inicialmente
+      startBanner.style.visibility = "hidden"; // Ocultar até posicionamento
       gameStarted = false;
 
       backgroundMusic.pause();
