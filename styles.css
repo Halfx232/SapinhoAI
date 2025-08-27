@@ -228,6 +228,9 @@ canvas {
 
 #start-banner, #game-over-banner, #victory-banner {
   position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* Centralizar no #game-container */
   background: rgba(0, 0, 0, 0.9);
   padding: 20px;
   text-align: center;
@@ -237,7 +240,6 @@ canvas {
   max-width: 90%;
   pointer-events: auto;
   box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-  transform: translate(-50%, -50%); /* Centralizar robustamente */
   visibility: hidden; /* Ocultar até posicionamento */
 }
 
