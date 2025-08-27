@@ -32,17 +32,25 @@
     </nav>
   </div>
 
-  <div id="orientation-message">
-    <p>GIRE SEU DISPOSITIVO NA HORIZONTAL PARA JOGAR.</p>
-  </div>
-
   <div id="game-container">
+    <div id="top-ad">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
+      <ins class="adsbygoogle"
+           style="display:block; width:320px; height:100px; max-width:100%;"
+           data-ad-client="ca-pub-SEU-ID"
+           data-ad-slot="SEU-SLOT-ID-MOBILE-TOP"
+           data-ad-format="horizontal"
+           data-full-width-responsive="true"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
     <div id="left-ad">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
       <ins class="adsbygoogle"
            style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;"
            data-ad-client="ca-pub-SEU-ID"
-           data-ad-slot="SEU-SLOT-ID"
+           data-ad-slot="SEU-SLOT-ID-DESKTOP"
            data-ad-format="rectangle"
            data-full-width-responsive="false"></ins>
       <script>
@@ -55,9 +63,21 @@
       <ins class="adsbygoogle"
            style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;"
            data-ad-client="ca-pub-SEU-ID"
-           data-ad-slot="SEU-SLOT-ID"
+           data-ad-slot="SEU-SLOT-ID-DESKTOP"
            data-ad-format="rectangle"
            data-full-width-responsive="false"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+    <div id="bottom-ad">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
+      <ins class="adsbygoogle"
+           style="display:block; width:320px; height:100px; max-width:100%;"
+           data-ad-client="ca-pub-SEU-ID"
+           data-ad-slot="SEU-SLOT-ID-MOBILE-BOTTOM"
+           data-ad-format="horizontal"
+           data-full-width-responsive="true"></ins>
       <script>
         (adsbygoogle = window.adsbygoogle || []).push({});
       </script>
@@ -112,14 +132,26 @@
           ad.style.minHeight = '400px';
           ad.style.overflow = 'hidden';
         });
-        console.log('Banners forçados para 300x400px no DOMContentLoaded');
-        // Fallback para garantir visibilidade após 3 segundos
-        setTimeout(() => {
-          document.getElementById('left-ad').style.visibility = 'visible';
-          document.getElementById('right-ad').style.visibility = 'visible';
-          console.log('Banners forçados visíveis após timeout');
-        }, 3000);
+        console.log('Banners laterais forçados para 300x400px no DOMContentLoaded (desktop)');
+      } else {
+        const ads = document.querySelectorAll('#top-ad > ins, #bottom-ad > ins');
+        ads.forEach(ad => {
+          ad.style.width = '100%';
+          ad.style.maxWidth = '100%';
+          ad.style.height = '100px';
+          ad.style.maxHeight = '100px';
+          ad.style.overflow = 'hidden';
+        });
+        console.log('Banners superior e inferior forçados para 320x100px no DOMContentLoaded (mobile)');
       }
+      // Fallback para garantir visibilidade após 3 segundos
+      setTimeout(() => {
+        document.getElementById('left-ad').style.visibility = 'visible';
+        document.getElementById('right-ad').style.visibility = 'visible';
+        document.getElementById('top-ad').style.visibility = 'visible';
+        document.getElementById('bottom-ad').style.visibility = 'visible';
+        console.log('Banners forçados visíveis após timeout');
+      }, 3000);
     });
 
     window.addEventListener("load", function() {
@@ -140,7 +172,17 @@
           ad.style.minHeight = '400px';
           ad.style.overflow = 'hidden';
         });
-        console.log('Banners forçados para 300x400px no load');
+        console.log('Banners laterais forçados para 300x400px no load (desktop)');
+      } else {
+        const ads = document.querySelectorAll('#top-ad > ins, #bottom-ad > ins');
+        ads.forEach(ad => {
+          ad.style.width = '100%';
+          ad.style.maxWidth = '100%';
+          ad.style.height = '100px';
+          ad.style.maxHeight = '100px';
+          ad.style.overflow = 'hidden';
+        });
+        console.log('Banners superior e inferior forçados para 320x100px no load (mobile)');
       }
     });
 
@@ -216,16 +258,24 @@
         banner.style.left = `${left}px`;
       });
       // Log para verificar tamanhos dos banners
-      console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
-      console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
+      if (!isMobile) {
+        console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
+        console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
+      } else {
+        console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
+        console.log('Bottom Ad:', document.getElementById('bottom-ad').getBoundingClientRect());
+      }
     }
 
     function resizeCanvas() {
       if (isMobile) {
-        const computedStyle = getComputedStyle(canvas);
-        canvas.width = parseInt(computedStyle.width);
-        canvas.height = parseInt(computedStyle.height);
+        // Mobile (vertical): ajustar canvas para caber na tela
+        const maxWidth = window.innerWidth - 20; // Margem de 10px de cada lado
+        const aspectRatio = BASE_WIDTH / BASE_HEIGHT; // 800/400 = 2
+        canvas.width = Math.min(maxWidth, 400); // Limitar largura máxima a 400px
+        canvas.height = canvas.width / aspectRatio; // Manter proporção 2:1
       } else {
+        // Desktop: manter 800x400px
         canvas.width = BASE_WIDTH;
         canvas.height = BASE_HEIGHT;
       }
@@ -233,43 +283,30 @@
       scaleX = canvas.width / BASE_WIDTH;
       scaleY = canvas.height / BASE_HEIGHT;
       if (sapo) {
-        sapo.x = BASE_WIDTH * 0.2;
+        sapo.x = BASE_WIDTH * 0.2 * scaleX;
         sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL;
       }
       positionBanners();
       console.log('Canvas:', canvas.width, canvas.height, 'Scale:', scaleX, scaleY);
-      console.log('Left Ad Size:', document.getElementById('left-ad').getBoundingClientRect());
-      console.log('Right Ad Size:', document.getElementById('right-ad').getBoundingClientRect());
+      if (!isMobile) {
+        console.log('Left Ad Size:', document.getElementById('left-ad').getBoundingClientRect());
+        console.log('Right Ad Size:', document.getElementById('right-ad').getBoundingClientRect());
+      } else {
+        console.log('Top Ad Size:', document.getElementById('top-ad').getBoundingClientRect());
+        console.log('Bottom Ad Size:', document.getElementById('bottom-ad').getBoundingClientRect());
+      }
     }
 
     function handleOrientation() {
-      if (!isMobile) return;
-      const orientationMessage = document.getElementById('orientation-message');
+      // Removida lógica de orientação, permitindo vertical no mobile
       const gameContainer = document.getElementById('game-container');
-      function checkOrientation() {
-        if (window.innerWidth > window.innerHeight) {
-          orientationMessage.style.display = 'none';
-          gameContainer.style.display = 'flex';
-          resizeCanvas();
-          positionBanners();
-        } else {
-          orientationMessage.style.display = 'flex';
-          gameContainer.style.display = 'none';
-        }
-      }
-      checkOrientation();
-      window.addEventListener('orientationchange', () => {
-        checkOrientation();
-        positionBanners();
-      });
+      gameContainer.style.display = 'flex';
+      resizeCanvas();
+      positionBanners();
       window.addEventListener('resize', debounce(() => {
-        checkOrientation();
-        positionBanners();
         resizeCanvas();
+        positionBanners();
       }, 100));
-      if (screen.orientation && screen.orientation.lock) {
-        screen.orientation.lock('landscape').catch(e => console.log('Erro ao travar orientação:', e));
-      }
     }
 
     function setupControls() {
@@ -330,7 +367,7 @@
         cancelAnimationFrame(animationFrameId);
       }
       ALTURA_CHAO = canvas.height;
-      sapo = { x: BASE_WIDTH * 0.2, y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL, width: 40 * scaleX, height: ALTURA_SAPO * scaleY, vy: 0, jumping: false };
+      sapo = { x: BASE_WIDTH * 0.2 * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL, width: 40 * scaleX, height: ALTURA_SAPO * scaleY, vy: 0, jumping: false };
       obstaculos = [];
       poeira = [];
       tempo = 0;
@@ -471,7 +508,7 @@
       if (tempo % intervaloObstaculo === 0 && tempo >= 120) {
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
         let cor = cores[Math.floor(Math.random() * cores.length)];
-        obstaculos.push({ x: BASE_WIDTH, y: ALTURA_CHAO - ESPESSURA_CHAO - 30, width: 30 * scaleX, height: 30 * scaleY, color: cor });
+        obstaculos.push({ x: BASE_WIDTH * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - 30, width: 30 * scaleX, height: 30 * scaleY, color: cor });
       }
       for (let i = 0; i < obstaculos.length; i++) {
         let obs = obstaculos[i];
