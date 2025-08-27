@@ -232,9 +232,9 @@
     const GRAVIDADE = 1.5;
     const BASE_WIDTH = 800;
     const BASE_HEIGHT = 400;
-    let ALTURA_CHAO = 300;
+    let ALTURA_CHAO = isMobile ? 150 : 300; // Ajustado para mobile
     const ALTURA_SAPO = 40;
-    const ESPESSURA_CHAO = 50;
+    const ESPESSURA_CHAO = isMobile ? 30 : 50; // Chão menor no mobile
     const SAPO_OFFSET_VISUAL = 47;
     let scaleX = 1;
     let scaleY = 1;
@@ -274,17 +274,20 @@
         const aspectRatio = BASE_WIDTH / BASE_HEIGHT; // 800/400 = 2
         canvas.width = Math.min(maxWidth, 400); // Limitar largura máxima a 400px
         canvas.height = canvas.width / aspectRatio; // Manter proporção 2:1
+        scaleX = canvas.width / BASE_WIDTH;
+        scaleY = canvas.height / BASE_HEIGHT;
+        ALTURA_CHAO = canvas.height; // Chão alinhado com a altura do canvas
       } else {
         // Desktop: manter 800x400px
         canvas.width = BASE_WIDTH;
         canvas.height = BASE_HEIGHT;
+        scaleX = 1;
+        scaleY = 1;
+        ALTURA_CHAO = BASE_HEIGHT; // Chão padrão no desktop
       }
-      ALTURA_CHAO = canvas.height;
-      scaleX = canvas.width / BASE_WIDTH;
-      scaleY = canvas.height / BASE_HEIGHT;
       if (sapo) {
         sapo.x = BASE_WIDTH * 0.2 * scaleX;
-        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL;
+        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY;
       }
       positionBanners();
       console.log('Canvas:', canvas.width, canvas.height, 'Scale:', scaleX, scaleY);
@@ -366,8 +369,8 @@
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
-      ALTURA_CHAO = canvas.height;
-      sapo = { x: BASE_WIDTH * 0.2 * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL, width: 40 * scaleX, height: ALTURA_SAPO * scaleY, vy: 0, jumping: false };
+      ALTURA_CHAO = isMobile ? canvas.height : BASE_HEIGHT;
+      sapo = { x: BASE_WIDTH * 0.2 * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY, width: 40 * scaleX, height: ALTURA_SAPO * scaleY, vy: 0, jumping: false };
       obstaculos = [];
       poeira = [];
       tempo = 0;
@@ -498,8 +501,8 @@
       drawChao();
       sapo.vy += GRAVIDADE * scaleY;
       sapo.y += sapo.vy;
-      if (sapo.y > ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL) {
-        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL;
+      if (sapo.y > ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY) {
+        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY;
         sapo.vy = 0;
         sapo.jumping = false;
       }
@@ -508,7 +511,7 @@
       if (tempo % intervaloObstaculo === 0 && tempo >= 120) {
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
         let cor = cores[Math.floor(Math.random() * cores.length)];
-        obstaculos.push({ x: BASE_WIDTH * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - 30, width: 30 * scaleX, height: 30 * scaleY, color: cor });
+        obstaculos.push({ x: BASE_WIDTH * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - 30 * scaleY, width: 30 * scaleX, height: 30 * scaleY, color: cor });
       }
       for (let i = 0; i < obstaculos.length; i++) {
         let obs = obstaculos[i];
@@ -523,10 +526,9 @@
         intervaloObstaculo = Math.max(60, intervaloObstaculo - 10);
       }
       ctx.save();
-      ctx.scale(scaleX, scaleY);
+      ctx.font = isMobile ? "bold 16px Arial" : "bold 18px Arial"; // Fonte menor no mobile
       ctx.fillStyle = "#000";
-      ctx.font = "bold 18px Arial";
-      ctx.fillText("Score: " + pontuacao, 10 / scaleX, 25 / scaleY);
+      ctx.fillText("Score: " + pontuacao, 10, isMobile ? 20 : 25); // Placar mais alto no mobile
       ctx.restore();
     }
 
