@@ -228,19 +228,21 @@ canvas {
 
 #start-banner, #game-over-banner, #victory-banner {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%); /* Centralizar no #game-container */
   background: rgba(0, 0, 0, 0.9);
   padding: 20px;
   text-align: center;
   border: 3px solid #00ff00;
   border-radius: 12px;
   z-index: 2;
-  max-width: 90%;
   pointer-events: auto;
   box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
   visibility: hidden; /* Ocultar até posicionamento */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 90%;
+  box-sizing: border-box;
 }
 
 #start-banner h1 {
@@ -349,6 +351,13 @@ canvas {
     height: 400px !important;
     max-width: 800px !important;
     max-height: 400px !important;
+  }
+
+  #start-banner, #game-over-banner, #victory-banner {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 600px;
   }
 
   #start-banner h1 {
@@ -470,24 +479,39 @@ canvas {
     text-overflow: ellipsis;
   }
 
+  #start-banner, #game-over-banner, #victory-banner {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: calc(100vw - 40px);
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+  }
+
   #start-banner h1 {
-    font-size: 20px;
+    font-size: 18px;
+    line-height: 1.2;
+    margin-bottom: 10px;
   }
 
   #start-banner p {
-    font-size: 16px;
+    font-size: 14px;
+    line-height: 1.3;
   }
 
   #game-over-banner h2, #victory-banner h2 {
-    font-size: 18px;
+    font-size: 16px;
+    line-height: 1.2;
   }
 
   #game-over-banner p, #victory-banner p {
-    font-size: 14px;
+    font-size: 12px;
+    line-height: 1.3;
   }
 
   #restart-button, #play-again-button {
-    padding: 8px 16px;
-    font-size: 14px;
+    padding: 6px 12px;
+    font-size: 12px;
   }
 }
