@@ -246,8 +246,8 @@ canvas {
 
 /* Ajustes específicos para #start-banner (retangular) */
 #start-banner {
-  max-width: 600px;
-  width: 80%;
+  max-width: 700px; /* Aumentado para acomodar o texto em duas linhas */
+  width: 85%; /* Ajuste proporcional */
   min-height: 150px;
   max-height: 200px;
 }
@@ -256,8 +256,8 @@ canvas {
 #game-over-banner, #victory-banner {
   max-width: 300px;
   width: 300px;
-  height: 300px;
-  max-height: 300px;
+  height: 262.2px; /* Reduzido em ~37.8px (1cm) de 300px */
+  max-height: 262.2px;
 }
 
 #start-banner h1 {
@@ -372,7 +372,7 @@ canvas {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 600px;
+    width: 700px; /* Aumentado para duas linhas */
     min-height: 150px;
     max-height: 200px;
   }
@@ -382,7 +382,7 @@ canvas {
     top: 50%;
     transform: translate(-50%, -50%);
     width: 300px;
-    height: 300px;
+    height: 262.2px; /* Reduzido em ~1cm */
   }
 
   #start-banner h1 { font-size: 32px; }
@@ -494,7 +494,7 @@ canvas {
     top: 50%;
     transform: translate(-50%, -50%);
     width: calc(100vw - 40px);
-    max-width: 300px;
+    max-width: 350px; /* Aumentado proporcionalmente */
     min-height: 120px;
     max-height: 150px;
   }
@@ -504,9 +504,9 @@ canvas {
     top: 50%;
     transform: translate(-50%, -50%);
     width: 250px;
-    height: 250px;
+    height: 212.2px; /* Reduzido em ~1cm proporcionalmente de 250px */
     max-width: 250px;
-    max-height: 250px;
+    max-height: 212.2px;
   }
 
   #start-banner h1 { font-size: 16px; line-height: 1.2; margin-bottom: 8px; }
