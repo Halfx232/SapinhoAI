@@ -246,16 +246,16 @@
     let animationFrameId;
 
     function positionBanners() {
-      // Apenas tornar banners visíveis após garantir renderização
       setTimeout(() => {
         const banners = [startBanner, gameOverBanner, victoryBanner];
         banners.forEach(banner => {
           if (banner.style.display !== 'none') {
             banner.style.visibility = 'visible'; // Tornar visível
             console.log(`Banner ${banner.id} visível, posicionado via CSS: left=50%, top=50%, transform=translate(-50%, -50%)`);
+            console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
           }
         });
-        // Logs para debug
+        console.log('Canvas dimensions:', document.getElementById('gameCanvas').getBoundingClientRect());
         if (!isMobile) {
           console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
           console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
@@ -263,12 +263,11 @@
           console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
           console.log('Bottom Ad:', document.getElementById('bottom-ad').getBoundingClientRect());
         }
-      }, 300); // Aumentado para 300ms
+      }, 300);
     }
 
     function resizeCanvas() {
       if (isMobile) {
-        // Mobile (vertical): ajustar canvas para caber na tela
         const maxWidth = window.innerWidth - 20; // Margem de 10px de cada lado
         const aspectRatio = BASE_WIDTH / BASE_HEIGHT; // 800/400 = 2
         canvas.width = Math.min(maxWidth, 400); // Limitar largura máxima a 400px
@@ -277,7 +276,6 @@
         scaleY = canvas.height / BASE_HEIGHT;
         ALTURA_CHAO = canvas.height; // Chão alinhado com a altura do canvas
       } else {
-        // Desktop: manter 800x400px
         canvas.width = BASE_WIDTH;
         canvas.height = BASE_HEIGHT;
         scaleX = 1;
@@ -300,7 +298,6 @@
     }
 
     function handleOrientation() {
-      // Removida lógica de orientação, permitindo vertical no mobile
       const gameContainer = document.getElementById('game-container');
       gameContainer.style.display = 'flex';
       resizeCanvas();
