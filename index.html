@@ -7,32 +7,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jogo do Sapinho</title>
   <link rel="icon" href="https://em-content.zobj.net/thumbs/160/twitter/322/frog_1f438.png" type="image/png">
-  <!-- Carrega o CSS dinamicamente -->
+  <!-- Meta tags Open Graph para thumbnail -->
+  <meta property="og:title" content="Jogo do Sapinho">
+  <meta property="og:description" content="Uma aventura divertida com um sapo!">
+  <meta property="og:image" content="https://seu-site.vercel.app/thumbnail.jpg"> <!-- Substitua pelo URL da thumbnail -->
+  <meta property="og:url" content="https://seu-site.vercel.app">
+  <meta property="og:type" content="website">
+  <!-- Carrega o CSS dinamicamente e prioritário -->
   <script>
     function loadStyles() {
-      // Remove links CSS anteriores para evitar duplicatas
       var existingLinks = document.querySelectorAll('link[href="styles-desktop.css"], link[href="styles-mobile.css"]');
       existingLinks.forEach(link => link.remove());
       if (window.innerWidth >= 1024) {
         var link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = 'styles-desktop.css';
+        link.setAttribute('rel', 'stylesheet'); // Garante que o CSS seja aplicado imediatamente
+        link.onload = () => console.log('styles-desktop.css carregado');
         document.head.appendChild(link);
-        console.log('Carregado styles-desktop.css');
       } else {
         var link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = 'styles-mobile.css';
+        link.onload = () => console.log('styles-mobile.css carregado');
         document.head.appendChild(link);
-        console.log('Carregado styles-mobile.css');
       }
     }
-    window.addEventListener('load', loadStyles);
-    window.addEventListener('resize', loadStyles); // Recarrega se a janela for redimensionada
+    // Carrega o CSS antes de outros scripts
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadStyles);
+    } else {
+      loadStyles();
+    }
+    window.addEventListener('resize', loadStyles);
   </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
-  <!-- AdSense Auto Ads -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
   <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
@@ -57,52 +67,24 @@
   <div id="game-container">
     <div id="top-ad">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
-      <ins class="adsbygoogle"
-           style="display:block; width:320px; height:100px; max-width:100%;"
-           data-ad-client="ca-pub-SEU-ID"
-           data-ad-slot="SEU-SLOT-ID-MOBILE-TOP"
-           data-ad-format="horizontal"
-           data-full-width-responsive="true"></ins>
-      <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
+      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-TOP" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
     <div id="left-ad">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
-      <ins class="adsbygoogle"
-           style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;"
-           data-ad-client="ca-pub-SEU-ID"
-           data-ad-slot="SEU-SLOT-ID-DESKTOP"
-           data-ad-format="rectangle"
-           data-full-width-responsive="false"></ins>
-      <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
+      <ins class="adsbygoogle" style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
     <canvas id="gameCanvas"></canvas>
     <div id="right-ad">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
-      <ins class="adsbygoogle"
-           style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;"
-           data-ad-client="ca-pub-SEU-ID"
-           data-ad-slot="SEU-SLOT-ID-DESKTOP"
-           data-ad-format="rectangle"
-           data-full-width-responsive="false"></ins>
-      <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
+      <ins class="adsbygoogle" style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
     <div id="bottom-ad">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
-      <ins class="adsbygoogle"
-           style="display:block; width:320px; height:100px; max-width:100%;"
-           data-ad-client="ca-pub-SEU-ID"
-           data-ad-slot="SEU-SLOT-ID-MOBILE-BOTTOM"
-           data-ad-format="horizontal"
-           data-full-width-responsive="true"></ins>
-      <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
+      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-BOTTOM" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
     <div id="start-banner">
@@ -142,7 +124,6 @@
   <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Forçar tamanho dos banners no desktop imediatamente
       if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         const ads = document.querySelectorAll('#left-ad > ins, #right-ad > ins');
         ads.forEach(ad => {
@@ -166,7 +147,6 @@
         });
         console.log('Banners superior e inferior forçados para 320x100px no DOMContentLoaded (mobile)');
       }
-      // Fallback para garantir visibilidade após 3 segundos
       setTimeout(() => {
         document.getElementById('left-ad').style.visibility = 'visible';
         document.getElementById('right-ad').style.visibility = 'visible';
@@ -182,7 +162,6 @@
         "content": { "message": "Este site usa cookies para melhorar sua experiência.", "dismiss": "Entendido", "link": "Saiba mais", "href": "/politicas.html" }
       });
 
-      // Verificar novamente após o carregamento completo
       if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         const ads = document.querySelectorAll('#left-ad > ins, #right-ad > ins');
         ads.forEach(ad => {
@@ -272,7 +251,7 @@
         const banners = [startBanner, gameOverBanner, victoryBanner];
         banners.forEach(banner => {
           if (banner.style.display !== 'none') {
-            banner.style.visibility = 'visible'; // Tornar visível
+            banner.style.visibility = 'visible';
             console.log(`Banner ${banner.id} visível, posicionado via CSS: left=50%, top=50%, transform=translate(-50%, -50%)`);
             console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
           }
@@ -285,24 +264,24 @@
           console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
           console.log('Bottom Ad:', document.getElementById('bottom-ad').getBoundingClientRect());
         }
-      }, 100); // Reduzido de 300ms para 100ms
+      }, 100);
     }
 
     function resizeCanvas() {
       if (isMobile) {
-        const maxWidth = window.innerWidth - 20; // Margem de 10px de cada lado
-        const aspectRatio = BASE_WIDTH / BASE_HEIGHT; // 800/400 = 2
-        canvas.width = Math.min(maxWidth, 400); // Limitar largura máxima a 400px
-        canvas.height = canvas.width / aspectRatio; // Manter proporção 2:1
+        const maxWidth = window.innerWidth - 20;
+        const aspectRatio = BASE_WIDTH / BASE_HEIGHT;
+        canvas.width = Math.min(maxWidth, 400);
+        canvas.height = canvas.width / aspectRatio;
         scaleX = canvas.width / BASE_WIDTH;
         scaleY = canvas.height / BASE_HEIGHT;
-        ALTURA_CHAO = canvas.height; // Chão alinhado com a altura do canvas
+        ALTURA_CHAO = canvas.height;
       } else {
         canvas.width = BASE_WIDTH;
         canvas.height = BASE_HEIGHT;
         scaleX = 1;
         scaleY = 1;
-        ALTURA_CHAO = BASE_HEIGHT; // Chão padrão no desktop
+        ALTURA_CHAO = BASE_HEIGHT;
       }
       if (sapo) {
         sapo.x = BASE_WIDTH * 0.2 * scaleX;
@@ -398,7 +377,7 @@
       gameOverBanner.style.display = "none";
       victoryBanner.style.display = "none";
       startBanner.style.display = "block";
-      startBanner.style.visibility = "hidden"; // Ocultar até posicionamento
+      startBanner.style.visibility = "hidden";
       gameStarted = false;
 
       backgroundMusic.pause();
@@ -545,9 +524,9 @@
         intervaloObstaculo = Math.max(60, intervaloObstaculo - 10);
       }
       ctx.save();
-      ctx.font = isMobile ? "bold 16px Arial" : "bold 18px Arial"; // Fonte menor no mobile
+      ctx.font = isMobile ? "bold 16px Arial" : "bold 18px Arial";
       ctx.fillStyle = "#000";
-      ctx.fillText("Score: " + pontuacao, 10, isMobile ? 20 : 25); // Placar mais alto no mobile
+      ctx.fillText("Score: " + pontuacao, 10, isMobile ? 20 : 25);
       ctx.restore();
     }
 
@@ -590,7 +569,7 @@
         backgroundMusic.currentTime = 0;
         finalScore.textContent = pontuacao;
         gameOverBanner.style.display = "block";
-        gameOverBanner.style.visibility = "hidden"; // Ocultar até posicionamento
+        gameOverBanner.style.visibility = "hidden";
         positionBanners();
         document.removeEventListener('keydown', handleKeyJump);
         document.removeEventListener('keydown', startGameHandler);
@@ -608,7 +587,7 @@
         backgroundMusic.currentTime = 0;
         victoryScore.textContent = pontuacao;
         victoryBanner.style.display = "block";
-        victoryBanner.style.visibility = "hidden"; // Ocultar até posicionamento
+        victoryBanner.style.visibility = "hidden";
         positionBanners();
         document.removeEventListener('keydown', handleKeyJump);
         document.removeEventListener('keydown', startGameHandler);
