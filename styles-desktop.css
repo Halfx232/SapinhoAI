@@ -114,7 +114,7 @@ button:focus {
 }
 
 #top-ad, #bottom-ad {
-  display: none; /* Ocultos no desktop */
+  display: none;
   width: 100%;
   max-width: 100%;
   height: 100px;
@@ -236,7 +236,7 @@ canvas {
   z-index: 2;
   pointer-events: auto;
   box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-  visibility: hidden; /* Ocultar até posicionamento */
+  visibility: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -245,7 +245,7 @@ canvas {
 }
 
 #start-banner {
-  max-width: 700px; /* Aumentado para duas linhas */
+  max-width: 700px;
   width: 85%;
   min-height: 150px;
   max-height: 200px;
@@ -254,7 +254,7 @@ canvas {
 #game-over-banner, #victory-banner {
   max-width: 300px;
   width: 300px;
-  height: 262.2px; /* Reduzido ~1cm */
+  height: 262.2px;
   max-height: 262.2px;
 }
 
@@ -307,14 +307,14 @@ canvas {
     height: 400px;
     position: relative;
     padding: 0 20px;
-    max-width: 1460px; /* 300 + 800 + 300 + 60px gap */
+    max-width: 1460px;
     overflow: visible;
     box-sizing: border-box;
     flex-direction: row;
   }
 
   #top-ad, #bottom-ad {
-    display: none !important; /* Ocultos no desktop */
+    display: none !important;
   }
 
   #left-ad, #right-ad {
@@ -370,7 +370,7 @@ canvas {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 700px; /* Aumentado para duas linhas */
+    width: 700px;
     min-height: 150px;
     max-height: 200px;
   }
@@ -380,7 +380,7 @@ canvas {
     top: 50%;
     transform: translate(-50%, -50%);
     width: 300px;
-    height: 262.2px; /* Reduzido ~1cm */
+    height: 262.2px;
   }
 
   #start-banner h1 { font-size: 32px; }
