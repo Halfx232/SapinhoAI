@@ -12,7 +12,14 @@
   <meta property="og:image" content="https://seu-site.vercel.app/thumbnail.jpg"> <!-- Substitua pelo URL da thumbnail -->
   <meta property="og:url" content="https://seu-site.vercel.app/politicas.html">
   <meta property="og:type" content="website">
-  <!-- Carrega o CSS dinamicamente -->
+  <!-- Pré-carrega o CSS -->
+  <link rel="preload" href="styles-desktop.css" as="style" onload="this.rel='stylesheet'">
+  <link rel="preload" href="styles-mobile.css" as="style" onload="this.rel='stylesheet'">
+  <!-- Estilo básico para evitar FOUC -->
+  <style>
+    body { margin: 0; padding: 0; font-family: sans-serif; }
+    #top-bar, #about-section, #footer { display: none; }
+  </style>
   <script>
     function loadStyles() {
       var existingLinks = document.querySelectorAll('link[href="styles-desktop.css"], link[href="styles-mobile.css"]');
@@ -21,14 +28,18 @@
         var link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = 'styles-desktop.css';
-        link.onload = () => console.log('styles-desktop.css carregado');
         document.head.appendChild(link);
+        document.getElementById('top-bar').style.display = 'block';
+        document.getElementById('about-section').style.display = 'block';
+        document.getElementById('footer').style.display = 'block';
       } else {
         var link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = 'styles-mobile.css';
-        link.onload = () => console.log('styles-mobile.css carregado');
         document.head.appendChild(link);
+        document.getElementById('top-bar').style.display = 'block';
+        document.getElementById('about-section').style.display = 'block';
+        document.getElementById('footer').style.display = 'block';
       }
     }
     if (document.readyState === 'loading') {
