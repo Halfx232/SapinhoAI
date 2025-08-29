@@ -45,7 +45,7 @@ button:focus {
   justify-content: space-between;
   background: #1b5e20;
   color: white;
-  padding: 10px;
+  padding: 10px 20px;
   width: 100%;
   box-sizing: border-box;
   position: sticky;
@@ -72,6 +72,7 @@ button:focus {
   color: white;
   text-decoration: none;
   font-size: 16px;
+  transition: color 0.3s ease;
 }
 
 #top-bar a:hover {
@@ -183,30 +184,17 @@ canvas {
   width: 100%;
 }
 
-#about-section {
+#about-section, #contact-section {
   padding: 20px;
   background: #fff;
   text-align: center;
-  margin: 20px 0;
+  margin: 20px auto;
   color: #000;
   border-radius: 8px;
+  max-width: 800px;
 }
 
-#about-section h2 {
-  font-size: 24px;
-  color: #1b5e20;
-}
-
-#contact-section {
-  padding: 20px;
-  background: #fff;
-  text-align: center;
-  margin: 20px 0;
-  color: #000;
-  border-radius: 8px;
-}
-
-#contact-section h2 {
+#about-section h2, #contact-section h2 {
   font-size: 24px;
   color: #1b5e20;
 }
@@ -224,6 +212,12 @@ canvas {
 #footer a {
   color: #00ff00;
   text-decoration: none;
+  margin: 0 10px;
+  transition: color 0.3s ease;
+}
+
+#footer a:hover {
+  color: #ccff90;
 }
 
 #start-banner, #game-over-banner, #victory-banner {
@@ -290,6 +284,11 @@ canvas {
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#restart-button:hover, #play-again-button:hover {
+  background-color: #ccff90;
 }
 
 @keyframes blink {
