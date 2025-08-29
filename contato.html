@@ -6,7 +6,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contato - Jogo do Sapinho</title>
   <link rel="icon" href="https://em-content.zobj.net/thumbs/160/twitter/322/frog_1f438.png" type="image/png">
-  <link rel="stylesheet" href="styles.css">
+  <!-- Meta tags Open Graph -->
+  <meta property="og:title" content="Contato - Jogo do Sapinho">
+  <meta property="og:description" content="Entre em contato com a equipe do Jogo do Sapinho!">
+  <meta property="og:image" content="https://seu-site.vercel.app/thumbnail.jpg"> <!-- Substitua pelo URL da thumbnail -->
+  <meta property="og:url" content="https://seu-site.vercel.app/contato.html">
+  <meta property="og:type" content="website">
+  <!-- Carrega o CSS dinamicamente -->
+  <script>
+    function loadStyles() {
+      var existingLinks = document.querySelectorAll('link[href="styles-desktop.css"], link[href="styles-mobile.css"]');
+      existingLinks.forEach(link => link.remove());
+      if (window.innerWidth >= 1024) {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'styles-desktop.css';
+        link.onload = () => console.log('styles-desktop.css carregado');
+        document.head.appendChild(link);
+      } else {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'styles-mobile.css';
+        link.onload = () => console.log('styles-mobile.css carregado');
+        document.head.appendChild(link);
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadStyles);
+    } else {
+      loadStyles();
+    }
+    window.addEventListener('resize', loadStyles);
+  </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
