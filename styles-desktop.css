@@ -91,7 +91,7 @@ button:focus {
 
 #weather, #clock {
   width: auto;
-  max-width: 200px;
+  max-width: 250px; /* Aumentado de 200px para evitar corte de texto como "nuvens" */
   padding: 0 10px;
   text-align: center;
   font-size: 14px;
