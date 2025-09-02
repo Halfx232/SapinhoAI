@@ -188,10 +188,11 @@ canvas {
   padding: 20px;
   background: #fff;
   text-align: center;
-  margin: 20px auto;
+  margin: 20px 0;
   color: #000;
   border-radius: 8px;
-  max-width: 800px;
+  width: 100%; /* Ocupa a largura total */
+  box-sizing: border-box;
 }
 
 #about-section h2, #contact-section h2 {
