@@ -12,34 +12,50 @@
   <meta property="og:image" content="https://seu-site.vercel.app/thumbnail.jpg"> <!-- Substitua pelo URL da thumbnail -->
   <meta property="og:url" content="https://seu-site.vercel.app/sobre.html">
   <meta property="og:type" content="website">
-  <!-- Pré-carrega o CSS -->
-  <link rel="preload" href="styles-desktop.css" as="style" onload="this.rel='stylesheet'">
-  <link rel="preload" href="styles-mobile.css" as="style" onload="this.rel='stylesheet'">
-  <!-- Estilo básico para evitar FOUC -->
+  <!-- Estilo inline inicial como fallback -->
   <style>
-    body { margin: 0; padding: 0; font-family: sans-serif; }
-    #top-bar, #about-section, #footer { display: none; }
+    body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
+    #top-bar, #about-section, #footer { display: none; background: #1b5e20; color: white; padding: 10px; }
+    a { color: white; text-decoration: none; }
   </style>
   <script>
     function loadStyles() {
-      var existingLinks = document.querySelectorAll('link[href="styles-desktop.css"], link[href="styles-mobile.css"]');
+      const body = document.body;
+      const existingLinks = document.querySelectorAll('link[href="styles-desktop.css"], link[href="styles-mobile.css"]');
       existingLinks.forEach(link => link.remove());
+      const styleElement = document.querySelector('style');
       if (window.innerWidth >= 1024) {
-        var link = document.createElement('link');
+        const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = 'styles-desktop.css';
+        link.loading = 'eager';
+        link.onload = () => {
+          body.style.visibility = 'visible';
+          document.getElementById('top-bar').style.display = 'flex';
+          document.getElementById('about-section').style.display = 'block';
+          document.getElementById('footer').style.display = 'block';
+          styleElement.remove();
+        };
+        link.onerror = () => {
+          body.style.visibility = 'visible';
+        };
         document.head.appendChild(link);
-        document.getElementById('top-bar').style.display = 'block';
-        document.getElementById('about-section').style.display = 'block';
-        document.getElementById('footer').style.display = 'block';
       } else {
-        var link = document.createElement('link');
+        const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = 'styles-mobile.css';
+        link.loading = 'eager';
+        link.onload = () => {
+          body.style.visibility = 'visible';
+          document.getElementById('top-bar').style.display = 'flex';
+          document.getElementById('about-section').style.display = 'block';
+          document.getElementById('footer').style.display = 'block';
+          styleElement.remove();
+        };
+        link.onerror = () => {
+          body.style.visibility = 'visible';
+        };
         document.head.appendChild(link);
-        document.getElementById('top-bar').style.display = 'block';
-        document.getElementById('about-section').style.display = 'block';
-        document.getElementById('footer').style.display = 'block';
       }
     }
     if (document.readyState === 'loading') {
@@ -133,6 +149,7 @@
         clockElement.textContent = lastTimeData;
       } catch (error) {
         console.error("Erro ao buscar hora:", error);
+        setTimeout(atualizarHora, 2000); // Retry após 2 segundos
         const now = new Date();
         lastTimeData = ` ${now.toLocaleDateString('pt-BR')} - ${now.toLocaleTimeString('pt-BR')}`;
         clockElement.textContent = lastTimeData;
