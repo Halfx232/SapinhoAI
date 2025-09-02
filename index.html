@@ -10,14 +10,13 @@
   <!-- Meta tags Open Graph -->
   <meta property="og:title" content="Jogo do Sapinho">
   <meta property="og:description" content="Uma aventura divertida com um sapo!">
-  <meta property="og:image" content="https://seu-site.vercel.app/thumbnail.jpg"> <!-- Substitua pelo URL da thumbnail -->
-  <meta property="og:url" content="https://seu-site.vercel.app">
+  <meta property="og:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg"> <!-- Ajuste para o URL correto do Vercel -->
+  <meta property="og:url" content="https://sapinho-ai.vercel.app">
   <meta property="og:type" content="website">
   <!-- Estilo inline inicial como fallback -->
   <style>
     body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
-    #top-bar { display: none; background: #1b5e20; color: white; padding: 10px; }
-    #game-container, #about-section, #footer { display: none; }
+    #top-bar, #game-container, #about-section, #footer { display: none; }
     a { color: white; text-decoration: none; }
   </style>
   <script>
@@ -203,9 +202,9 @@
         const ads = document.querySelectorAll('#top-ad > ins, #bottom-ad > ins');
         ads.forEach(ad => {
           ad.style.width = '100%';
-          ad.style.maxWidth = '100%';
+          ad.style.max-width: '100%';
           ad.style.height = '100px';
-          ad.style.maxHeight = '100px';
+          ad.style.max-height: '100px';
           ad.style.overflow = 'hidden';
         });
         console.log('Banners superior e inferior forçados para 320x100px no load (mobile)');
@@ -272,24 +271,22 @@
     let animationFrameId;
 
     function positionBanners() {
-      setTimeout(() => {
-        const banners = [startBanner, gameOverBanner, victoryBanner];
-        banners.forEach(banner => {
-          if (banner.style.display !== 'none') {
-            banner.style.visibility = 'visible';
-            console.log(`Banner ${banner.id} visível, posicionado via CSS: left=50%, top=50%, transform=translate(-50%, -50%)`);
-            console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
-          }
-        });
-        console.log('Canvas dimensions:', document.getElementById('gameCanvas').getBoundingClientRect());
-        if (!isMobile) {
-          console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
-          console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
-        } else {
-          console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
-          console.log('Bottom Ad:', document.getElementById('bottom-ad').getBoundingClientRect());
+      const banners = [startBanner, gameOverBanner, victoryBanner];
+      banners.forEach(banner => {
+        if (banner.style.display !== 'none') {
+          banner.style.visibility = 'visible';
+          console.log(`Banner ${banner.id} visível, posicionado via CSS: left=50%, top=50%, transform=translate(-50%, -50%)`);
+          console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
         }
-      }, 100);
+      });
+      console.log('Canvas dimensions:', document.getElementById('gameCanvas').getBoundingClientRect());
+      if (!isMobile) {
+        console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
+        console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
+      } else {
+        console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
+        console.log('Bottom Ad:', document.getElementById('bottom-ad').getBoundingClientRect());
+      }
     }
 
     function resizeCanvas() {
@@ -654,6 +651,7 @@
         lastWeatherFetch = now;
         weatherElement.textContent = lastWeatherData;
       } catch (error) {
+        console.error("Erro ao buscar previsão do tempo:", error);
         weatherElement.textContent = "Clima indisponível";
       }
     }
@@ -700,6 +698,29 @@
         victorySound.play().then(() => victorySound.pause()).catch(e => console.log("Erro ao desbloquear victorySound:", e));
         backgroundMusic.play().then(() => backgroundMusic.pause()).catch(e => console.log("Erro ao desbloquear backgroundMusic:", e));
       }, { once: true });
+
+      // Função positionBanners otimizada
+      function positionBanners() {
+        const banners = [startBanner, gameOverBanner, victoryBanner];
+        banners.forEach(banner => {
+          if (banner.style.display !== 'none') {
+            banner.style.visibility = 'visible';
+            console.log(`Banner ${banner.id} visível, posicionado via CSS: left=50%, top=50%, transform=translate(-50%, -50%)`);
+            console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
+          }
+        });
+        console.log('Canvas dimensions:', document.getElementById('gameCanvas').getBoundingClientRect());
+        if (!isMobile) {
+          console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
+          console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
+        } else {
+          console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
+          console.log('Bottom Ad:', document.getElementById('bottom-ad').getBoundingClientRect());
+        }
+      }
+
+      // Chamar positionBanners imediatamente após o load
+      positionBanners();
     });
 
     restartButton.addEventListener("click", resetGame);
