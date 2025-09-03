@@ -1,4 +1,9 @@
 @media (max-width: 1023px) {
+  /* Ocultar conteúdo até o CSS carregar */
+  html:not(.loaded) body {
+    visibility: hidden;
+  }
+
   body {
     touch-action: manipulation;
     margin: 0;
@@ -31,6 +36,7 @@
     justify-content: center;
     z-index: 100;
     opacity: 0.8;
+    will-change: transform;
   }
 
   #jumpButtonMobile::before {
@@ -116,10 +122,10 @@
     box-sizing: border-box;
     overflow: hidden;
     max-width: 100vw;
-    min-height: calc(100vh - 60px); /* Reservar espaço para top-bar e footer */
+    min-height: calc(100vh - 60px);
   }
 
-  #top-ad {
+  #top-ad, #bottom-ad {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -134,7 +140,11 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     overflow: hidden;
     box-sizing: border-box;
-    margin-bottom: 10px;
+  }
+
+  #top-ad:empty, #bottom-ad:empty {
+    min-height: 100px;
+    background: #cfd8dc;
   }
 
   #top-ad > ins, #bottom-ad > ins {
@@ -148,27 +158,13 @@
   }
 
   #bottom-ad {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width: 100%;
-    height: 100px;
-    background: #cfd8dc;
-    text-align: center;
-    font-size: 12px;
-    color: #455a64;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    overflow: hidden;
-    box-sizing: border-box;
     margin-top: 10px;
     position: sticky;
     bottom: 0;
   }
 
   #left-ad, #right-ad {
-    display: none !important; /* Ocultos no mobile */
+    display: none !important;
   }
 
   canvas {
@@ -177,10 +173,10 @@
     border-radius: 8px;
     z-index: 1;
     width: 100%;
-    max-width: calc(100vw - 20px); /* Margem de 10px de cada lado */
-    height: auto; /* Altura ajustada via JS */
+    max-width: calc(100vw - 20px);
+    height: auto;
     max-height: 400px;
-    margin: 10px 0; /* Margem para centralizar verticalmente */
+    margin: 10px 0;
   }
 
   #test-version {
@@ -249,24 +245,27 @@
     z-index: 2;
     pointer-events: auto;
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-    visibility: hidden; /* Ocultar até posicionamento */
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
   }
 
+  #start-banner.active, #game-over-banner.active, #victory-banner.active {
+    display: flex;
+  }
+
   #start-banner {
     width: calc(100vw - 40px);
-    max-width: 400px; /* Aumentado para duas linhas */
+    max-width: 400px;
     min-height: 120px;
     max-height: 150px;
   }
 
   #game-over-banner, #victory-banner {
-    width: 200px; /* Reduzido */
-    height: 200px; /* Reduzido, mantendo quadrado */
+    width: 200px;
+    height: 200px;
     max-width: 200px;
     max-height: 200px;
   }
@@ -283,6 +282,7 @@
     color: #d32f2f;
     animation: blink 1s infinite;
     line-height: 1.3;
+    will-change: opacity;
   }
 
   #game-over-banner h2, #victory-banner h2 {
