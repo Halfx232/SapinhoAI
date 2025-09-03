@@ -10,69 +10,23 @@
   <!-- Meta tags Open Graph -->
   <meta property="og:title" content="Jogo do Sapinho">
   <meta property="og:description" content="Uma aventura divertida com um sapo!">
-  <meta property="og:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg"> <!-- Verifique se a imagem está no deploy -->
+  <meta property="og:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
   <meta property="og:url" content="https://sapinho-ai.vercel.app">
   <meta property="og:type" content="website">
   <!-- Estilo inline inicial como fallback -->
   <style>
-    body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
+    html:not(.loaded) body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
     #top-bar, #game-container, #about-section, #footer { display: none; }
     a { color: white; text-decoration: none; }
-    #start-banner { display: block; visibility: hidden; } /* Garantir que o banner comece oculto */
+    #start-banner, #game-over-banner, #victory-banner { display: none; }
+    canvas:not(.ready) { display: none; }
   </style>
-  <script>
-    function loadStyles() {
-      const body = document.body;
-      const existingLinks = document.querySelectorAll('link[href="styles-desktop.css"], link[href="styles-mobile.css"]');
-      existingLinks.forEach(link => link.remove());
-      const styleElement = document.querySelector('style');
-      if (window.innerWidth >= 1024) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'styles-desktop.css';
-        link.loading = 'eager';
-        link.onload = () => {
-          body.style.visibility = 'visible';
-          document.getElementById('top-bar').style.display = 'flex';
-          document.getElementById('game-container').style.display = 'flex';
-          document.getElementById('about-section').style.display = 'block';
-          document.getElementById('footer').style.display = 'block';
-          styleElement.remove();
-          positionBanners(); // Chamar positionBanners após o CSS carregar
-        };
-        link.onerror = () => {
-          body.style.visibility = 'visible';
-          positionBanners(); // Chamar mesmo em caso de erro
-        };
-        document.head.appendChild(link);
-      } else {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'styles-mobile.css';
-        link.loading = 'eager';
-        link.onload = () => {
-          body.style.visibility = 'visible';
-          document.getElementById('top-bar').style.display = 'flex';
-          document.getElementById('game-container').style.display = 'flex';
-          document.getElementById('about-section').style.display = 'block';
-          document.getElementById('footer').style.display = 'block';
-          styleElement.remove();
-          positionBanners(); // Chamar positionBanners após o CSS carregar
-        };
-        link.onerror = () => {
-          body.style.visibility = 'visible';
-          positionBanners(); // Chamar mesmo em caso de erro
-        };
-        document.head.appendChild(link);
-      }
-    }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', loadStyles);
-    } else {
-      loadStyles();
-    }
-    window.addEventListener('resize', loadStyles);
-  </script>
+  <!-- Pré-carregar fontes e CSS -->
+  <link rel="preload" href="styles-mobile.css" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="styles-desktop.css" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles-mobile.css" media="screen and (max-width: 1023px)">
+  <link rel="stylesheet" href="styles-desktop.css" media="screen and (min-width: 1024px)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
@@ -116,18 +70,18 @@
       <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
-    <div id="start-banner">
+    <div id="start-banner" class="active">
       <h1>Sejam bem-vindos ao Jogo do Sapinho!</h1>
       <p>Pressione qualquer tecla ou toque para iniciar o jogo</p>
     </div>
 
-    <div id="game-over-banner" style="display:none">
+    <div id="game-over-banner">
       <h2>Game Over!</h2>
       <p>Sua pontuação: <span id="final-score"></span></p>
       <button id="restart-button">Reiniciar Jogo</button>
     </div>
 
-    <div id="victory-banner" style="display:none">
+    <div id="victory-banner">
       <h2>Parabéns! Você venceu!</h2>
       <p>Pontuação Final: <span id="victory-score"></span></p>
       <button id="play-again-button">Jogar Novamente</button>
@@ -152,46 +106,20 @@
 
   <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        const ads = document.querySelectorAll('#left-ad > ins, #right-ad > ins');
-        ads.forEach(ad => {
-          ad.style.width = '300px';
-          ad.style.height = '400px';
-          ad.style.maxWidth = '300px';
-          ad.style.maxHeight = '400px';
-          ad.style.minWidth = '300px';
-          ad.style.minHeight = '400px';
-          ad.style.overflow = 'hidden';
-        });
-        console.log('Banners laterais forçados para 300x400px no DOMContentLoaded (desktop)');
-      } else {
-        const ads = document.querySelectorAll('#top-ad > ins, #bottom-ad > ins');
-        ads.forEach(ad => {
-          ad.style.width = '100%';
-          ad.style.maxWidth = '100%';
-          ad.style.height = '100px';
-          ad.style.maxHeight = '100px';
-          ad.style.overflow = 'hidden';
-        });
-        console.log('Banners superior e inferior forçados para 320x100px no DOMContentLoaded (mobile)');
-      }
-      setTimeout(() => {
-        document.getElementById('left-ad').style.visibility = 'visible';
-        document.getElementById('right-ad').style.visibility = 'visible';
-        document.getElementById('top-ad').style.visibility = 'visible';
-        document.getElementById('bottom-ad').style.visibility = 'visible';
-        console.log('Banners forçados visíveis após timeout');
-      }, 3000);
+    document.addEventListener('DOMContentLoaded', () => {
+      document.documentElement.classList.add('loaded');
+      const canvas = document.getElementById('gameCanvas');
+      canvas.classList.add('ready');
     });
 
-    window.addEventListener("load", function() {
+    window.addEventListener('load', () => {
       window.cookieconsent.initialise({
         "palette": { "popup": { "background": "#1b5e20" }, "button": { "background": "#00ff00" } },
         "content": { "message": "Este site usa cookies para melhorar sua experiência.", "dismiss": "Entendido", "link": "Saiba mais", "href": "/politicas.html" }
       });
 
-      if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (!isMobile) {
         const ads = document.querySelectorAll('#left-ad > ins, #right-ad > ins');
         ads.forEach(ad => {
           ad.style.width = '300px';
@@ -214,6 +142,14 @@
         });
         console.log('Banners superior e inferior forçados para 320x100px no load (mobile)');
       }
+
+      setTimeout(() => {
+        document.getElementById('left-ad').style.visibility = 'visible';
+        document.getElementById('right-ad').style.visibility = 'visible';
+        document.getElementById('top-ad').style.visibility = 'visible';
+        document.getElementById('bottom-ad').style.visibility = 'visible';
+        console.log('Banners forçados visíveis após timeout');
+      }, 3000);
     });
 
     function debounce(func, wait) {
@@ -228,7 +164,7 @@
       };
     }
 
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isMobile = /Android|iPhone|i HavelockPad|iPod/i.test(navigator.userAgent);
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const jumpSound = document.getElementById("jumpSound");
@@ -278,8 +214,7 @@
     function positionBanners() {
       const banners = [startBanner, gameOverBanner, victoryBanner];
       banners.forEach(banner => {
-        if (banner.style.display !== 'none') {
-          banner.style.visibility = 'visible'; // Garantir visibilidade
+        if (banner.classList.contains('active')) {
           console.log(`Banner ${banner.id} visível, posicionado via CSS: left=50%, top=50%, transform=translate(-50%, -50%)`);
           console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
         }
@@ -329,7 +264,6 @@
       const gameContainer = document.getElementById('game-container');
       gameContainer.style.display = 'flex';
       resizeCanvas();
-      positionBanners();
       window.addEventListener('resize', debounce(() => {
         resizeCanvas();
         positionBanners();
@@ -382,8 +316,8 @@
 
     const startGameHandler = (e) => {
       e.preventDefault();
-      if (!gameStarted && startBanner.style.display !== 'none') {
-        startBanner.style.display = 'none';
+      if (!gameStarted && startBanner.classList.contains('active')) {
+        startBanner.classList.remove('active');
         iniciarJogo();
         console.log("Jogo iniciado!");
       }
@@ -401,10 +335,9 @@
       intervaloObstaculo = 120;
       faseAtual = 0;
       pontuacao = 0;
-      gameOverBanner.style.display = "none";
-      victoryBanner.style.display = "none";
-      startBanner.style.display = "block";
-      startBanner.style.visibility = "hidden";
+      gameOverBanner.classList.remove('active');
+      victoryBanner.classList.remove('active');
+      startBanner.classList.add('active');
       gameStarted = false;
 
       backgroundMusic.pause();
@@ -595,8 +528,7 @@
         backgroundMusic.pause();
         backgroundMusic.currentTime = 0;
         finalScore.textContent = pontuacao;
-        gameOverBanner.style.display = "block";
-        gameOverBanner.style.visibility = "hidden";
+        gameOverBanner.classList.add('active');
         positionBanners();
         document.removeEventListener('keydown', handleKeyJump);
         document.removeEventListener('keydown', startGameHandler);
@@ -613,8 +545,7 @@
         backgroundMusic.pause();
         backgroundMusic.currentTime = 0;
         victoryScore.textContent = pontuacao;
-        victoryBanner.style.display = "block";
-        victoryBanner.style.visibility = "hidden";
+        victoryBanner.classList.add('active');
         positionBanners();
         document.removeEventListener('keydown', handleKeyJump);
         document.removeEventListener('keydown', startGameHandler);
@@ -677,7 +608,7 @@
         clockElement.textContent = lastTimeData;
       } catch (error) {
         console.error("Erro ao buscar hora:", error);
-        setTimeout(atualizarHora, 2000); // Retry após 2 segundos
+        setTimeout(atualizarHora, 2000);
         const now = new Date();
         lastTimeData = ` ${now.toLocaleDateString('pt-BR')} - ${now.toLocaleTimeString('pt-BR')}`;
         clockElement.textContent = lastTimeData;
@@ -704,27 +635,6 @@
         backgroundMusic.play().then(() => backgroundMusic.pause()).catch(e => console.log("Erro ao desbloquear backgroundMusic:", e));
       }, { once: true });
 
-      // Função positionBanners otimizada
-      function positionBanners() {
-        const banners = [startBanner, gameOverBanner, victoryBanner];
-        banners.forEach(banner => {
-          if (banner.style.display !== 'none') {
-            banner.style.visibility = 'visible'; // Forçar visibilidade
-            console.log(`Banner ${banner.id} visível, posicionado via CSS: left=50%, top=50%, transform=translate(-50%, -50%)`);
-            console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
-          }
-        });
-        console.log('Canvas dimensions:', document.getElementById('gameCanvas').getBoundingClientRect());
-        if (!isMobile) {
-          console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
-          console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
-        } else {
-          console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
-          console.log('Bottom Ad:', document.getElementById('bottom-ad').getBoundingClientRect());
-        }
-      }
-
-      // Chamar positionBanners imediatamente após o load
       positionBanners();
     });
 
