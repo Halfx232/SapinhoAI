@@ -17,27 +17,7 @@ button:focus {
 }
 
 #jumpButtonMobile {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #00ff00;
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-  font-size: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  opacity: 0.8;
-}
-
-#jumpButtonMobile::before {
-  content: "\f062";
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-  font-size: 30px;
-  color: white;
+  display: none; /* Não usado no desktop */
 }
 
 #top-bar {
@@ -91,7 +71,7 @@ button:focus {
 
 #weather, #clock {
   width: auto;
-  max-width: 250px; /* Aumentado de 200px para evitar corte de texto como "nuvens" */
+  max-width: 250px;
   padding: 0 10px;
   text-align: center;
   font-size: 14px;
@@ -191,8 +171,9 @@ canvas {
   margin: 20px 0;
   color: #000;
   border-radius: 8px;
-  width: 100%; /* Ocupa a largura total */
+  width: 100%;
   box-sizing: border-box;
+  display: block;
 }
 
 #about-section h2, #contact-section h2 {
@@ -208,6 +189,7 @@ canvas {
   padding: 10px;
   box-sizing: border-box;
   font-size: 14px;
+  display: block;
 }
 
 #footer a {
@@ -231,12 +213,20 @@ canvas {
   z-index: 2;
   pointer-events: auto;
   box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-  visibility: hidden;
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+}
+
+#start-banner.active, #game-over-banner.active, #victory-banner.active {
+  display: flex;
+}
+
+#start-banner:not(.active) {
+  display: flex;
+  visibility: hidden; /* Para crawlers, como Vercel */
 }
 
 #start-banner {
@@ -244,6 +234,9 @@ canvas {
   width: 85%;
   min-height: 150px;
   max-height: 200px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 #game-over-banner, #victory-banner {
@@ -251,6 +244,9 @@ canvas {
   width: 300px;
   height: 262.2px;
   max-height: 262.2px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 #start-banner h1 {
@@ -364,23 +360,6 @@ canvas {
     height: 400px !important;
     max-width: 800px !important;
     max-height: 400px !important;
-  }
-
-  #start-banner {
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 700px;
-    min-height: 150px;
-    max-height: 200px;
-  }
-
-  #game-over-banner, #victory-banner {
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 300px;
-    height: 262.2px;
   }
 
   #start-banner h1 { font-size: 32px; }
