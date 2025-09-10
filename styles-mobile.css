@@ -196,6 +196,7 @@
     margin: 20px 0;
     color: #000;
     border-radius: 8px;
+    display: block;
   }
 
   #about-section h2 {
@@ -225,6 +226,7 @@
     padding: 10px;
     box-sizing: border-box;
     font-size: 14px;
+    display: block;
   }
 
   #footer a {
