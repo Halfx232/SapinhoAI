@@ -16,7 +16,7 @@
   <!-- Estilo inline inicial como fallback -->
   <style>
     html:not(.loaded) body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
-    #top-bar, #game-container, #about-section, #footer { display: none; }
+    #top-bar, #game-container { display: none; }
     a { color: white; text-decoration: none; }
     #start-banner, #game-over-banner, #victory-banner { display: none; }
     canvas:not(.ready) { display: none; }
@@ -110,6 +110,10 @@
       document.documentElement.classList.add('loaded');
       const canvas = document.getElementById('gameCanvas');
       canvas.classList.add('ready');
+      document.getElementById('top-bar').style.display = 'flex';
+      document.getElementById('game-container').style.display = 'flex';
+      document.getElementById('about-section').style.display = 'block';
+      document.getElementById('footer').style.display = 'block';
     });
 
     window.addEventListener('load', () => {
@@ -164,7 +168,7 @@
       };
     }
 
-    const isMobile = /Android|iPhone|i HavelockPad|iPod/i.test(navigator.userAgent);
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const jumpSound = document.getElementById("jumpSound");
