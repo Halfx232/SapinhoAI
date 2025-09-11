@@ -37,12 +37,15 @@
 <body>
   <div id="top-bar">
     <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="sobre.html">Sobre</a></li>
-        <li><a href="contato.html">Contato</a></li>
-        <li><a href="politicas.html">Políticas</a></li>
-      </ul>
+      <button id="menu-toggle"></button> <!-- Botão hambúrguer -->
+      <div id="mobile-menu">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="contato.html">Contato</a></li>
+          <li><a href="politicas.html">Políticas</a></li>
+        </ul>
+      </div>
       <div class="weather-clock">
         <div id="weather">Previsão do Tempo</div>
         <div id="clock">Relógio</div>
@@ -159,6 +162,25 @@
         console.log('Banners forçados visíveis após timeout');
       }, 3000);
     });
+
+    // Menu Hambúrguer para Mobile
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    function toggleMenu() {
+      mobileMenu.classList.toggle('open');
+    }
+
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', toggleMenu);
+      // Fechar menu ao clicar em um link
+      const menuLinks = mobileMenu.querySelectorAll('a');
+      menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('open');
+        });
+      });
+    }
 
     function debounce(func, wait) {
       let timeout;
