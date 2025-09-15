@@ -175,7 +175,8 @@
     align-items: center;
     width: 100%;
     max-width: 100%;
-    height: 100px;
+    height: 250px; /* Aumentado para suportar 300x250 */
+    min-height: 100px; /* Garante espaço mínimo para anúncios menores */
     background: #cfd8dc;
     text-align: center;
     font-size: 12px;
@@ -188,17 +189,19 @@
 
   #top-ad:empty, #bottom-ad:empty {
     min-height: 100px;
+    height: 250px; /* Mantém consistência */
     background: #cfd8dc;
   }
 
   #top-ad > ins, #bottom-ad > ins {
-    width: 100% !important;
-    height: 100px !important;
-    max-width: 100% !important;
-    max-height: 100px !important;
-    display: block !important;
-    overflow: hidden !important;
-    box-sizing: border-box;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 250px !important; /* Aumentado para 300x250 */
+  min-height: 100px !important; /* Flexibilidade para anúncios menores */
+  max-height: 250px !important;
+  display: block !important;
+  overflow: hidden !important;
+  box-sizing: border-box;
   }
 
   #bottom-ad {
@@ -377,3 +380,4 @@
   color: #000;
   font-size: 14px;
 }
+
