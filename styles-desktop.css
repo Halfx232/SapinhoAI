@@ -376,3 +376,12 @@ canvas {
     margin-left: 20px;
   }
 }
+#contact-section a {
+  color: #1b5e20;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+#contact-section a:hover {
+  color: #00ff00;
+}
