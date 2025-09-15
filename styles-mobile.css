@@ -361,3 +361,19 @@
     50% { opacity: 0; }
   }
 }
+#contact-section a {
+  color: #1b5e20;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+#contact-section a:hover {
+  color: #00ff00;
+}
+
+#contact-section p {
+  margin: 0 auto;
+  max-width: 90%;
+  color: #000;
+  font-size: 14px;
+}
