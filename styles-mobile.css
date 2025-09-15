@@ -130,8 +130,6 @@
     padding: 0; /* Sem padding extra */
   }
 
-  /* A ul agora está no #mobile-menu, então não precisa mais aqui */
-
   .weather-clock {
     display: flex;
     flex-direction: row; /* Manter row para compactar */
@@ -164,9 +162,9 @@
     gap: 10px;
     padding: 10px;
     box-sizing: border-box;
-    overflow: visible; /* Mudança: visible para não cortar canvas */
+    overflow: visible; /* Mantém visible para não cortar canvas */
     max-width: 100vw;
-    min-height: calc(100vh - 80px); /* Reservar espaço para top-bar compacta + footer, dando mais altura ao canvas */
+    min-height: calc(100vh - 240px); /* Ajustado para top-bar (~40px) + footer (~40px) + banners (2x100px) */
   }
 
   #top-ad, #bottom-ad {
@@ -174,9 +172,9 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 100%;
-    height: 250px; /* Aumentado para suportar 300x250 */
-    min-height: 100px; /* Garante espaço mínimo para anúncios menores */
+    max-width: 320px; /* Máximo 320px para formato 320x100 */
+    height: 100px; /* Altura exata para 320x100 */
+    min-height: 100px;
     background: #cfd8dc;
     text-align: center;
     font-size: 12px;
@@ -189,19 +187,19 @@
 
   #top-ad:empty, #bottom-ad:empty {
     min-height: 100px;
-    height: 250px; /* Mantém consistência */
+    height: 100px; /* Consistência com altura do banner */
     background: #cfd8dc;
   }
 
   #top-ad > ins, #bottom-ad > ins {
-  width: 100% !important;
-  max-width: 100% !important;
-  height: 250px !important; /* Aumentado para 300x250 */
-  min-height: 100px !important; /* Flexibilidade para anúncios menores */
-  max-height: 250px !important;
-  display: block !important;
-  overflow: hidden !important;
-  box-sizing: border-box;
+    width: 100% !important;
+    max-width: 320px !important; /* Máximo 320px para formato 320x100 */
+    height: 100px !important; /* Altura exata para 320x100 */
+    min-height: 100px !important;
+    max-height: 100px !important;
+    display: block !important;
+    overflow: hidden !important;
+    box-sizing: border-box;
   }
 
   #bottom-ad {
@@ -264,6 +262,23 @@
   #contact-section h2 {
     font-size: 24px;
     color: #1b5e20;
+  }
+
+  #contact-section a {
+    color: #1b5e20;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+  }
+
+  #contact-section a:hover {
+    color: #00ff00;
+  }
+
+  #contact-section p {
+    margin: 0 auto;
+    max-width: 90%;
+    color: #000;
+    font-size: 14px;
   }
 
   #footer {
@@ -364,20 +379,3 @@
     50% { opacity: 0; }
   }
 }
-#contact-section a {
-  color: #1b5e20;
-  text-decoration: underline;
-  transition: color 0.3s ease;
-}
-
-#contact-section a:hover {
-  color: #00ff00;
-}
-
-#contact-section p {
-  margin: 0 auto;
-  max-width: 90%;
-  color: #000;
-  font-size: 14px;
-}
-
