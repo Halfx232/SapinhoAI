@@ -33,13 +33,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1001;
-  }
-
-  #menu-toggle::before {
-    content: "\f0c9"; /* Ícone de hambúrguer do Font Awesome */
-    font-family: "Font Awesome 6 Free";
-    font-weight: 900;
+    z-index: 1005; /* Aumentado para ficar acima de #start-banner */
   }
 
   #mobile-menu {
@@ -50,13 +44,15 @@
     width: 100%;
     background: #1b5e20;
     border-top: 1px solid #00ff00;
-    z-index: 1000;
+    z-index: 1004; /* Aumentado para ficar acima de #start-banner (1003) */
     flex-direction: column;
     padding: 10px 0;
+    pointer-events: auto; /* Garante cliques */
   }
 
   #mobile-menu.open {
     display: flex;
+    z-index: 1004; /* Reforça z-index quando aberto */
   }
 
   #mobile-menu ul {
@@ -94,7 +90,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1002; /* Acima de #bottom-ad e #start-banner */
+    z-index: 1002;
     opacity: 0.8;
     will-change: transform;
   }
@@ -168,10 +164,10 @@
   }
 
   #top-ad, #bottom-ad {
-    display: block; /* Alterado para block para melhor compatibilidade com AdSense */
+    display: block;
     width: 100%;
-    max-width: calc(100vw - 20px); /* Alinha com o canvas */
-    height: 100px !important; /* Força 100px */
+    max-width: calc(100vw - 20px);
+    height: 100px !important;
     min-height: 100px !important;
     background: #cfd8dc;
     text-align: center;
@@ -182,7 +178,7 @@
     overflow: visible;
     box-sizing: border-box;
     margin: 5px auto;
-    line-height: normal; /* Evita interferência na altura */
+    line-height: normal;
   }
 
   #top-ad:empty, #bottom-ad:empty {
@@ -312,7 +308,7 @@
     text-align: center;
     border: 3px solid #00ff00;
     border-radius: 12px;
-    z-index: 1003; /* Acima de todos os outros elementos */
+    z-index: 1003;
     pointer-events: auto;
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
     display: none;
@@ -367,7 +363,7 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    z-index: 1004; /* Garante que o botão seja clicável */
+    z-index: 1004;
   }
 
   @keyframes blink {
