@@ -94,7 +94,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1001; /* Aumentado para evitar sobreposição com #bottom-ad */
+    z-index: 1002; /* Acima de #bottom-ad e #start-banner */
     opacity: 0.8;
     will-change: transform;
   }
@@ -164,39 +164,38 @@
     box-sizing: border-box;
     overflow: visible;
     max-width: 100vw;
-    min-height: calc(100vh - 260px); /* top-bar (~40px) + footer (~40px) + banners (2x100px) + margem (20px) */
+    min-height: calc(100vh - 260px);
   }
 
   #top-ad, #bottom-ad {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block; /* Alterado para block para melhor compatibilidade com AdSense */
     width: 100%;
-    max-width: calc(100vw - 20px); /* Alinha com a largura do canvas */
-    height: 100px; /* Exato para 320x100 */
-    min-height: 100px;
+    max-width: calc(100vw - 20px); /* Alinha com o canvas */
+    height: 100px !important; /* Força 100px */
+    min-height: 100px !important;
     background: #cfd8dc;
     text-align: center;
     font-size: 12px;
     color: #455a64;
-    border-radius: 0; /* Retângulo puro */
+    border-radius: 0;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     overflow: visible;
     box-sizing: border-box;
-    margin: 5px auto; /* Centraliza */
+    margin: 5px auto;
+    line-height: normal; /* Evita interferência na altura */
   }
 
   #top-ad:empty, #bottom-ad:empty {
     min-height: 100px;
     height: 100px;
+    max-width: calc(100vw - 20px);
     background: #cfd8dc;
     border-radius: 0;
-    max-width: calc(100vw - 20px);
   }
 
   #top-ad > ins, #bottom-ad > ins {
     width: 100% !important;
-    max-width: calc(100vw - 20px) !important; /* Alinha com o canvas */
+    max-width: calc(100vw - 20px) !important;
     height: 100px !important;
     min-height: 100px !important;
     max-height: 100px !important;
@@ -204,13 +203,14 @@
     overflow: visible !important;
     box-sizing: border-box;
     border-radius: 0 !important;
+    line-height: normal !important;
   }
 
   #bottom-ad {
     margin-top: 10px;
     position: sticky;
     bottom: 0;
-    z-index: 1000; /* Abaixo do #jumpButtonMobile */
+    z-index: 1000;
   }
 
   #left-ad, #right-ad {
@@ -312,7 +312,7 @@
     text-align: center;
     border: 3px solid #00ff00;
     border-radius: 12px;
-    z-index: 2;
+    z-index: 1003; /* Acima de todos os outros elementos */
     pointer-events: auto;
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
     display: none;
@@ -320,24 +320,14 @@
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-  }
-
-  #start-banner.active, #game-over-banner.active, #victory-banner.active {
-    display: flex;
-  }
-
-  #start-banner {
     width: calc(100vw - 40px);
     max-width: 400px;
     min-height: 120px;
     max-height: 150px;
   }
 
-  #game-over-banner, #victory-banner {
-    width: 200px;
-    height: 200px;
-    max-width: 200px;
-    max-height: 200px;
+  #start-banner.active, #game-over-banner.active, #victory-banner.active {
+    display: flex;
   }
 
   #start-banner h1 {
@@ -377,6 +367,7 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    z-index: 1004; /* Garante que o botão seja clicável */
   }
 
   @keyframes blink {
