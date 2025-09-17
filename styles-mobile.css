@@ -227,7 +227,7 @@
     width: 100%;
     max-width: calc(100vw - 20px);
     height: auto;
-    max-height: calc(100vh - 160px); /* Limita altura considerando barras */
+    max-height: calc(100vh - 160px);
     margin: 10px 0;
     display: block;
     box-sizing: border-box;
@@ -380,28 +380,35 @@
 
   /* Ajustes específicos para modo horizontal */
   @media (orientation: landscape) {
-    canvas {
-      max-width: calc(100vw - 20px);
-      max-height: calc(100vh - 100px); /* Considera barra de endereço (~60px) */
-      width: 100%;
-      height: auto;
-      aspect-ratio: 4 / 3; /* Mantém proporção, ajuste conforme o jogo */
-      margin: 10px 0;
+    #game-container {
+      margin-top: 60px; /* Compensa barra de endereço (~60px) */
+      min-height: calc(100vh - 260px); /* Ajustado para incluir margem */
+      padding: 5px;
+      justify-content: flex-start; /* Alinha ao topo com margem */
+      max-height: calc(100vh - 60px); /* Limita altura total */
     }
 
-    #game-container {
-      min-height: calc(100vh - 200px); /* Ajusta para menos espaço vertical */
-      padding: 5px;
-      justify-content: center; /* Centraliza verticalmente */
+    canvas {
+      max-width: calc(100vw - 20px);
+      max-height: calc(100vh - 120px); /* Mais espaço para barra de endereço */
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 3; /* Ajuste conforme o jogo */
+      margin: 0 auto; /* Centraliza sem margem vertical extra */
+      position: relative;
+      top: 0;
     }
 
     #start-banner, #game-over-banner, #victory-banner {
-      top: calc(50% + 30px); /* Compensa barra de endereço (~60px/2) */
+      position: fixed; /* Usa fixed para referência à viewport */
+      top: calc(50% + 60px); /* Compensa barra de endereço e desloca para baixo */
+      left: 50%;
       transform: translate(-50%, -50%);
       width: calc(100vw - 20px);
-      max-width: 360px; /* Menor para caber em telas horizontais */
-      max-height: 120px; /* Reduz para evitar corte */
-      overflow-y: auto; /* Permite rolagem se necessário */
+      max-width: 360px;
+      max-height: 120px;
+      overflow-y: auto;
+      z-index: 1003;
     }
   }
 }
