@@ -380,20 +380,20 @@
 
   /* Ajustes específicos para modo horizontal */
   @media (orientation: landscape) {
-    /* Ocultar elementos desnecessários */
-    #top-bar, #mobile-menu, #top-ad, #bottom-ad, #jumpButtonMobile,
+    /* Ocultar elementos desnecessários, exceto #jumpButtonMobile */
+    #top-bar, #mobile-menu, #top-ad, #bottom-ad,
     #test-version, #about-section, #contact-section, #footer {
       display: none !important;
     }
 
-    /* Maximizar game-container e canvas */
+    /* Maximizar game-container com margens */
     #game-container {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      margin: 0;
+      margin: 5%;
       padding: 0;
       display: flex;
       align-items: center;
@@ -403,16 +403,16 @@
     }
 
     canvas {
-      width: 100vw;
-      height: 100vh;
-      max-width: 100vw;
-      max-height: 100vh;
+      width: 90vw; /* Reduzido para margens visuais */
+      height: 90vh;
+      max-width: 90vw;
+      max-height: 90vh;
       margin: 0;
       padding: 0;
-      border-radius: 0; /* Remove bordas para tela cheia */
-      box-shadow: none; /* Remove sombra para visual limpo */
+      border-radius: 8px; /* Restaura borda para estética */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Restaura sombra */
       aspect-ratio: 4 / 3; /* Ajuste conforme o jogo */
-      object-fit: contain; /* Garante que o canvas caiba na tela */
+      object-fit: contain;
       z-index: 2;
     }
 
@@ -421,13 +421,41 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: calc(100vw - 20px);
+      width: calc(90vw - 20px);
       max-width: 360px;
-      max-height: calc(100vh - 20px);
+      max-height: calc(90vh - 20px);
       min-height: 100px;
       overflow-y: auto;
       z-index: 1003;
       padding: 15px;
     }
+
+    #jumpButtonMobile {
+      position: fixed;
+      bottom: 20px; /* Posição inferior */
+      right: 20px;
+      width: 60px; /* Tamanho reduzido para horizontal */
+      height: 60px;
+      z-index: 1004; /* Acima do canvas e caixas */
+      display: flex !important; /* Garante visibilidade */
+    }
+
+    #jumpButtonMobile::before {
+      font-size: 24px; /* Ajusta ícone para botão menor */
+    }
+
+    /* Opção alternativa: botão na lateral */
+    /*
+    #jumpButtonMobile {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 60px;
+      height: 60px;
+      z-index: 1004;
+      display: flex !important;
+    }
+    */
   }
 }
