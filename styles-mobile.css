@@ -97,7 +97,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1002;
+    z-index: 1004;
     opacity: 0.8;
     will-change: transform;
   }
@@ -401,10 +401,11 @@
       overflow: visible;
       z-index: 1;
       box-sizing: border-box;
+      background: transparent; /* Evita fundo visível */
     }
 
     canvas {
-      width: 80vw; /* Reduzido para evitar esticamento horizontal */
+      width: 80vw; /* Mantido para facear o chão nas laterais */
       height: 85vh; /* Mantido para espaço inferior */
       max-width: 90vw;
       max-height: 85vh;
@@ -413,8 +414,8 @@
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       aspect-ratio: 4 / 3; /* Ajuste conforme o jogo */
-      object-fit: contain;
-      z-index: 2;
+      object-fit: cover; /* Testar para preencher o canvas */
+      z-index: 3; /* Aumentado para evitar sobreposições */
       position: relative;
       left: 0;
     }
@@ -448,10 +449,3 @@
     }
   }
 }
-
-
-
-
-
-
-
