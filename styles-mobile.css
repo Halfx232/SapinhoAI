@@ -404,7 +404,7 @@
     }
 
     canvas {
-      width: 95vw; /* Reduzido para evitar esticamento horizontal */
+      width: 100vw; /* Reduzido para evitar esticamento horizontal */
       height: 90vh; /* Mantido para espaço inferior */
       max-width: 90vw;
       max-height: 85vh;
@@ -448,6 +448,7 @@
     }
   }
 }
+
 
 
 
