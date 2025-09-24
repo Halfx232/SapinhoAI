@@ -346,10 +346,20 @@
 
     const startGameHandler = (e) => {
       e.preventDefault();
-      if (!gameStarted && startBanner.classList.contains('active')) {
-        startBanner.classList.remove('active');
-        iniciarJogo();
-        console.log("Jogo iniciado!");
+     if (!gameStarted && startBanner.classList.contains('active')) {
+    // Tenta desbloquear todos os sons aqui, diretamente no clique
+    const tryUnlockAudio = () => {
+      jumpSound.play().then(() => jumpSound.pause()).catch(() => {});
+      failSound.play().then(() => failSound.pause()).catch(() => {});
+      victorySound.play().then(() => victorySound.pause()).catch(() => {});
+      backgroundMusic.play().then(() => backgroundMusic.pause()).catch(() => {});
+    };
+
+    tryUnlockAudio(); // Desbloquear no toque
+
+    startBanner.classList.remove('active');
+    iniciarJogo();
+    console.log("Jogo iniciado!");
       }
     };
 
@@ -673,3 +683,4 @@
   </script>
 </body>
 </html>
+
