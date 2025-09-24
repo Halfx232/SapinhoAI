@@ -1,30 +1,46 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="description" content="Jogo do Sapinho: uma aventura divertida com um sapo, desenvolvida com IA. Jogue agora!">
-  <meta name="keywords" content="jogo, sapinho, inteligência artificial, arcade">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="description" content="Jogo do Sapinho: uma aventura divertida com um sapo, desenvolvida com IA. Jogue agora!" />
+  <meta name="keywords" content="jogo, sapinho, inteligência artificial, arcade" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jogo do Sapinho</title>
-  <link rel="icon" href="https://em-content.zobj.net/thumbs/160/twitter/322/frog_1f438.png" type="image/png">
-  <!-- Meta tags Open Graph -->
-  <meta property="og:title" content="Jogo do Sapinho">
-  <meta property="og:description" content="Uma aventura divertida com um sapo!">
-  <meta property="og:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
-  <meta property="og:url" content="https://sapinho-ai.vercel.app">
-  <meta property="og:type" content="website">
-  <!-- Meta tags Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
-  <!-- Estilo inline inicial como fallback -->
+  <link rel="icon" href="https://em-content.zobj.net/thumbs/160/twitter/322/frog_1f438.png" type="image/png" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="Jogo do Sapinho" />
+  <meta property="og:description" content="Uma aventura divertida com um sapo!" />
+  <meta property="og:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg" />
+  <meta property="og:url" content="https://sapinho-ai.vercel.app" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg" />
+
+  <!-- Estilos iniciais (fallback) -->
   <style>
     html:not(.loaded) body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
     #top-bar, #game-container { display: none; }
     a { color: white; text-decoration: none; }
     #start-banner, #game-over-banner, #victory-banner { display: none; }
     canvas:not(.ready) { display: none; }
+    /* Simples estilos de layout para o HTML único (substituir com seus CSS externos) */
+    body.loaded { visibility: visible; }
+    #top-bar { width: 100%; display: flex; align-items:center; justify-content:space-between; padding:10px; box-sizing:border-box; }
+    nav { display:flex; align-items:center; width:100%; justify-content:space-between; gap: 8px; }
+    #game-container { display:flex; flex-direction:column; align-items:center; gap:10px; padding:12px; box-sizing:border-box; max-width:1200px; margin: 0 auto; }
+    #gameCanvas { background: #e0f7fa; border-radius:6px; box-shadow:0 6px 18px rgba(0,0,0,0.4); }
+    #start-banner, #game-over-banner, #victory-banner { position: absolute; left:50%; top:50%; transform:translate(-50%,-50%); background: rgba(255,255,255,0.95); color: #000; padding:20px; border-radius:10px; text-align:center; z-index:50; }
+    #start-banner.active, #game-over-banner.active, #victory-banner.active { display:block; }
+    #footer { text-align:center; padding:12px; font-size:14px; opacity:0.9; }
+    /* Botão de pular mobile */
+    #jumpButtonMobile { position: fixed; right: 12px; bottom: 12px; z-index: 60; width:64px; height:64px; border-radius:50%; border:none; background: rgba(0,0,0,0.5); color:#fff; font-size:20px; display:none; }
+    /* Mobile menu básico */
+    #mobile-menu ul { list-style:none; margin:0; padding:0; display:flex; gap:8px; }
+    #mobile-menu li { display:inline-block; }
   </style>
-  <!-- Pré-carregar fontes e CSS -->
+
+  <!-- Preload CSS/fontes -->
   <link rel="preload" href="styles-mobile.css" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="styles-desktop.css" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
@@ -32,13 +48,14 @@
   <link rel="stylesheet" href="styles-desktop.css" media="screen and (min-width: 1024px)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+  <!-- Google ads (substitua os placeholders) -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
 </head>
 <body>
-  <div id="top-bar">
-    <nav>
-      <button id="menu-toggle"></button> <!-- Botão hambúrguer -->
-      <div id="mobile-menu">
+  <div id="top-bar" role="banner" aria-label="Barra superior">
+    <nav role="navigation" aria-label="Menu principal">
+      <button id="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" title="Abrir menu">☰</button>
+      <div id="mobile-menu" aria-hidden="true">
         <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="sobre.html">Sobre</a></li>
@@ -46,167 +63,90 @@
           <li><a href="politicas.html">Políticas</a></li>
         </ul>
       </div>
-      <div class="weather-clock">
-        <div id="weather">Previsão do Tempo</div>
-        <div id="clock">Relógio</div>
+      <div class="weather-clock" style="margin-left:auto; display:flex; gap:10px; align-items:center;">
+        <div id="weather" aria-live="polite">Previsão do Tempo</div>
+        <div id="clock" aria-live="polite">Relógio</div>
       </div>
     </nav>
   </div>
 
-  <div id="game-container">
-    <div id="top-ad">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
+  <div id="game-container" role="main" aria-label="Área do jogo">
+    <div id="top-ad" style="width:100%; display:flex; justify-content:center;">
+      <!-- Substitua data-ad-client / data-ad-slot -->
       <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-TOP" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
       <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
-    <div id="left-ad">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
-      <ins class="adsbygoogle" style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+
+    <div style="display:flex; gap:12px; width:100%; align-items:flex-start; justify-content:center;">
+      <div id="left-ad" style="display:flex; align-items:flex-start; justify-content:center;">
+        <ins class="adsbygoogle" style="display:block; width:300px; height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <div style="position:relative;">
+        <canvas id="gameCanvas" class="" width="800" height="400" aria-label="Canvas do jogo" role="img"></canvas>
+
+        <div id="start-banner" class="active" role="dialog" aria-modal="true" aria-hidden="false">
+          <h1>Sejam bem-vindos ao Jogo do Sapinho!</h1>
+          <p>Pressione qualquer tecla ou toque para iniciar o jogo</p>
+        </div>
+
+        <div id="game-over-banner" role="dialog" aria-modal="true" aria-hidden="true">
+          <h2>Game Over!</h2>
+          <p>Sua pontuação: <span id="final-score">0</span></p>
+          <button id="restart-button">Reiniciar Jogo</button>
+        </div>
+
+        <div id="victory-banner" role="dialog" aria-modal="true" aria-hidden="true">
+          <h2>Parabéns! Você venceu!</h2>
+          <p>Pontuação Final: <span id="victory-score">0</span></p>
+          <button id="play-again-button">Jogar Novamente</button>
+        </div>
+      </div>
+
+      <div id="right-ad" style="display:flex; align-items:flex-start; justify-content:center;">
+        <ins class="adsbygoogle" style="display:block; width:300px; height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
     </div>
-    <canvas id="gameCanvas"></canvas>
-    <div id="right-ad">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
-      <ins class="adsbygoogle" style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
-    <div id="bottom-ad">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
+
+    <div id="bottom-ad" style="width:100%; display:flex; justify-content:center; margin-top:8px;">
       <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-BOTTOM" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
       <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
-    <div id="start-banner" class="active">
-      <h1>Sejam bem-vindos ao Jogo do Sapinho!</h1>
-      <p>Pressione qualquer tecla ou toque para iniciar o jogo</p>
+    <div id="test-version" style="margin-top:8px; text-align:center;">
+      <p>Versão de teste do SapinhoAI, desenvolvida com auxílio de inteligência artificial. Atualizações em breve!</p>
     </div>
 
-    <div id="game-over-banner">
-      <h2>Game Over!</h2>
-      <p>Sua pontuação: <span id="final-score"></span></p>
-      <button id="restart-button">Reiniciar Jogo</button>
-    </div>
-
-    <div id="victory-banner">
-      <h2>Parabéns! Você venceu!</h2>
-      <p>Pontuação Final: <span id="victory-score"></span></p>
-      <button id="play-again-button">Jogar Novamente</button>
+    <div id="about-section" style="margin-top:8px; text-align:left; max-width:900px;">
+      <h2>Sobre o Jogo do Sapinho</h2>
+      <p>O Jogo do Sapinho é uma aventura divertida desenvolvida com auxílio de inteligência artificial. Esta é uma versão de teste, e novas atualizações estão a caminho!</p>
     </div>
   </div>
 
-  <div id="test-version">
-    <p>Versão de teste do SapinhoAI, desenvolvida com auxílio de inteligência artificial. Atualizações em breve!</p>
-  </div>
+  <!-- Áudios (substitua os arquivos locais se necessário) -->
+  <audio id="jumpSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg" preload="auto"></audio>
+  <audio id="failSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
+  <!-- Altere para caminhos reais: Victory.mp3 / Musicgame.mp3 -->
+  <audio id="victorySound" src="Victory.mp3" preload="auto"></audio>
+  <audio id="backgroundMusic" src="Musicgame.mp3" preload="auto" loop></audio>
 
-  <div id="about-section">
-    <h2>Sobre o Jogo do Sapinho</h2>
-    <p>O Jogo do Sapinho é uma aventura divertida desenvolvida com auxílio de inteligência artificial. Esta é uma versão de teste, e novas atualizações estão a caminho!</p>
-  </div>
-
-  <audio id="jumpSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
-  <audio id="failSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
-  <audio id="victorySound" src="Victory.mp3"></audio>
-  <audio id="backgroundMusic" src="Musicgame.mp3" loop></audio>
+  <button id="jumpButtonMobile" aria-label="Pular" title="Pular">▲</button>
 
   <div id="footer">Siga o Sapinho nas redes sociais! <a href="#">Instagram</a> | <a href="#">YouTube</a> | <a href="#">TikTok</a></div>
 
   <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
+
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      document.documentElement.classList.add('loaded');
-      const canvas = document.getElementById('gameCanvas');
-      canvas.classList.add('ready');
-      document.getElementById('top-bar').style.display = 'flex';
-      document.getElementById('game-container').style.display = 'flex';
-      // Garantir que start-banner seja clicável
-      const startBanner = document.getElementById('start-banner');
-      startBanner.style.pointerEvents = 'auto';
-    });
-
-    window.addEventListener('load', () => {
-      window.cookieconsent.initialise({
-        "palette": { "popup": { "background": "#1b5e20" }, "button": { "background": "#00ff00" } },
-        "content": { "message": "Este site usa cookies para melhorar sua experiência.", "dismiss": "Entendido", "link": "Saiba mais", "href": "/politicas.html" }
-      });
-
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      if (!isMobile) {
-        const ads = document.querySelectorAll('#left-ad > ins, #right-ad > ins');
-        ads.forEach(ad => {
-          ad.style.width = '300px';
-          ad.style.height = '400px';
-          ad.style.maxWidth = '300px';
-          ad.style.maxHeight = '400px';
-          ad.style.minWidth = '300px';
-          ad.style.minHeight = '400px';
-          ad.style.overflow = 'hidden';
-        });
-        console.log('Banners laterais forçados para 300x400px no load (desktop)');
-      } else {
-        const ads = document.querySelectorAll('#top-ad > ins, #bottom-ad > ins');
-        ads.forEach(ad => {
-          ad.style.width = '100%';
-          ad.style.maxWidth = '100%';
-          ad.style.height = '100px';
-          ad.style.maxHeight = '100px';
-          ad.style.overflow = 'hidden';
-        });
-        console.log('Banners superior e inferior forçados para 320x100px no load (mobile)');
-      }
-
-      setTimeout(() => {
-        document.getElementById('left-ad').style.visibility = 'visible';
-        document.getElementById('right-ad').style.visibility = 'visible';
-        document.getElementById('top-ad').style.visibility = 'visible';
-        document.getElementById('bottom-ad').style.visibility = 'visible';
-        console.log('Banners forçados visíveis após timeout');
-      }, 3000);
-    });
-
-    // Menu Hambúrguer para Mobile
-    const menuToggle = document.getElementById('menu-toggle');
-    const mobileMenu = document.getElementById('mobile-menu');
-
-    function toggleMenu() {
-      mobileMenu.classList.toggle('open');
-    }
-
-    if (menuToggle && mobileMenu) {
-      menuToggle.addEventListener('click', toggleMenu);
-      // Fechar menu ao clicar em um link
-      const menuLinks = mobileMenu.querySelectorAll('a');
-      menuLinks.forEach(link => {
-        link.addEventListener('click', () => {
-          mobileMenu.classList.remove('open');
-        });
-      });
-    }
-
-    function debounce(func, wait) {
-      let timeout;
-      return function executedFunction(...args) {
-        const later = () => {
-          clearTimeout(timeout);
-          func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-      };
-    }
-
+    // ====== Config e constantes ======
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     const jumpSound = document.getElementById("jumpSound");
-    jumpSound.preload = 'auto';
-    jumpSound.volume = 0.8;
     const failSound = document.getElementById("failSound");
     const victorySound = document.getElementById("victorySound");
-    victorySound.preload = 'auto';
-    victorySound.volume = 0.3;
     const backgroundMusic = document.getElementById("backgroundMusic");
-    backgroundMusic.preload = 'auto';
-    backgroundMusic.volume = 0.5;
 
     const startBanner = document.getElementById("start-banner");
     const gameOverBanner = document.getElementById("game-over-banner");
@@ -215,6 +155,10 @@
     const victoryBanner = document.getElementById("victory-banner");
     const victoryScore = document.getElementById("victory-score");
     const playAgainButton = document.getElementById("play-again-button");
+    const jumpButton = document.getElementById("jumpButtonMobile");
+
+    const weatherElement = document.getElementById("weather");
+    const clockElement = document.getElementById("clock");
 
     const fases = ["primavera", "verão", "outono", "inverno"];
     const coresFase = {
@@ -232,33 +176,41 @@
     const ALTURA_SAPO = 40;
     const ESPESSURA_CHAO = isMobile ? 20 : 50;
     const SAPO_OFFSET_VISUAL = 47;
-    let scaleX = 1;
-    let scaleY = 1;
+    let scaleX = 1, scaleY = 1;
 
+    // Estado do jogo
     let gameStarted = false;
-    let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
+    let sapo, obstaculos = [], tempo = 0, intervaloObstaculo = 120, faseAtual = 0, pontuacao = 0;
     let poeira = [];
-    let jumpButton;
     let animationFrameId;
 
-    function positionBanners() {
-      const banners = [startBanner, gameOverBanner, victoryBanner];
-      banners.forEach(banner => {
-        if (banner.classList.contains('active')) {
-          console.log(`Banner ${banner.id} visível, posicionado via CSS: left=50%, top=50%, transform=translate(-50%, -50%)`);
-          console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
-        }
-      });
-      console.log('Canvas dimensions:', document.getElementById('gameCanvas').getBoundingClientRect());
-      if (!isMobile) {
-        console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
-        console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
-      } else {
-        console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
-        console.log('Bottom Ad:', document.getElementById('bottom-ad').getBoundingClientRect());
-      }
+    // Cache de APIs
+    let lastWeatherData = null, lastWeatherFetch = 0, CACHE_DURATION = 10 * 60 * 1000;
+    let lastTimeData = null, lastTimeFetch = 0, TIME_CACHE_DURATION = 60 * 1000;
+
+    // ====== Funções utilitárias ======
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
     }
 
+    // Posiciona banners (logs para debug)
+    function positionBanners() {
+      const banners = [startBanner, gameOverBanner, victoryBanner];
+      banners.forEach(b => {
+        b.style.display = b.classList.contains('active') ? 'block' : 'none';
+        b.setAttribute('aria-hidden', b.classList.contains('active') ? 'false' : 'true');
+      });
+    }
+
+    // ====== Canvas / resize ======
     function resizeCanvas() {
       if (isMobile) {
         const maxWidth = window.innerWidth - 20;
@@ -280,51 +232,47 @@
         sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY;
       }
       positionBanners();
-      console.log('Canvas:', canvas.width, canvas.height, 'Scale:', scaleX, scaleY);
-      if (!isMobile) {
-        console.log('Left Ad Size:', document.getElementById('left-ad').getBoundingClientRect());
-        console.log('Right Ad Size:', document.getElementById('right-ad').getBoundingClientRect());
-      } else {
-        console.log('Top Ad Size:', document.getElementById('top-ad').getBoundingClientRect());
-        console.log('Bottom Ad Size:', document.getElementById('bottom-ad').getBoundingClientRect());
-      }
     }
 
     function handleOrientation() {
-      const gameContainer = document.getElementById('game-container');
-      gameContainer.style.display = 'flex';
       resizeCanvas();
       window.addEventListener('resize', debounce(() => {
         resizeCanvas();
         positionBanners();
-      }, 100));
+      }, 120));
     }
 
+    // ====== Controles ======
     function setupControls() {
-      if (jumpButton) {
-        jumpButton.remove();
-      }
+      // Mobile jump button
       if (isMobile) {
-        jumpButton = document.createElement('button');
-        jumpButton.id = 'jumpButtonMobile';
-        jumpButton.textContent = '';
-        document.body.appendChild(jumpButton);
+        jumpButton.style.display = 'block';
+        jumpButton.addEventListener('touchstart', mobileJumpHandler, { passive:false });
+      } else {
+        jumpButton.style.display = 'none';
+      }
 
-        jumpButton.addEventListener('touchstart', (e) => {
-          e.preventDefault();
-          if (gameStarted && !sapo.jumping) {
-            handleJump();
-          }
+      const menuToggle = document.getElementById('menu-toggle');
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', () => {
+          const open = mobileMenu.classList.toggle('open');
+          menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          mobileMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
         });
       }
+    }
+
+    function mobileJumpHandler(e) {
+      e.preventDefault();
+      if (gameStarted && !sapo.jumping) handleJump();
     }
 
     function handleJump() {
       if (gameStarted && !sapo.jumping) {
         sapo.vy = -20 * scaleY;
         sapo.jumping = true;
-        jumpSound.currentTime = 0;
-        jumpSound.play().catch(e => console.log("Erro ao tocar som:", e));
+        try { jumpSound.currentTime = 0; jumpSound.play().catch(()=>{}); } catch(_) {}
         for (let i = 0; i < 10; i++) {
           poeira.push({
             x: sapo.x + 15 * scaleX + Math.random() * 10 * scaleX,
@@ -338,35 +286,15 @@
       }
     }
 
-    const handleKeyJump = (e) => {
+    function handleKeyJump(e) {
       if ((e.code === 'Space' || e.code === 'ArrowUp') && gameStarted && !sapo.jumping) {
         handleJump();
       }
-    };
+    }
 
-    const startGameHandler = (e) => {
-      e.preventDefault();
-     if (!gameStarted && startBanner.classList.contains('active')) {
-    // Tenta desbloquear todos os sons aqui, diretamente no clique
-    const tryUnlockAudio = () => {
-      jumpSound.play().then(() => jumpSound.pause()).catch(() => {});
-      failSound.play().then(() => failSound.pause()).catch(() => {});
-      victorySound.play().then(() => victorySound.pause()).catch(() => {});
-      backgroundMusic.play().then(() => backgroundMusic.pause()).catch(() => {});
-    };
-
-    tryUnlockAudio(); // Desbloquear no toque
-
-    startBanner.classList.remove('active');
-    iniciarJogo();
-    console.log("Jogo iniciado!");
-      }
-    };
-
+    // ====== Estado do jogo ======
     function resetGame() {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
       ALTURA_CHAO = isMobile ? canvas.height : BASE_HEIGHT;
       sapo = { x: BASE_WIDTH * 0.2 * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY, width: 40 * scaleX, height: ALTURA_SAPO * scaleY, vy: 0, jumping: false };
       obstaculos = [];
@@ -383,17 +311,16 @@
       backgroundMusic.pause();
       backgroundMusic.currentTime = 0;
 
+      // Remove listeners antes de re-adicionar
       document.removeEventListener('keydown', handleKeyJump);
       document.removeEventListener('keydown', startGameHandler);
       document.removeEventListener('touchstart', startGameHandler);
-      if (jumpButton) {
-        jumpButton.removeEventListener('touchstart', handleJump);
-        jumpButton.style.display = 'none';
-      }
+      if (isMobile) jumpButton.removeEventListener('touchstart', mobileJumpHandler);
 
+      // Re-setup
       setupControls();
       startBanner.addEventListener('click', startGameHandler);
-      startBanner.addEventListener('touchstart', startGameHandler);
+      startBanner.addEventListener('touchstart', startGameHandler, { passive:false });
       document.addEventListener('keydown', startGameHandler);
 
       resizeCanvas();
@@ -404,6 +331,7 @@
       return fases[faseAtual % fases.length];
     }
 
+    // ====== Desenhos ======
     function drawChao() {
       ctx.fillStyle = coresFase[getFaseAtual()].chao;
       ctx.clearRect(0, ALTURA_CHAO - ESPESSURA_CHAO, canvas.width, ESPESSURA_CHAO);
@@ -491,6 +419,7 @@
       poeira = poeira.filter(p => p.raio > 0.2 * scaleX && p.alpha > 0.05);
     }
 
+    // ====== Lógica principal ======
     function atualizarJogo() {
       if (!gameStarted) return;
       const fase = getFaseAtual();
@@ -506,11 +435,13 @@
       }
       drawSapo();
       atualizarPoeira();
+
       if (tempo % intervaloObstaculo === 0 && tempo >= 120) {
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
         let cor = cores[Math.floor(Math.random() * cores.length)];
         obstaculos.push({ x: BASE_WIDTH * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - 30 * scaleY, width: 30 * scaleX, height: 30 * scaleY, color: cor });
       }
+
       for (let i = 0; i < obstaculos.length; i++) {
         let obs = obstaculos[i];
         obs.x -= 5 * scaleX;
@@ -519,10 +450,12 @@
       obstaculos = obstaculos.filter(obs => obs.x + obs.width > 0);
       tempo++;
       pontuacao++;
+
       if (tempo % 1500 === 0) {
         faseAtual++;
         intervaloObstaculo = Math.max(60, intervaloObstaculo - 10);
       }
+
       ctx.save();
       ctx.font = isMobile ? "bold 16px Arial" : "bold 18px Arial";
       ctx.fillStyle = "#000";
@@ -549,21 +482,18 @@
       if (gameStarted) return;
       gameStarted = true;
       document.addEventListener('keydown', handleKeyJump);
-      if (jumpButton) {
-        jumpButton.style.display = 'block';
-      }
+      if (isMobile) jumpButton.style.display = 'block';
       backgroundMusic.play().catch(e => console.log("Erro ao tocar música de fundo:", e));
       animationFrameId = requestAnimationFrame(gameLoop);
     }
 
     function gameLoop() {
-      if (!gameStarted) {
-        return;
-      }
+      if (!gameStarted) return;
       atualizarJogo();
+
       if (verificarColisao()) {
         gameStarted = false;
-        cancelAnimationFrame(animationFrameId);
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
         failSound.play().catch(e => console.log("Erro ao tocar som:", e));
         backgroundMusic.pause();
         backgroundMusic.currentTime = 0;
@@ -571,16 +501,16 @@
         gameOverBanner.classList.add('active');
         positionBanners();
         document.removeEventListener('keydown', handleKeyJump);
+        // Remover listeners de start para evitar reiniciar sem reset
         document.removeEventListener('keydown', startGameHandler);
         document.removeEventListener('touchstart', startGameHandler);
-        if (jumpButton) {
-          jumpButton.style.display = 'none';
-        }
+        if (isMobile) jumpButton.style.display = 'none';
         return;
       }
+
       if (pontuacao >= PONTUACAO_VITORIA) {
         gameStarted = false;
-        cancelAnimationFrame(animationFrameId);
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
         victorySound.play().catch(e => console.log("Erro ao tocar som:", e));
         backgroundMusic.pause();
         backgroundMusic.currentTime = 0;
@@ -590,25 +520,14 @@
         document.removeEventListener('keydown', handleKeyJump);
         document.removeEventListener('keydown', startGameHandler);
         document.removeEventListener('touchstart', startGameHandler);
-        if (jumpButton) {
-          jumpButton.style.display = 'none';
-        }
+        if (isMobile) jumpButton.style.display = 'none';
         return;
       }
+
       animationFrameId = requestAnimationFrame(gameLoop);
     }
 
-    const weatherElement = document.getElementById("weather");
-    const clockElement = document.getElementById("clock");
-
-    let lastWeatherData = null;
-    let lastWeatherFetch = 0;
-    const CACHE_DURATION = 10 * 60 * 1000;
-
-    let lastTimeData = null;
-    let lastTimeFetch = 0;
-    const TIME_CACHE_DURATION = 60 * 1000;
-
+    // ====== APIs: clima e hora ======
     async function fetchWeather() {
       try {
         const now = Date.now();
@@ -616,7 +535,7 @@
           weatherElement.textContent = lastWeatherData;
           return;
         }
-        const API_KEY = "b8a0cd03c689322da2746720be31d534";
+        const API_KEY = "b8a0cd03c689322da2746720be31d534"; // Substitua se necessário
         const city = "São Paulo";
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&lang=pt_br&units=metric`, { mode: 'cors' });
         if (!response.ok) throw new Error(`Falha na API OpenWeatherMap: ${response.status}`);
@@ -648,39 +567,73 @@
         clockElement.textContent = lastTimeData;
       } catch (error) {
         console.error("Erro ao buscar hora:", error);
-        setTimeout(atualizarHora, 2000);
         const now = new Date();
         lastTimeData = ` ${now.toLocaleDateString('pt-BR')} - ${now.toLocaleTimeString('pt-BR')}`;
         clockElement.textContent = lastTimeData;
       }
     }
 
+    // ====== Start / Event handlers ======
+    const startGameHandler = (e) => {
+      if (e) e.preventDefault();
+      if (!gameStarted && startBanner.classList.contains('active')) {
+        // Tenta desbloquear áudio no toque/click do usuário
+        try {
+          jumpSound.play().then(()=>jumpSound.pause()).catch(()=>{});
+          failSound.play().then(()=>failSound.pause()).catch(()=>{});
+          victorySound.play().then(()=>victorySound.pause()).catch(()=>{});
+          backgroundMusic.play().then(()=>backgroundMusic.pause()).catch(()=>{});
+        } catch(_){}
+        startBanner.classList.remove('active');
+        iniciarJogo();
+      }
+    };
+
+    // ====== Inicialização única ======
     window.addEventListener('load', () => {
+      document.documentElement.classList.add('loaded');
+      canvas.classList.add('ready');
+      document.getElementById('top-bar').style.display = 'flex';
+      document.getElementById('game-container').style.display = 'flex';
+      // Cookie consent
+      try {
+        window.cookieconsent.initialise({
+          "palette": { "popup": { "background": "#1b5e20" }, "button": { "background": "#00ff00" } },
+          "content": { "message": "Este site usa cookies para melhorar sua experiência.", "dismiss": "Entendido", "link": "Saiba mais", "href": "/politicas.html" }
+        });
+      } catch (e) { console.warn("cookieconsent não inicializado", e); }
+
       handleOrientation();
       resizeCanvas();
-      window.addEventListener('resize', debounce(resizeCanvas, 100));
       setupControls();
       resetGame();
 
       fetchWeather();
       atualizarHora();
 
-      setInterval(fetchWeather, 10 * 60 * 1000);
-      setInterval(atualizarHora, 60 * 1000);
+      setInterval(fetchWeather, CACHE_DURATION);
+      setInterval(atualizarHora, TIME_CACHE_DURATION);
 
+      // Desbloqueio de áudio no primeiro toque
       document.body.addEventListener('touchstart', () => {
-        jumpSound.play().then(() => jumpSound.pause()).catch(e => console.log("Erro ao desbloquear jumpSound:", e));
-        failSound.play().then(() => failSound.pause()).catch(e => console.log("Erro ao desbloquear failSound:", e));
-        victorySound.play().then(() => victorySound.pause()).catch(e => console.log("Erro ao desbloquear victorySound:", e));
-        backgroundMusic.play().then(() => backgroundMusic.pause()).catch(e => console.log("Erro ao desbloquear backgroundMusic:", e));
+        try {
+          jumpSound.play().then(() => jumpSound.pause()).catch(()=>{});
+          failSound.play().then(() => failSound.pause()).catch(()=>{});
+          victorySound.play().then(() => victorySound.pause()).catch(()=>{});
+          backgroundMusic.play().then(() => backgroundMusic.pause()).catch(()=>{});
+        } catch(_) {}
       }, { once: true });
 
       positionBanners();
     });
 
-    restartButton.addEventListener("click", resetGame);
-    playAgainButton.addEventListener("click", resetGame);
+    // Botões reiniciar / jogar novamente
+    restartButton.addEventListener("click", () => {
+      resetGame();
+    });
+    playAgainButton.addEventListener("click", () => {
+      resetGame();
+    });
   </script>
 </body>
 </html>
-
