@@ -23,7 +23,6 @@
     a { color: white; text-decoration: none; }
     #start-banner, #game-over-banner, #victory-banner { display: none; }
     canvas:not(.ready) { display: none; }
-    /* Novo: Estilo pro botão de fallback pra garantir visibilidade */
     #btnSom {
       position: absolute;
       top: 60%;
@@ -213,6 +212,8 @@
     jumpSound.preload = 'auto';
     jumpSound.volume = 0.8;
     const failSound = document.getElementById("failSound");
+    failSound.preload = 'auto';
+    failSound.volume = 0.5;
     const victorySound = document.getElementById("victorySound");
     victorySound.preload = 'auto';
     victorySound.volume = 0.3;
@@ -336,7 +337,9 @@
         sapo.vy = -20 * scaleY;
         sapo.jumping = true;
         jumpSound.currentTime = 0;
-        jumpSound.play().catch(e => console.log("Erro ao tocar som:", e));
+        jumpSound.play().then(() => {
+          console.log("Som de pulo tocado!");
+        }).catch(e => console.error("Erro ao tocar som de pulo:", e));
         for (let i = 0; i < 10; i++) {
           poeira.push({
             x: sapo.x + 15 * scaleX + Math.random() * 10 * scaleX,
@@ -382,10 +385,13 @@
       startBanner.classList.add('active');
       gameStarted = false;
 
-      // Novo: Garante que o áudio tá parado e resetado
-      backgroundMusic.pause();
-      backgroundMusic.currentTime = 0;
-      backgroundMusic.load();
+      // Resetar todos os áudios
+      [jumpSound, failSound, victorySound, backgroundMusic].forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.load();
+        audio.muted = false;
+      });
 
       document.removeEventListener('keydown', handleKeyJump);
       document.removeEventListener('keydown', startGameHandler);
@@ -553,49 +559,60 @@
       if (gameStarted) return;
       gameStarted = true;
 
-      // Novo: Tenta desbloquear todos os áudios no primeiro toque
-      [jumpSound, failSound, victorySound, backgroundMusic].forEach(audio => {
+      // Desbloqueia todos os áudios no primeiro toque/clique
+      const audios = [jumpSound, failSound, victorySound, backgroundMusic];
+      audios.forEach(audio => {
         audio.muted = isMobile; // Muted no mobile pra evitar bloqueio
-        audio.load(); // Garante que tá carregado
+        audio.load();
         audio.play().then(() => {
-          audio.pause(); // Pausa imediatamente, só pra desbloquear
+          audio.pause();
           audio.currentTime = 0;
           audio.muted = false;
-        }).catch(e => console.log(`Erro ao desbloquear ${audio.id}:`, e));
+          console.log(`Áudio ${audio.id} desbloqueado!`);
+        }).catch(e => console.error(`Erro ao desbloquear ${audio.id}:`, e));
       });
 
       // Toca a música de fundo
-      const playPromise = backgroundMusic.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          console.log('Música de fundo tocando! 🎶');
-          backgroundMusic.muted = false;
-        }).catch(e => {
-          console.error('Erro ao tocar música de fundo:', e);
-          if (e.name === 'NotAllowedError') {
-            // Novo: Botão de fallback com ID e eventos de clique/toque
-            const btnSom = document.createElement('button');
-            btnSom.id = 'btnSom';
-            btnSom.textContent = 'Ativar Som';
-            document.body.appendChild(btnSom);
-            btnSom.addEventListener('click', () => {
-              backgroundMusic.play().then(() => {
-                backgroundMusic.muted = false;
-                btnSom.remove();
-                console.log('Música ativada via botão de fallback!');
-              }).catch(err => console.error('Erro no botão de fallback:', err));
+      backgroundMusic.play().then(() => {
+        console.log('Música de fundo tocando! 🎶');
+      }).catch(e => {
+        console.error('Erro ao tocar música de fundo:', e);
+        if (e.name === 'NotAllowedError') {
+          const btnSom = document.createElement('button');
+          btnSom.id = 'btnSom';
+          btnSom.textContent = 'Ativar Som';
+          document.body.appendChild(btnSom);
+          btnSom.addEventListener('click', () => {
+            audios.forEach(audio => {
+              audio.play().then(() => {
+                audio.pause();
+                audio.currentTime = 0;
+                audio.muted = false;
+                console.log(`Áudio ${audio.id} desbloqueado via botão!`);
+              }).catch(err => console.error(`Erro ao desbloquear ${audio.id} via botão:`, err));
             });
-            btnSom.addEventListener('touchstart', (e) => {
-              e.preventDefault();
-              backgroundMusic.play().then(() => {
-                backgroundMusic.muted = false;
-                btnSom.remove();
-                console.log('Música ativada via toque no botão de fallback!');
-              }).catch(err => console.error('Erro no botão de fallback (touch):', err));
-            }, { passive: true });
-          }
-        });
-      }
+            backgroundMusic.play().then(() => {
+              console.log('Música de fundo ativada via botão!');
+              btnSom.remove();
+            }).catch(err => console.error('Erro no botão de fallback:', err));
+          });
+          btnSom.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            audios.forEach(audio => {
+              audio.play().then(() => {
+                audio.pause();
+                audio.currentTime = 0;
+                audio.muted = false;
+                console.log(`Áudio ${audio.id} desbloqueado via toque!`);
+              }).catch(err => console.error(`Erro ao desbloquear ${audio.id} via toque:`, err));
+            });
+            backgroundMusic.play().then(() => {
+              console.log('Música de fundo ativada via toque no botão!');
+              btnSom.remove();
+            }).catch(err => console.error('Erro no botão de fallback (touch):', err));
+          }, { passive: true });
+        }
+      });
 
       document.addEventListener('keydown', handleKeyJump);
       if (jumpButton) {
@@ -612,7 +629,9 @@
       if (verificarColisao()) {
         gameStarted = false;
         cancelAnimationFrame(animationFrameId);
-        failSound.play().catch(e => console.log("Erro ao tocar som:", e));
+        failSound.play().then(() => {
+          console.log("Som de game over tocado!");
+        }).catch(e => console.error("Erro ao tocar som de game over:", e));
         backgroundMusic.pause();
         backgroundMusic.currentTime = 0;
         finalScore.textContent = pontuacao;
@@ -629,7 +648,9 @@
       if (pontuacao >= PONTUACAO_VITORIA) {
         gameStarted = false;
         cancelAnimationFrame(animationFrameId);
-        victorySound.play().catch(e => console.log("Erro ao tocar som:", e));
+        victorySound.play().then(() => {
+          console.log("Som de vitória tocado!");
+        }).catch(e => console.error("Erro ao tocar som de vitória:", e));
         backgroundMusic.pause();
         backgroundMusic.currentTime = 0;
         victoryScore.textContent = pontuacao;
@@ -720,13 +741,15 @@
     });
 
     restartButton.addEventListener("click", () => {
-      // Novo: Toca música no reinício
-      backgroundMusic.play().catch(e => console.error("Erro ao tocar música no reinício:", e));
+      backgroundMusic.play().then(() => {
+        console.log("Música de fundo tocada no reinício!");
+      }).catch(e => console.error("Erro ao tocar música no reinício:", e));
       resetGame();
     });
     playAgainButton.addEventListener("click", () => {
-      // Novo: Toca música no reinício
-      backgroundMusic.play().catch(e => console.error("Erro ao tocar música no reinício:", e));
+      backgroundMusic.play().then(() => {
+        console.log("Música de fundo tocada no reinício!");
+      }).catch(e => console.error("Erro ao tocar música no reinício:", e));
       resetGame();
     });
   </script>
