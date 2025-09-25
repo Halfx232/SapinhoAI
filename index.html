@@ -23,6 +23,21 @@
     a { color: white; text-decoration: none; }
     #start-banner, #game-over-banner, #victory-banner { display: none; }
     canvas:not(.ready) { display: none; }
+    /* Novo: Estilo pro botão de fallback pra garantir visibilidade */
+    #btnSom {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1000;
+      font-size: 16px;
+    }
   </style>
   <!-- Pré-carregar fontes e CSS -->
   <link rel="preload" href="styles-mobile.css" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
@@ -118,7 +133,6 @@
       canvas.classList.add('ready');
       document.getElementById('top-bar').style.display = 'flex';
       document.getElementById('game-container').style.display = 'flex';
-      // Garantir que start-banner seja clicável
       const startBanner = document.getElementById('start-banner');
       startBanner.style.pointerEvents = 'auto';
     });
@@ -163,7 +177,6 @@
       }, 3000);
     });
 
-    // Menu Hambúrguer para Mobile
     const menuToggle = document.getElementById('menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
 
@@ -173,7 +186,6 @@
 
     if (menuToggle && mobileMenu) {
       menuToggle.addEventListener('click', toggleMenu);
-      // Fechar menu ao clicar em um link
       const menuLinks = mobileMenu.querySelectorAll('a');
       menuLinks.forEach(link => {
         link.addEventListener('click', () => {
@@ -348,7 +360,7 @@
       e.preventDefault();
       if (!gameStarted && startBanner.classList.contains('active')) {
         startBanner.classList.remove('active');
-        iniciarJogo(e); // Passa o evento pra manter o contexto de interação
+        iniciarJogo(e);
         console.log("Jogo iniciado!");
       }
     };
@@ -370,8 +382,10 @@
       startBanner.classList.add('active');
       gameStarted = false;
 
+      // Novo: Garante que o áudio tá parado e resetado
       backgroundMusic.pause();
       backgroundMusic.currentTime = 0;
+      backgroundMusic.load();
 
       document.removeEventListener('keydown', handleKeyJump);
       document.removeEventListener('keydown', startGameHandler);
@@ -539,53 +553,50 @@
       if (gameStarted) return;
       gameStarted = true;
 
-      // Detecta se é mobile pra lidar com restrições de áudio
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      
-      // Inicia áudio muted no mobile pra evitar bloqueio no iOS
-      if (isMobile) {
-        backgroundMusic.muted = true;
-      }
-      
-      // Garante que o áudio tá carregado
-      backgroundMusic.load();
-      
-      // Toca a música no contexto do evento de toque/clique
+      // Novo: Tenta desbloquear todos os áudios no primeiro toque
+      [jumpSound, failSound, victorySound, backgroundMusic].forEach(audio => {
+        audio.muted = isMobile; // Muted no mobile pra evitar bloqueio
+        audio.load(); // Garante que tá carregado
+        audio.play().then(() => {
+          audio.pause(); // Pausa imediatamente, só pra desbloquear
+          audio.currentTime = 0;
+          audio.muted = false;
+        }).catch(e => console.log(`Erro ao desbloquear ${audio.id}:`, e));
+      });
+
+      // Toca a música de fundo
       const playPromise = backgroundMusic.play();
       if (playPromise !== undefined) {
         playPromise.then(() => {
           console.log('Música de fundo tocando! 🎶');
-          if (isMobile) {
-            backgroundMusic.muted = false; // Tira mute após play iniciar
-          }
+          backgroundMusic.muted = false;
         }).catch(e => {
           console.error('Erro ao tocar música de fundo:', e);
           if (e.name === 'NotAllowedError') {
-            // Fallback: cria botão pra ativar som se bloqueado
+            // Novo: Botão de fallback com ID e eventos de clique/toque
             const btnSom = document.createElement('button');
+            btnSom.id = 'btnSom';
             btnSom.textContent = 'Ativar Som';
-            btnSom.style.position = 'absolute';
-            btnSom.style.top = '60%';
-            btnSom.style.left = '50%';
-            btnSom.style.transform = 'translate(-50%, -50%)';
-            btnSom.style.padding = '10px 20px';
-            btnSom.style.background = '#4CAF50';
-            btnSom.style.color = 'white';
-            btnSom.style.border = 'none';
-            btnSom.style.borderRadius = '5px';
-            btnSom.style.cursor = 'pointer';
-            btnSom.onclick = () => {
+            document.body.appendChild(btnSom);
+            btnSom.addEventListener('click', () => {
               backgroundMusic.play().then(() => {
                 backgroundMusic.muted = false;
                 btnSom.remove();
-              });
-            };
-            document.body.appendChild(btnSom);
+                console.log('Música ativada via botão de fallback!');
+              }).catch(err => console.error('Erro no botão de fallback:', err));
+            });
+            btnSom.addEventListener('touchstart', (e) => {
+              e.preventDefault();
+              backgroundMusic.play().then(() => {
+                backgroundMusic.muted = false;
+                btnSom.remove();
+                console.log('Música ativada via toque no botão de fallback!');
+              }).catch(err => console.error('Erro no botão de fallback (touch):', err));
+            }, { passive: true });
           }
         });
       }
 
-      // Resto da lógica do jogo
       document.addEventListener('keydown', handleKeyJump);
       if (jumpButton) {
         jumpButton.style.display = 'block';
@@ -708,8 +719,16 @@
       positionBanners();
     });
 
-    restartButton.addEventListener("click", resetGame);
-    playAgainButton.addEventListener("click", resetGame);
+    restartButton.addEventListener("click", () => {
+      // Novo: Toca música no reinício
+      backgroundMusic.play().catch(e => console.error("Erro ao tocar música no reinício:", e));
+      resetGame();
+    });
+    playAgainButton.addEventListener("click", () => {
+      // Novo: Toca música no reinício
+      backgroundMusic.play().catch(e => console.error("Erro ao tocar música no reinício:", e));
+      resetGame();
+    });
   </script>
 </body>
 </html>
