@@ -120,7 +120,7 @@
   <audio id="jumpSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg" preload="auto"></audio>
   <audio id="failSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
   <audio id="victorySound" src="Victory.mp3" preload="auto"></audio>
-  <audio id="backgroundMusic" src="Musicgame.mp3" loop preload="auto"></audio>
+  <audio id="backgroundMusic" src="Musicgame.mp3" preload="auto"></audio> <!-- Removido loop temporariamente -->
 
   <div id="footer">Siga o Sapinho nas redes sociais! <a href="#">Instagram</a> | <a href="#">YouTube</a> | <a href="#">TikTok</a></div>
 
@@ -253,6 +253,14 @@
     let poeira = [];
     let jumpButton;
     let animationFrameId;
+
+    // Novo: Verifica se o áudio carregou
+    backgroundMusic.addEventListener('loadeddata', () => {
+      console.log('backgroundMusic carregado com sucesso!');
+    });
+    backgroundMusic.addEventListener('error', (e) => {
+      console.error('Erro ao carregar backgroundMusic:', e);
+    });
 
     function positionBanners() {
       const banners = [startBanner, gameOverBanner, victoryBanner];
@@ -564,7 +572,7 @@
       const audios = [jumpSound, failSound, victorySound, backgroundMusic];
       audios.forEach(audio => {
         audio.muted = isMobile;
-        audio.load(); // Novo: Força recarregamento
+        audio.load();
         console.log(`Carregando ${audio.id}: src=${audio.src}`);
         audio.play().then(() => {
           audio.pause();
@@ -587,7 +595,7 @@
         console.log('Botão "Ativar Som" criado');
         btnSom.addEventListener('click', () => {
           audios.forEach(audio => {
-            audio.load(); // Novo: Força recarregamento no botão
+            audio.load();
             audio.play().then(() => {
               audio.pause();
               audio.currentTime = 0;
@@ -603,7 +611,7 @@
         btnSom.addEventListener('touchstart', (e) => {
           e.preventDefault();
           audios.forEach(audio => {
-            audio.load(); // Novo: Força recarregamento no toque
+            audio.load();
             audio.play().then(() => {
               audio.pause();
               audio.currentTime = 0;
@@ -616,6 +624,14 @@
             btnSom.remove();
           }).catch(err => console.error('Erro ao tocar música de fundo via toque:', err));
         }, { passive: true });
+      });
+
+      // Novo: Adiciona loop programaticamente após o primeiro play
+      backgroundMusic.addEventListener('ended', () => {
+        backgroundMusic.currentTime = 0;
+        backgroundMusic.play().then(() => {
+          console.log('Música de fundo reiniciada (loop)!');
+        }).catch(e => console.error('Erro ao reiniciar música de fundo:', e));
       });
 
       document.addEventListener('keydown', handleKeyJump);
