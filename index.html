@@ -24,8 +24,9 @@
     #start-banner, #game-over-banner, #victory-banner { display: none; }
     canvas:not(.ready) { display: none; }
     #left-ad, #right-ad { display: block; width: 300px; height: 400px; min-width: 300px; min-height: 400px; opacity: 0; transition: opacity 0.5s ease-in; }
-    #top-ad, #bottom-ad { display: block; width: 320px; height: 100px; min-width: 320px; min-height: 100px; opacity: 0; transition: opacity 0.5s ease-in; }
+    #top-ad, #bottom-ad { display: block; width: 320px; height: 100px; min-width: 320px; min-height: 100px; max-height: 100px; margin: 10px auto 30px auto; opacity: 0; transition: opacity 0.5s ease-in; }
     #left-ad.loaded, #right-ad.loaded, #top-ad.loaded, #bottom-ad.loaded { opacity: 1; }
+    #test-version, #about-section { position: relative; z-index: 20; margin-top: 40px; margin-bottom: 20px; }
     #audio-error {
       display: none;
       position: absolute;
@@ -71,7 +72,7 @@
 
   <div id="game-container">
     <div id="top-ad">
-      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%; min-width:320px; min-height:100px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-TOP" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%; min-width:320px; min-height:100px; max-height:100px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-TOP" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
     </div>
     <div id="left-ad">
       <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
@@ -81,7 +82,7 @@
       <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
     </div>
     <div id="bottom-ad">
-      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%; min-width:320px; min-height:100px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-BOTTOM" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%; min-width:320px; min-height:100px; max-height:100px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-BOTTOM" data-ad-format="horizontal"></ins>
     </div>
 
     <div id="start-banner" class="active">
@@ -101,8 +102,6 @@
       <button id="play-again-button">Jogar Novamente</button>
     </div>
   </div>
-
-  <div id="audio-error">Não foi possível tocar a música de fundo. Verifique as configurações de áudio do dispositivo.</div>
 
   <div id="test-version">
     <p>Versão de teste do SapinhoAI, desenvolvida com auxílio de inteligência artificial. Atualizações em breve!</p>
@@ -170,8 +169,8 @@
       // Carregar anúncios imediatamente após o load
       const ads = document.querySelectorAll('.adsbygoogle:not([data-ad-loaded="true"])');
       ads.forEach(ad => {
-        console.log(`Verificando dimensões do anúncio ${ad.dataset.adSlot}:`, ad.offsetWidth, ad.offsetHeight);
-        if (ad.offsetWidth > 0 && ad.offsetHeight > 0) {
+        console.log(`Verificando dimensões do anúncio ${ad.dataset.adSlot}:`, ad.offsetWidth, ad.offsetHeight, `Visível: ${ad.offsetParent !== null}`);
+        if (ad.offsetWidth > 0 && ad.offsetHeight > 0 && ad.offsetParent !== null) {
           try {
             (adsbygoogle = window.adsbygoogle || []).push({});
             ad.setAttribute('data-ad-loaded', 'true');
@@ -181,7 +180,7 @@
             console.error(`Erro ao carregar anúncio ${ad.dataset.adSlot}:`, e);
           }
         } else {
-          console.warn(`Anúncio ignorado devido a dimensões inválidas: ${ad.dataset.adSlot}`);
+          console.warn(`Anúncio ignorado: ${ad.dataset.adSlot} (dimensões: ${ad.offsetWidth}x${ad.offsetHeight}, visível: ${ad.offsetParent !== null})`);
         }
       });
       document.getElementById('left-ad').classList.add('loaded');
