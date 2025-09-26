@@ -23,6 +23,21 @@
     a { color: white; text-decoration: none; }
     #start-banner, #game-over-banner, #victory-banner { display: none; }
     canvas:not(.ready) { display: none; }
+    #left-ad, #right-ad { min-width: 300px; min-height: 400px; visibility: hidden; }
+    #top-ad, #bottom-ad { min-width: 320px; min-height: 100px; visibility: hidden; }
+    #audio-error {
+      display: none;
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 0, 0, 0.8);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      z-index: 1000;
+      font-size: 14px;
+    }
   </style>
   <!-- Pré-carregar fontes e CSS -->
   <link rel="preload" href="styles-mobile.css" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
@@ -94,6 +109,8 @@
     </div>
   </div>
 
+  <div id="audio-error">Não foi possível tocar a música de fundo. Verifique as configurações de áudio do dispositivo.</div>
+
   <div id="test-version">
     <p>Versão de teste do SapinhoAI, desenvolvida com auxílio de inteligência artificial. Atualizações em breve!</p>
   </div>
@@ -106,7 +123,7 @@
   <audio id="jumpSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg" preload="auto"></audio>
   <audio id="failSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
   <audio id="victorySound" src="Victory.mp3" preload="auto"></audio>
-  <audio id="backgroundMusic" src="Musicgame.mp3" preload="auto"></audio>
+  <audio id="backgroundMusic" src="Musicgame.mp3" preload="auto" crossorigin="anonymous"></audio>
 
   <div id="footer">Siga o Sapinho nas redes sociais! <a href="#">Instagram</a> | <a href="#">YouTube</a> | <a href="#">TikTok</a></div>
 
@@ -153,7 +170,17 @@
         console.log('Banners superior e inferior forçados para 320x100px no load (mobile)');
       }
 
+      // Adiar o carregamento dos anúncios
       setTimeout(() => {
+        const ads = document.querySelectorAll('.adsbygoogle');
+        ads.forEach(ad => {
+          if (ad.offsetWidth > 0 && ad.offsetHeight > 0) {
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            console.log(`Anúncio carregado: ${ad.dataset.adSlot}`);
+          } else {
+            console.warn(`Anúncio ignorado devido a dimensões inválidas: ${ad.dataset.adSlot}`);
+          }
+        });
         document.getElementById('left-ad').style.visibility = 'visible';
         document.getElementById('right-ad').style.visibility = 'visible';
         document.getElementById('top-ad').style.visibility = 'visible';
@@ -205,7 +232,7 @@
     victorySound.volume = 0.3;
     const backgroundMusic = document.getElementById("backgroundMusic");
     backgroundMusic.preload = 'auto';
-    backgroundMusic.volume = 0.5;
+    backgroundMusic.volume = 0.8; // Aumentado para garantir audibilidade
 
     const startBanner = document.getElementById("start-banner");
     const gameOverBanner = document.getElementById("game-over-banner");
@@ -214,6 +241,7 @@
     const victoryBanner = document.getElementById("victory-banner");
     const victoryScore = document.getElementById("victory-score");
     const playAgainButton = document.getElementById("play-again-button");
+    const audioError = document.getElementById("audio-error");
 
     const fases = ["primavera", "verão", "outono", "inverno"];
     const coresFase = {
@@ -245,6 +273,14 @@
     });
     backgroundMusic.addEventListener('error', (e) => {
       console.error('Erro ao carregar backgroundMusic:', e);
+      audioError.style.display = 'block';
+      setTimeout(() => audioError.style.display = 'none', 5000);
+    });
+    backgroundMusic.addEventListener('play', () => {
+      console.log('backgroundMusic está tocando! Estado:', backgroundMusic.paused ? 'pausado' : 'tocando');
+    });
+    backgroundMusic.addEventListener('pause', () => {
+      console.log('backgroundMusic pausado!');
     });
 
     function positionBanners() {
@@ -552,24 +588,18 @@
       if (gameStarted) return;
       gameStarted = true;
 
-      // Desbloqueia e inicializa todos os áudios
-      const audios = [jumpSound, failSound, victorySound, backgroundMusic];
-      audios.forEach(audio => {
-        audio.muted = false;
-        audio.currentTime = 0;
-        audio.play().then(() => {
-          audio.pause();
-          audio.currentTime = 0;
-          console.log(`Áudio ${audio.id} desbloqueado com sucesso!`);
-        }).catch(e => console.error(`Erro ao desbloquear ${audio.id}:`, e));
-      });
-
-      // Toca a música de fundo
-      backgroundMusic.play().then(() => {
-        console.log('Música de fundo iniciada com sucesso! 🎶');
-      }).catch(e => {
-        console.error('Erro ao iniciar música de fundo:', e);
-      });
+      // Toca a música de fundo diretamente
+      setTimeout(() => {
+        backgroundMusic.currentTime = 0;
+        backgroundMusic.muted = false;
+        backgroundMusic.play().then(() => {
+          console.log('Música de fundo iniciada com sucesso! 🎶 Estado:', backgroundMusic.paused ? 'pausado' : 'tocando');
+        }).catch(e => {
+          console.error('Erro ao iniciar música de fundo:', e);
+          audioError.style.display = 'block';
+          setTimeout(() => audioError.style.display = 'none', 5000);
+        });
+      }, 100);
 
       // Configura o loop da música
       backgroundMusic.loop = true;
@@ -677,10 +707,10 @@
         clockElement.textContent = lastTimeData;
       } catch (error) {
         console.error("Erro ao buscar hora:", error);
-        setTimeout(atualizarHora, 2000);
         const now = new Date();
         lastTimeData = ` ${now.toLocaleDateString('pt-BR')} - ${now.toLocaleTimeString('pt-BR')}`;
         clockElement.textContent = lastTimeData;
+        setTimeout(atualizarHora, 2000);
       }
     }
 
@@ -701,15 +731,31 @@
     });
 
     restartButton.addEventListener("click", () => {
-      backgroundMusic.play().then(() => {
-        console.log("Música de fundo tocada no reinício!");
-      }).catch(e => console.error("Erro ao tocar música de fundo no reinício:", e));
+      setTimeout(() => {
+        backgroundMusic.currentTime = 0;
+        backgroundMusic.muted = false;
+        backgroundMusic.play().then(() => {
+          console.log("Música de fundo tocada no reinício! Estado:", backgroundMusic.paused ? 'pausado' : 'tocando');
+        }).catch(e => {
+          console.error("Erro ao tocar música de fundo no reinício:", e);
+          audioError.style.display = 'block';
+          setTimeout(() => audioError.style.display = 'none', 5000);
+        });
+      }, 100);
       resetGame();
     });
     playAgainButton.addEventListener("click", () => {
-      backgroundMusic.play().then(() => {
-        console.log("Música de fundo tocada no reinício!");
-      }).catch(e => console.error("Erro ao tocar música de fundo no reinício:", e));
+      setTimeout(() => {
+        backgroundMusic.currentTime = 0;
+        backgroundMusic.muted = false;
+        backgroundMusic.play().then(() => {
+          console.log("Música de fundo tocada no reinício! Estado:", backgroundMusic.paused ? 'pausado' : 'tocando');
+        }).catch(e => {
+          console.error("Erro ao tocar música de fundo no reinício:", e);
+          audioError.style.display = 'block';
+          setTimeout(() => audioError.style.display = 'none', 5000);
+        });
+      }, 100);
       resetGame();
     });
   </script>
