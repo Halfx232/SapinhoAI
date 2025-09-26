@@ -23,8 +23,9 @@
     a { color: white; text-decoration: none; }
     #start-banner, #game-over-banner, #victory-banner { display: none; }
     canvas:not(.ready) { display: none; }
-    #left-ad, #right-ad { display: block; width: 300px; height: 400px; min-width: 300px; min-height: 400px; visibility: hidden; }
-    #top-ad, #bottom-ad { display: block; width: 320px; height: 100px; min-width: 320px; min-height: 100px; visibility: hidden; }
+    #left-ad, #right-ad { display: block; width: 300px; height: 400px; min-width: 300px; min-height: 400px; opacity: 0; transition: opacity 0.5s ease-in; }
+    #top-ad, #bottom-ad { display: block; width: 320px; height: 100px; min-width: 320px; min-height: 100px; opacity: 0; transition: opacity 0.5s ease-in; }
+    #left-ad.loaded, #right-ad.loaded, #top-ad.loaded, #bottom-ad.loaded { opacity: 1; }
     #audio-error {
       display: none;
       position: absolute;
@@ -70,25 +71,17 @@
 
   <div id="game-container">
     <div id="top-ad">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
       <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%; min-width:320px; min-height:100px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-TOP" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
     <div id="left-ad">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
       <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
     <canvas id="gameCanvas"></canvas>
     <div id="right-ad">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
       <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
     <div id="bottom-ad">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
       <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%; min-width:320px; min-height:100px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-BOTTOM" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
     <div id="start-banner" class="active">
@@ -174,28 +167,28 @@
         console.log('Banners superior e inferior forçados para 320x100px no load (mobile)');
       }
 
-      // Adiar o carregamento dos anúncios e evitar push duplicado
-      setTimeout(() => {
-        const ads = document.querySelectorAll('.adsbygoogle:not([data-ad-loaded="true"])');
-        ads.forEach(ad => {
-          if (ad.offsetWidth > 0 && ad.offsetHeight > 0) {
-            try {
-              (adsbygoogle = window.adsbygoogle || []).push({});
-              ad.setAttribute('data-ad-loaded', 'true');
-              console.log(`Anúncio carregado: ${ad.dataset.adSlot}`);
-            } catch (e) {
-              console.error(`Erro ao carregar anúncio ${ad.dataset.adSlot}:`, e);
-            }
-          } else {
-            console.warn(`Anúncio ignorado devido a dimensões inválidas: ${ad.dataset.adSlot}`);
+      // Carregar anúncios imediatamente após o load
+      const ads = document.querySelectorAll('.adsbygoogle:not([data-ad-loaded="true"])');
+      ads.forEach(ad => {
+        console.log(`Verificando dimensões do anúncio ${ad.dataset.adSlot}:`, ad.offsetWidth, ad.offsetHeight);
+        if (ad.offsetWidth > 0 && ad.offsetHeight > 0) {
+          try {
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            ad.setAttribute('data-ad-loaded', 'true');
+            ad.closest('#left-ad, #right-ad, #top-ad, #bottom-ad').classList.add('loaded');
+            console.log(`Anúncio carregado: ${ad.dataset.adSlot}`);
+          } catch (e) {
+            console.error(`Erro ao carregar anúncio ${ad.dataset.adSlot}:`, e);
           }
-        });
-        document.getElementById('left-ad').style.visibility = 'visible';
-        document.getElementById('right-ad').style.visibility = 'visible';
-        document.getElementById('top-ad').style.visibility = 'visible';
-        document.getElementById('bottom-ad').style.visibility = 'visible';
-        console.log('Banners forçados visíveis após timeout');
-      }, 5000);
+        } else {
+          console.warn(`Anúncio ignorado devido a dimensões inválidas: ${ad.dataset.adSlot}`);
+        }
+      });
+      document.getElementById('left-ad').classList.add('loaded');
+      document.getElementById('right-ad').classList.add('loaded');
+      document.getElementById('top-ad').classList.add('loaded');
+      document.getElementById('bottom-ad').classList.add('loaded');
+      console.log('Banners forçados visíveis após load');
     });
 
     const menuToggle = document.getElementById('menu-toggle');
