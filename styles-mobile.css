@@ -33,13 +33,12 @@
     display: flex !important;
     align-items: center;
     justify-content: center;
+    z-index: 1007; /* Acima de tudo */
     z-index: 1009; /* Acima de tudo */
-    z-index: 1009;
   }
 
   #menu-toggle::before {
     content: "\f0c9"; /* Ícone de hambúrguer do Font Awesome */
-    content: "\f0c9";
     font-family: "Font Awesome 6 Free";
     font-weight: 900;
   }
@@ -52,8 +51,8 @@
     width: 100%;
     background: #1b5e20;
     border-top: 1px solid #00ff00;
+    z-index: 1006; /* Acima de #start-banner (1003) */
     z-index: 1008; /* Acima de #start-banner (1003) */
-    z-index: 1008;
     flex-direction: column;
     padding: 10px 0;
     pointer-events: auto;
@@ -61,8 +60,8 @@
 
   #mobile-menu.open {
     display: flex;
+    z-index: 1006;
     z-index: 1008 !important; /* Reforça prioridade */
-    z-index: 1008 !important;
   }
 
   #mobile-menu ul {
@@ -82,6 +81,7 @@
     line-height: 1.2;
     padding: 5px 0;
     border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+    pointer-events: auto; /* Garante cliques nos links */
     pointer-events: auto;
   }
 
@@ -133,6 +133,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between; /* Garante #menu-toggle à esquerda e .weather-clock à direita */
     justify-content: space-between;
     width: 100%;
     padding: 0;
@@ -142,6 +143,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-left: auto; /* Empurra para a direita */
     margin-left: auto;
     margin-right: 5px;
     gap: 5px;
@@ -232,10 +234,8 @@
     max-width: calc(100vw - 20px);
     height: auto;
     max-height: none;
-    max-height: calc(100vh - 160px); /* Limita altura considerando barras */
     margin: 10px 0;
     display: block;
-    box-sizing: border-box;
   }
 
   #test-version {
@@ -381,32 +381,5 @@
   @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
-  }
-
-  /* Ajustes específicos para modo horizontal */
-  @media (orientation: landscape) {
-    canvas {
-      max-width: calc(100vw - 20px);
-      max-height: calc(100vh - 100px); /* Considera barra de endereço (~60px) */
-      width: 100%;
-      height: auto;
-      aspect-ratio: 4 / 3; /* Mantém proporção, ajuste conforme o jogo */
-      margin: 10px 0;
-    }
-
-    #game-container {
-      min-height: calc(100vh - 200px); /* Ajusta para menos espaço vertical */
-      padding: 5px;
-      justify-content: center; /* Centraliza verticalmente */
-    }
-
-    #start-banner, #game-over-banner, #victory-banner {
-      top: calc(50% + 30px); /* Compensa barra de endereço (~60px/2) */
-      transform: translate(-50%, -50%);
-      width: calc(100vw - 20px);
-      max-width: 360px; /* Menor para caber em telas horizontais */
-      max-height: 120px; /* Reduz para evitar corte */
-      overflow-y: auto; /* Permite rolagem se necessário */
-    }
   }
 }
