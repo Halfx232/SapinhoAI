@@ -30,11 +30,10 @@
     font-size: 18px;
     cursor: pointer;
     padding: 5px;
-    display: flex !important;
+    display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1007; /* Acima de tudo */
-    z-index: 1009; /* Acima de tudo */
+    z-index: 1001;
   }
 
   #menu-toggle::before {
@@ -51,17 +50,13 @@
     width: 100%;
     background: #1b5e20;
     border-top: 1px solid #00ff00;
-    z-index: 1006; /* Acima de #start-banner (1003) */
-    z-index: 1008; /* Acima de #start-banner (1003) */
+    z-index: 1000;
     flex-direction: column;
     padding: 10px 0;
-    pointer-events: auto;
   }
 
   #mobile-menu.open {
     display: flex;
-    z-index: 1006;
-    z-index: 1008 !important; /* Reforça prioridade */
   }
 
   #mobile-menu ul {
@@ -81,8 +76,6 @@
     line-height: 1.2;
     padding: 5px 0;
     border-bottom: 1px solid rgba(0, 255, 0, 0.2);
-    pointer-events: auto; /* Garante cliques nos links */
-    pointer-events: auto;
   }
 
   #mobile-menu a:hover {
@@ -101,7 +94,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1002;
+    z-index: 100;
+    z-index: 1001; /* Aumentado para evitar sobreposição com #bottom-ad */
     opacity: 0.8;
     will-change: transform;
   }
@@ -117,7 +111,7 @@
   #top-bar {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     background: #1b5e20;
     color: white;
     padding: 5px;
@@ -133,8 +127,6 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between; /* Garante #menu-toggle à esquerda e .weather-clock à direita */
-    justify-content: space-between;
     width: 100%;
     padding: 0;
   }
@@ -143,10 +135,11 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-left: auto; /* Empurra para a direita */
+    position: static;
     margin-left: auto;
     margin-right: 5px;
     gap: 5px;
+    margin-top: 0;
   }
 
   #weather, #clock {
@@ -172,53 +165,61 @@
     box-sizing: border-box;
     overflow: visible;
     max-width: 100vw;
-    min-height: calc(100vh - 260px);
+    min-height: calc(100vh - 260px); /* Ajustado para top-bar (~40px) + footer (~40px) + banners (2x100px) + margem extra */
+    min-height: calc(100vh - 260px); /* top-bar (~40px) + footer (~40px) + banners (2x100px) + margem (20px) */
   }
 
   #top-ad, #bottom-ad {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    max-width: calc(100vw - 20px);
-    height: 100px !important;
-    min-height: 100px !important;
+    max-width: 320px;
+    max-width: calc(100vw - 20px); /* Alinha com a largura do canvas */
+    height: 100px; /* Exato para 320x100 */
+    min-height: 100px;
     background: #cfd8dc;
     text-align: center;
     font-size: 12px;
     color: #455a64;
-    border-radius: 0;
+    border-radius: 0; /* Remove quinas arredondadas */
+    border-radius: 0; /* Retângulo puro */
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    overflow: visible; /* Evita corte do anúncio */
     overflow: visible;
     box-sizing: border-box;
-    margin: 5px auto;
-    line-height: normal;
+    margin: 5px auto; /* Centraliza e adiciona margem */
+    margin: 5px auto; /* Centraliza */
   }
 
   #top-ad:empty, #bottom-ad:empty {
     min-height: 100px;
     height: 100px;
-    max-width: calc(100vw - 20px);
     background: #cfd8dc;
     border-radius: 0;
+    max-width: calc(100vw - 20px);
   }
 
   #top-ad > ins, #bottom-ad > ins {
     width: 100% !important;
-    max-width: calc(100vw - 20px) !important;
+    max-width: 320px !important;
+    max-width: calc(100vw - 20px) !important; /* Alinha com o canvas */
     height: 100px !important;
     min-height: 100px !important;
     max-height: 100px !important;
     display: block !important;
+    overflow: visible !important; /* Evita corte do anúncio */
     overflow: visible !important;
     box-sizing: border-box;
+    border-radius: 0 !important; /* Garante retângulo */
     border-radius: 0 !important;
-    line-height: normal !important;
   }
 
   #bottom-ad {
     margin-top: 10px;
     position: sticky;
     bottom: 0;
-    z-index: 1000;
+    z-index: 1000; /* Abaixo do #jumpButtonMobile */
   }
 
   #left-ad, #right-ad {
@@ -320,7 +321,7 @@
     text-align: center;
     border: 3px solid #00ff00;
     border-radius: 12px;
-    z-index: 1003;
+    z-index: 2;
     pointer-events: auto;
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
     display: none;
@@ -328,14 +329,24 @@
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
+  }
+
+  #start-banner.active, #game-over-banner.active, #victory-banner.active {
+    display: flex;
+  }
+
+  #start-banner {
     width: calc(100vw - 40px);
     max-width: 400px;
     min-height: 120px;
     max-height: 150px;
   }
 
-  #start-banner.active, #game-over-banner.active, #victory-banner.active {
-    display: flex;
+  #game-over-banner, #victory-banner {
+    width: 200px;
+    height: 200px;
+    max-width: 200px;
+    max-height: 200px;
   }
 
   #start-banner h1 {
@@ -375,7 +386,6 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    z-index: 1004;
   }
 
   @keyframes blink {
