@@ -45,28 +45,28 @@
   <link rel="preload" href="styles-mobile.css" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="styles-desktop.css" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles-mobile.css" media="screen and (max-width: 1023px)">
+  <link rel="stylesheet" href="styles-mobile.css?v=1" media="screen and (max-width: 1023px)">
   <link rel="stylesheet" href="styles-desktop.css" media="screen and (min-width: 1024px)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
 </head>
 <body>
- <div id="top-bar">
-  <button id="menu-toggle"></button>
-  <nav id="mobile-menu">
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="sobre.html">Sobre</a></li>
-      <li><a href="contato.html">Contato</a></li>
-      <li><a href="politicas.html">Políticas</a></li>
-    </ul>
-  </nav>
-  <div class="weather-clock">
-    <div id="weather">Previsão do Tempo</div>
-    <div id="clock">Relógio</div>
+  <div id="top-bar">
+    <button id="menu-toggle"></button> <!-- Botão hambúrguer -->
+    <nav id="mobile-menu">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li><a href="politicas.html">Políticas</a></li>
+      </ul>
+    </nav>
+    <div class="weather-clock">
+      <div id="weather">Previsão do Tempo</div>
+      <div id="clock">Relógio</div>
+    </div>
   </div>
-</div>
 
   <div id="game-container">
     <div id="top-ad">
@@ -154,7 +154,7 @@
         ads.forEach(ad => {
           ad.style.display = 'block';
           ad.style.width = '100%';
-          ad.style.maxWidth = '100%';
+          ad.style.maxWidth = 'calc(100vw - 20px)';
           ad.style.height = '100px';
           ad.style.maxHeight = '100px';
           ad.style.minWidth = '320px';
@@ -164,21 +164,25 @@
         console.log('Banners superior e inferior forçados para 320x100px no load (mobile)');
       }
 
-      // Carregar anúncios imediatamente após o load
+      // Forçar carregamento dos anúncios
       const ads = document.querySelectorAll('.adsbygoogle:not([data-ad-loaded="true"])');
       ads.forEach(ad => {
-        console.log(`Verificando dimensões do anúncio ${ad.dataset.adSlot}:`, ad.offsetWidth, ad.offsetHeight, `Visível: ${ad.offsetParent !== null}`);
-        if (ad.offsetWidth > 0 && ad.offsetHeight > 0 && ad.offsetParent !== null) {
-          try {
-            (adsbygoogle = window.adsbygoogle || []).push({});
-            ad.setAttribute('data-ad-loaded', 'true');
-            ad.closest('#left-ad, #right-ad, #top-ad, #bottom-ad').classList.add('loaded');
-            console.log(`Anúncio carregado: ${ad.dataset.adSlot}`);
-          } catch (e) {
-            console.error(`Erro ao carregar anúncio ${ad.dataset.adSlot}:`, e);
-          }
-        } else {
-          console.warn(`Anúncio ignorado: ${ad.dataset.adSlot} (dimensões: ${ad.offsetWidth}x${ad.offsetHeight}, visível: ${ad.offsetParent !== null})`);
+        console.log(`Verificando anúncio ${ad.dataset.adSlot}:`, ad.offsetWidth, ad.offsetHeight, `Visível: ${ad.offsetParent !== null}`);
+        try {
+          ad.style.display = 'block';
+          ad.style.width = '100%';
+          ad.style.maxWidth = 'calc(100vw - 20px)';
+          ad.style.height = '100px';
+          ad.style.maxHeight = '100px';
+          ad.style.minWidth = '320px';
+          ad.style.minHeight = '100px';
+          ad.style.overflow = 'hidden';
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          ad.setAttribute('data-ad-loaded', 'true');
+          ad.closest('#top-ad, #bottom-ad').classList.add('loaded');
+          console.log(`Anúncio carregado: ${ad.dataset.adSlot}`);
+        } catch (e) {
+          console.error(`Erro ao carregar anúncio ${ad.dataset.adSlot}:`, e);
         }
       });
       document.getElementById('left-ad').classList.add('loaded');
@@ -739,4 +743,3 @@
   </script>
 </body>
 </html>
-
