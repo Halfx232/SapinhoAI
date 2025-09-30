@@ -23,29 +23,12 @@
     a { color: white; text-decoration: none; }
     #start-banner, #game-over-banner, #victory-banner { display: none; }
     canvas:not(.ready) { display: none; }
-    #left-ad, #right-ad { display: block; width: 300px; height: 400px; min-width: 300px; min-height: 400px; opacity: 0; transition: opacity 0.5s ease-in; }
-    #top-ad, #bottom-ad { display: block; width: 320px; height: 100px; min-width: 320px; min-height: 100px; max-height: 100px; margin: 10px auto 30px auto; opacity: 0; transition: opacity 0.5s ease-in; }
-    #left-ad.loaded, #right-ad.loaded, #top-ad.loaded, #bottom-ad.loaded { opacity: 1; }
-    #test-version, #about-section { position: relative; z-index: 20; margin-top: 40px; margin-bottom: 20px; }
-    #audio-error {
-      display: none;
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 0, 0, 0.8);
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      z-index: 1000;
-      font-size: 14px;
-    }
   </style>
   <!-- Pré-carregar fontes e CSS -->
   <link rel="preload" href="styles-mobile.css" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="styles-desktop.css" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles-mobile.css?v=1" media="screen and (max-width: 1023px)">
+  <link rel="stylesheet" href="styles-mobile.css" media="screen and (max-width: 1023px)">
   <link rel="stylesheet" href="styles-desktop.css" media="screen and (min-width: 1024px)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
@@ -53,34 +36,44 @@
 </head>
 <body>
   <div id="top-bar">
-    <button id="menu-toggle"></button> <!-- Botão hambúrguer -->
-    <nav id="mobile-menu">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="sobre.html">Sobre</a></li>
-        <li><a href="contato.html">Contato</a></li>
-        <li><a href="politicas.html">Políticas</a></li>
-      </ul>
+    <nav>
+      <button id="menu-toggle"></button> <!-- Botão hambúrguer -->
+      <div id="mobile-menu">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="contato.html">Contato</a></li>
+          <li><a href="politicas.html">Políticas</a></li>
+        </ul>
+      </div>
+      <div class="weather-clock">
+        <div id="weather">Previsão do Tempo</div>
+        <div id="clock">Relógio</div>
+      </div>
     </nav>
-    <div class="weather-clock">
-      <div id="weather">Previsão do Tempo</div>
-      <div id="clock">Relógio</div>
-    </div>
   </div>
 
   <div id="game-container">
     <div id="top-ad">
-      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%; min-width:320px; min-height:100px; max-height:100px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-TOP" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
+      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-TOP" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
     <div id="left-ad">
-      <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
+      <ins class="adsbygoogle" style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
     <canvas id="gameCanvas"></canvas>
     <div id="right-ad">
-      <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
+      <ins class="adsbygoogle" style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
     <div id="bottom-ad">
-      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%; min-width:320px; min-height:100px; max-height:100px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-BOTTOM" data-ad-format="horizontal"></ins>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
+      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-BOTTOM" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
     <div id="start-banner" class="active">
@@ -110,10 +103,10 @@
     <p>O Jogo do Sapinho é uma aventura divertida desenvolvida com auxílio de inteligência artificial. Esta é uma versão de teste, e novas atualizações estão a caminho!</p>
   </div>
 
-  <audio id="jumpSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg" preload="auto"></audio>
-  <audio id="failSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
-  <audio id="victorySound" src="Victory.mp3" preload="auto"></audio>
-  <audio id="backgroundMusic" src="Musicgame.mp3" preload="auto" crossorigin="anonymous"></audio>
+  <audio id="jumpSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
+  <audio id="failSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+  <audio id="victorySound" src="Victory.mp3"></audio>
+  <audio id="backgroundMusic" src="Musicgame.mp3" loop></audio>
 
   <div id="footer">Siga o Sapinho nas redes sociais! <a href="#">Instagram</a> | <a href="#">YouTube</a> | <a href="#">TikTok</a></div>
 
@@ -125,6 +118,7 @@
       canvas.classList.add('ready');
       document.getElementById('top-bar').style.display = 'flex';
       document.getElementById('game-container').style.display = 'flex';
+      // Garantir que start-banner seja clicável
       const startBanner = document.getElementById('start-banner');
       startBanner.style.pointerEvents = 'auto';
     });
@@ -139,7 +133,6 @@
       if (!isMobile) {
         const ads = document.querySelectorAll('#left-ad > ins, #right-ad > ins');
         ads.forEach(ad => {
-          ad.style.display = 'block';
           ad.style.width = '300px';
           ad.style.height = '400px';
           ad.style.maxWidth = '300px';
@@ -152,46 +145,25 @@
       } else {
         const ads = document.querySelectorAll('#top-ad > ins, #bottom-ad > ins');
         ads.forEach(ad => {
-          ad.style.display = 'block';
           ad.style.width = '100%';
-          ad.style.maxWidth = 'calc(100vw - 20px)';
+          ad.style.maxWidth = '100%';
           ad.style.height = '100px';
           ad.style.maxHeight = '100px';
-          ad.style.minWidth = '320px';
-          ad.style.minHeight = '100px';
           ad.style.overflow = 'hidden';
         });
         console.log('Banners superior e inferior forçados para 320x100px no load (mobile)');
       }
 
-      // Forçar carregamento dos anúncios
-      const ads = document.querySelectorAll('.adsbygoogle:not([data-ad-loaded="true"])');
-      ads.forEach(ad => {
-        console.log(`Verificando anúncio ${ad.dataset.adSlot}:`, ad.offsetWidth, ad.offsetHeight, `Visível: ${ad.offsetParent !== null}`);
-        try {
-          ad.style.display = 'block';
-          ad.style.width = '100%';
-          ad.style.maxWidth = 'calc(100vw - 20px)';
-          ad.style.height = '100px';
-          ad.style.maxHeight = '100px';
-          ad.style.minWidth = '320px';
-          ad.style.minHeight = '100px';
-          ad.style.overflow = 'hidden';
-          (adsbygoogle = window.adsbygoogle || []).push({});
-          ad.setAttribute('data-ad-loaded', 'true');
-          ad.closest('#top-ad, #bottom-ad').classList.add('loaded');
-          console.log(`Anúncio carregado: ${ad.dataset.adSlot}`);
-        } catch (e) {
-          console.error(`Erro ao carregar anúncio ${ad.dataset.adSlot}:`, e);
-        }
-      });
-      document.getElementById('left-ad').classList.add('loaded');
-      document.getElementById('right-ad').classList.add('loaded');
-      document.getElementById('top-ad').classList.add('loaded');
-      document.getElementById('bottom-ad').classList.add('loaded');
-      console.log('Banners forçados visíveis após load');
+      setTimeout(() => {
+        document.getElementById('left-ad').style.visibility = 'visible';
+        document.getElementById('right-ad').style.visibility = 'visible';
+        document.getElementById('top-ad').style.visibility = 'visible';
+        document.getElementById('bottom-ad').style.visibility = 'visible';
+        console.log('Banners forçados visíveis após timeout');
+      }, 3000);
     });
 
+    // Menu Hambúrguer para Mobile
     const menuToggle = document.getElementById('menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
 
@@ -201,6 +173,7 @@
 
     if (menuToggle && mobileMenu) {
       menuToggle.addEventListener('click', toggleMenu);
+      // Fechar menu ao clicar em um link
       const menuLinks = mobileMenu.querySelectorAll('a');
       menuLinks.forEach(link => {
         link.addEventListener('click', () => {
@@ -228,14 +201,12 @@
     jumpSound.preload = 'auto';
     jumpSound.volume = 0.8;
     const failSound = document.getElementById("failSound");
-    failSound.preload = 'auto';
-    failSound.volume = 0.5;
     const victorySound = document.getElementById("victorySound");
     victorySound.preload = 'auto';
     victorySound.volume = 0.3;
     const backgroundMusic = document.getElementById("backgroundMusic");
     backgroundMusic.preload = 'auto';
-    backgroundMusic.volume = 0.8;
+    backgroundMusic.volume = 0.5;
 
     const startBanner = document.getElementById("start-banner");
     const gameOverBanner = document.getElementById("game-over-banner");
@@ -244,7 +215,6 @@
     const victoryBanner = document.getElementById("victory-banner");
     const victoryScore = document.getElementById("victory-score");
     const playAgainButton = document.getElementById("play-again-button");
-    const audioError = document.getElementById("audio-error");
 
     const fases = ["primavera", "verão", "outono", "inverno"];
     const coresFase = {
@@ -270,21 +240,6 @@
     let poeira = [];
     let jumpButton;
     let animationFrameId;
-
-    backgroundMusic.addEventListener('loadeddata', () => {
-      console.log('backgroundMusic carregado com sucesso!');
-    });
-    backgroundMusic.addEventListener('error', (e) => {
-      console.error('Erro ao carregar backgroundMusic:', e);
-      audioError.style.display = 'block';
-      setTimeout(() => audioError.style.display = 'none', 5000);
-    });
-    backgroundMusic.addEventListener('play', () => {
-      console.log('backgroundMusic está tocando! Estado:', backgroundMusic.paused ? 'pausado' : 'tocando');
-    });
-    backgroundMusic.addEventListener('pause', () => {
-      console.log('backgroundMusic pausado!');
-    });
 
     function positionBanners() {
       const banners = [startBanner, gameOverBanner, victoryBanner];
@@ -369,9 +324,7 @@
         sapo.vy = -20 * scaleY;
         sapo.jumping = true;
         jumpSound.currentTime = 0;
-        jumpSound.play().then(() => {
-          console.log("Som de pulo tocado!");
-        }).catch(e => console.error("Erro ao tocar som de pulo:", e));
+        jumpSound.play().catch(e => console.log("Erro ao tocar som:", e));
         for (let i = 0; i < 10; i++) {
           poeira.push({
             x: sapo.x + 15 * scaleX + Math.random() * 10 * scaleX,
@@ -395,7 +348,7 @@
       e.preventDefault();
       if (!gameStarted && startBanner.classList.contains('active')) {
         startBanner.classList.remove('active');
-        iniciarJogo(e);
+        iniciarJogo();
         console.log("Jogo iniciado!");
       }
     };
@@ -417,13 +370,8 @@
       startBanner.classList.add('active');
       gameStarted = false;
 
-      // Resetar todos os áudios
-      [jumpSound, failSound, victorySound, backgroundMusic].forEach(audio => {
-        audio.pause();
-        audio.currentTime = 0;
-        audio.muted = false;
-        console.log(`Áudio ${audio.id} resetado!`);
-      });
+      backgroundMusic.pause();
+      backgroundMusic.currentTime = 0;
 
       document.removeEventListener('keydown', handleKeyJump);
       document.removeEventListener('keydown', startGameHandler);
@@ -435,7 +383,7 @@
 
       setupControls();
       startBanner.addEventListener('click', startGameHandler);
-      startBanner.addEventListener('touchstart', startGameHandler, { passive: true });
+      startBanner.addEventListener('touchstart', startGameHandler);
       document.addEventListener('keydown', startGameHandler);
 
       resizeCanvas();
@@ -587,30 +535,14 @@
       return false;
     }
 
-    function iniciarJogo(event) {
+    function iniciarJogo() {
       if (gameStarted) return;
       gameStarted = true;
-
-      // Toca a música de fundo diretamente
-      setTimeout(() => {
-        backgroundMusic.currentTime = 0;
-        backgroundMusic.muted = false;
-        backgroundMusic.play().then(() => {
-          console.log('Música de fundo iniciada com sucesso! 🎶 Estado:', backgroundMusic.paused ? 'pausado' : 'tocando');
-        }).catch(e => {
-          console.error('Erro ao iniciar música de fundo:', e);
-          audioError.style.display = 'block';
-          setTimeout(() => audioError.style.display = 'none', 5000);
-        });
-      }, 100);
-
-      // Configura o loop da música
-      backgroundMusic.loop = true;
-
       document.addEventListener('keydown', handleKeyJump);
       if (jumpButton) {
         jumpButton.style.display = 'block';
       }
+      backgroundMusic.play().catch(e => console.log("Erro ao tocar música de fundo:", e));
       animationFrameId = requestAnimationFrame(gameLoop);
     }
 
@@ -622,9 +554,7 @@
       if (verificarColisao()) {
         gameStarted = false;
         cancelAnimationFrame(animationFrameId);
-        failSound.play().then(() => {
-          console.log("Som de game over tocado!");
-        }).catch(e => console.error("Erro ao tocar som de game over:", e));
+        failSound.play().catch(e => console.log("Erro ao tocar som:", e));
         backgroundMusic.pause();
         backgroundMusic.currentTime = 0;
         finalScore.textContent = pontuacao;
@@ -641,9 +571,7 @@
       if (pontuacao >= PONTUACAO_VITORIA) {
         gameStarted = false;
         cancelAnimationFrame(animationFrameId);
-        victorySound.play().then(() => {
-          console.log("Som de vitória tocado!");
-        }).catch(e => console.error("Erro ao tocar som de vitória:", e));
+        victorySound.play().catch(e => console.log("Erro ao tocar som:", e));
         backgroundMusic.pause();
         backgroundMusic.currentTime = 0;
         victoryScore.textContent = pontuacao;
@@ -710,10 +638,10 @@
         clockElement.textContent = lastTimeData;
       } catch (error) {
         console.error("Erro ao buscar hora:", error);
+        setTimeout(atualizarHora, 2000);
         const now = new Date();
         lastTimeData = ` ${now.toLocaleDateString('pt-BR')} - ${now.toLocaleTimeString('pt-BR')}`;
         clockElement.textContent = lastTimeData;
-        setTimeout(atualizarHora, 2000);
       }
     }
 
@@ -730,16 +658,18 @@
       setInterval(fetchWeather, 10 * 60 * 1000);
       setInterval(atualizarHora, 60 * 1000);
 
+      document.body.addEventListener('touchstart', () => {
+        jumpSound.play().then(() => jumpSound.pause()).catch(e => console.log("Erro ao desbloquear jumpSound:", e));
+        failSound.play().then(() => failSound.pause()).catch(e => console.log("Erro ao desbloquear failSound:", e));
+        victorySound.play().then(() => victorySound.pause()).catch(e => console.log("Erro ao desbloquear victorySound:", e));
+        backgroundMusic.play().then(() => backgroundMusic.pause()).catch(e => console.log("Erro ao desbloquear backgroundMusic:", e));
+      }, { once: true });
+
       positionBanners();
     });
 
-    restartButton.addEventListener("click", () => {
-      resetGame();
-    });
-
-    playAgainButton.addEventListener("click", () => {
-      resetGame();
-    });
+    restartButton.addEventListener("click", resetGame);
+    playAgainButton.addEventListener("click", resetGame);
   </script>
 </body>
 </html>
