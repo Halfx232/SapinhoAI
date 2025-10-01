@@ -25,11 +25,11 @@
     canvas:not(.ready) { display: none; }
   </style>
   <!-- Pré-carregar fontes e CSS -->
-  <link rel="preload" href="styles-mobile.css" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
-  <link rel="preload" href="styles-desktop.css" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="styles-mobile.css?v=6" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="styles-desktop.css?v=3" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles-mobile.css?v=5" media="screen and (max-width: 1023px)">
-  <link rel="stylesheet" href="styles-desktop.css" media="screen and (min-width: 1024px)">
+  <link rel="stylesheet" href="styles-mobile.css?v=6" media="screen and (max-width: 1023px)">
+  <link rel="stylesheet" href="styles-desktop.css?v=3" media="screen and (min-width: 1024px)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
@@ -41,7 +41,7 @@
       <div id="weather">Previsão do Tempo</div>
       <div id="clock">Relógio</div>
     </div>
-    <nav id="mobile-menu">
+    <nav id="nav-menu">
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="sobre.html">Sobre</a></li>
@@ -153,18 +153,18 @@
     });
 
     const menuToggle = document.getElementById('menu-toggle');
-    const mobileMenu = document.getElementById('mobile-menu');
+    const navMenu = document.getElementById('nav-menu');
 
     function toggleMenu() {
-      mobileMenu.classList.toggle('open');
+      navMenu.classList.toggle('open');
     }
 
-    if (menuToggle && mobileMenu) {
+    if (menuToggle && navMenu) {
       menuToggle.addEventListener('click', toggleMenu);
-      const menuLinks = mobileMenu.querySelectorAll('a');
+      const menuLinks = navMenu.querySelectorAll('a');
       menuLinks.forEach(link => {
         link.addEventListener('click', () => {
-          mobileMenu.classList.remove('open');
+          navMenu.classList.remove('open');
         });
       });
     }
