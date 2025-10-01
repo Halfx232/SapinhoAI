@@ -1,670 +1,664 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
- <meta charset="UTF-8">
- <meta name="description" content="Jogo do Sapinho: uma aventura divertida com um sapo, desenvolvida com IA. Jogue agora!">
- <meta name="keywords" content="jogo, sapinho, inteligência artificial, arcade">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Jogo do Sapinho</title>
- <link rel="icon" href="https://em-content.zobj.net/thumbs/160/twitter/322/frog_1f438.png" type="image/png">
- <!-- Meta tags Open Graph -->
- <meta property="og:title" content="Jogo do Sapinho">
- <meta property="og:description" content="Uma aventura divertida com um sapo!">
- <meta property="og:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
- <meta property="og:url" content="https://sapinho-ai.vercel.app">
- <meta property="og:type" content="website">
- <!-- Meta tags Twitter -->
- <meta name="twitter:card" content="summary_large_image">
- <meta name="twitter:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
- <!-- Estilo inline inicial como fallback -->
- <style>
- html:not(.loaded) body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
- #top-bar , #game-container { display: none; }
- a { color: white; text-decoration: none; }
- #start-banner, #game-over-banner, #victory-banner { display: none; }
- canvas:not(.ready) { display: none; }
- </style>
- <!-- Pré-carregar fontes e CSS -->
- <link rel="preload" href="styles-mobile.css" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
- <link rel="preload" href="styles-desktop.css" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
- <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
- <link rel="stylesheet" href="styles-mobile.css?v=3" media="screen and (max-width: 1023px)">
- <link rel="stylesheet" href="styles-desktop.css" media="screen and (min-width: 1024px)">
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="description" content="Jogo do Sapinho: uma aventura divertida com um sapo, desenvolvida com IA. Jogue agora!">
+  <meta name="keywords" content="jogo, sapinho, inteligência artificial, arcade">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo do Sapinho</title>
+  <link rel="icon" href="https://em-content.zobj.net/thumbs/160/twitter/322/frog_1f438.png" type="image/png">
+  <!-- Meta tags Open Graph -->
+  <meta property="og:title" content="Jogo do Sapinho">
+  <meta property="og:description" content="Uma aventura divertida com um sapo!">
+  <meta property="og:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
+  <meta property="og:url" content="https://sapinho-ai.vercel.app">
+  <meta property="og:type" content="website">
+  <!-- Meta tags Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
+  <!-- Estilo inline inicial como fallback -->
+  <style>
+    html:not(.loaded) body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
+    #top-bar, #game-container { display: none; }
+    a { color: white; text-decoration: none; }
+    #start-banner, #game-over-banner, #victory-banner { display: none; }
+    canvas:not(.ready) { display: none; }
+  </style>
+  <!-- Pré-carregar fontes e CSS -->
+  <link rel="preload" href="styles-mobile.css" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="styles-desktop.css" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles-mobile.css?v=4" media="screen and (max-width: 1023px)">
+  <link rel="stylesheet" href="styles-desktop.css" media="screen and (min-width: 1024px)">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
 </head>
 <body>
- <div id="top-bar">
- <button id="menu-toggle"></button>
- <div class="weather-clock">
- <div id="weather">Previsão do Tempo</div>
- <div id="clock">Relógio</div>
- </div>
- <nav id="mobile-menu">
- <ul>
- <li><a href="index.html">Home</a></li>
- <li><a href="sobre.html">Sobre</a></li>
- <li><a href="contato.html">Contato</a></li>
- <li><a href="politicas.html">Políticas</a></li>
- </ul>
- </nav>
- </div>
+  <div id="top-bar">
+    <button id="menu-toggle"></button>
+    <div class="weather-clock">
+      <div id="weather">Previsão do Tempo</div>
+      <div id="clock">Relógio</div>
+    </div>
+    <nav id="mobile-menu">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li><a href="politicas.html">Políticas</a></li>
+      </ul>
+    </nav>
+  </div>
 
- <div id="game-container">
- <div id="top-ad">
- <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%; min-width:320px; min-height:100px; max-height:100px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-TOP" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
- </div>
- <div id="left-ad">
- <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
- </div>
- <canvas id="gameCanvas"></canvas>
- <div id="right-ad">
- <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
- </div>
- <div id="bottom-ad">
- <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%; min-width:320px; min-height:100px; max-height:100 px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-BOTTOM" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
- </div>
+  <div id="game-container">
+    <div id="top-ad">
+      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-TOP" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    </div>
+    <div id="left-ad">
+      <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+    <div id="right-ad">
+      <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
+    </div>
+    <div id="bottom-ad">
+      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-BOTTOM" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    </div>
 
- <div id="start-banner" class="active">
- <h1>Sejam bem-vindos ao Jogo do Sapinho!</h1>
- <p>Pressione qualquer tecla ou toque para iniciar o jogo</p>
- </div>
+    <div id="start-banner" class="active">
+      <h1>Sejam bem-vindos ao Jogo do Sapinho!</h1>
+      <p>Pressione qualquer tecla ou toque para iniciar o jogo</p>
+    </div>
 
- <div id="game-over-banner">
- <h2>Game Over!</h2>
- <p>Sua pontuação: <span id="final-score"></span></p>
- <button id="restart-button">Reiniciar Jogo</button>
- </div>
+    <div id="game-over-banner">
+      <h2>Game Over!</h2>
+      <p>Sua pontuação: <span id="final-score"></span></p>
+      <button id="restart-button">Reiniciar Jogo</button>
+    </div>
 
- <div id="victory-banner">
- <h2>Parabéns! Você venceu!</h2>
- <p>Pontuação Final: <span id="victory-score"></span></p>
- <button id="play-again-button">Jogar Novamente</button>
- </div>
- </div>
+    <div id="victory-banner">
+      <h2>Parabéns! Você venceu!</h2>
+      <p>Pontuação Final: <span id="victory-score"></span></p>
+      <button id="play-again-button">Jogar Novamente</button>
+    </div>
+  </div>
 
- <div id="test-version">
- <p>Versão de teste do SapinhoAI, desenvolvida com auxílio de inteligência artificial. Atualizações em breve!</p>
- </div>
+  <div id="test-version">
+    <p>Versão de teste do SapinhoAI, desenvolvida com auxílio de inteligência artificial. Atualizações em breve!</p>
+  </div>
 
- <div id="about-section">
- <h2>Sobre o Jogo do Sapinho</h2>
- <p>O Jogo do Sapinho é uma aventura divertida desenvolvida com auxílio de inteligência artificial. Esta é uma versão de teste, e novas atualizações estão a caminho!</p>
- </div>
+  <div id="about-section">
+    <h2>Sobre o Jogo do Sapinho</h2>
+    <p>O Jogo do Sapinho é uma aventura divertida desenvolvida com auxílio de inteligência artificial. Esta é uma versão de teste, e novas atualizações estão a caminho!</p>
+  </div>
 
- <audio id="jumpSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg" preload="auto"></audio>
- <audio id="failSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
- <audio id="victorySound" src="Victory.mp3" preload="auto"></audio>
- <audio id="backgroundMusic" src="Musicgame.mp3" preload="auto" loop></audio>
+  <audio id="jumpSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
+  <audio id="failSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+  <audio id="victorySound" src="Victory.mp3"></audio>
+  <audio id="backgroundMusic" src="Musicgame.mp3" loop></audio>
 
- <div id="footer">Siga o Sapinho nas redes sociais! <a href="#">Instagram</a> | <a href="#">YouTube</a> | <a href="#">TikTok</a></div>
+  <div id="footer">Siga o Sapinho nas redes sociais! <a href="#">Instagram</a> | <a href="#">YouTube</a> | <a href="#">TikTok</a></div>
 
- <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
- <script>
- document.addEventListener('DOMContentLoaded', () => {
- document.documentElement.classList.add('loaded');
- const canvas = document.getElementById('gameCanvas');
- canvas.classList.add('ready');
- document.getElementById('top-bar').style.display = 'flex';
- document.getElementById('game-container').style.display = 'flex';
- const startBanner = document.getElementById('start-banner');
- startBanner.style.pointerEvents = 'auto';
- });
+  <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.documentElement.classList.add('loaded');
+      const canvas = document.getElementById('gameCanvas');
+      canvas.classList.add('ready');
+      document.getElementById('top-bar').style.display = 'flex';
+      document.getElementById('game-container').style.display = 'flex';
+      const startBanner = document.getElementById('start-banner');
+      startBanner.style.pointerEvents = 'auto';
+    });
 
- window.addEventListener('load', () => {
- window.cookieconsent.initialise({
- "palette": { "popup": { "background": "#1b5e20" }, "button": { "background": "#00ff00" } },
- "content": { "message": "Este site usa cookies para melhorar sua experiência.", "dismiss": "Entendido", "link": "Saiba mais", "href": "/politicas.html" }
- });
+    window.addEventListener('load', () => {
+      window.cookieconsent.initialise({
+        "palette": { "popup": { "background": "#1b5e20" }, "button": { "background": "#00ff00" } },
+        "content": { "message": "Este site usa cookies para melhorar sua experiência.", "dismiss": "Entendido", "link": "Saiba mais", "href": "/politicas.html" }
+      });
 
- const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
- if (!isMobile) {
- const ads = document.querySelectorAll('#left-ad > ins, #right-ad > ins');
- ads.forEach(ad => {
- ad.style.display = 'block';
- ad.style.width = '300px';
- ad.style.height = '400px';
- ad.style.maxWidth = '300px';
- ad.style.maxHeight = '400px';
- ad.style.minWidth = '300px';
- ad.style.minHeight = '400px';
- ad.style.overflow = 'hidden';
- (adsbygoogle = window.adsbygoogle || []).push({});
- ad.closest('#left-ad, #right-ad').classList.add('loaded');
- });
- console.log('Banners laterais forçados para 300x400px no load (desktop)');
- } else {
- const ads = document.querySelectorAll('#top-ad > ins, #bottom-ad > ins');
- ads.forEach(ad => {
- ad.style.display = 'block';
- ad.style.width = '100%';
- ad.style.maxWidth = 'calc(100vw - 20px)';
- ad.style.height = '100px';
- ad.style.maxHeight = '100px';
- ad.style.minWidth = '320px';
- ad.style.minHeight = '100px';
- ad.style.overflow = 'hidden';
- (adsbygoogle = window.adsbygoogle || []).push({});
- ad.closest('#top-ad, #bottom-ad').classList.add('loaded');
- });
- console.log('Banners superior e inferior forçados para 320x100px no load (mobile)');
- }
- });
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (!isMobile) {
+        const ads = document.querySelectorAll('#left-ad > ins, #right-ad > ins');
+        ads.forEach(ad => {
+          ad.style.width = '300px';
+          ad.style.height = '400px';
+          ad.style.maxWidth = '300px';
+          ad.style.maxHeight = '400px';
+          ad.style.minWidth = '300px';
+          ad.style.minHeight = '400px';
+          ad.style.overflow = 'hidden';
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        });
+        console.log('Banners laterais forçados para 300x400px no load (desktop)');
+      } else {
+        const ads = document.querySelectorAll('#top-ad > ins, #bottom-ad > ins');
+        ads.forEach(ad => {
+          ad.style.width = '100%';
+          ad.style.maxWidth = '100%';
+          ad.style.height = '100px';
+          ad.style.maxHeight = '100px';
+          ad.style.overflow = 'hidden';
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        });
+        console.log('Banners superior e inferior forçados para 320x100px no load (mobile)');
+      }
 
- const menuToggle = document.getElementById('menu-toggle');
- const mobileMenu = document.getElementById('mobile-menu');
+      setTimeout(() => {
+        document.getElementById('left-ad').style.visibility = 'visible';
+        document.getElementById('right-ad').style.visibility = 'visible';
+        document.getElementById('top-ad').style.visibility = 'visible';
+        document.getElementById('bottom-ad').style.visibility = 'visible';
+        console.log('Banners forçados visíveis após timeout');
+      }, 3000);
+    });
 
- function toggleMenu() {
- mobileMenu.classList.toggle('open');
- }
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
 
- if (menuToggle && mobileMenu) {
- menuToggle.addEventListener('click', toggleMenu);
- const menuLinks = mobileMenu.querySelectorAll('a');
- menuLinks.forEach(link => {
- link.addEventListener('click', () => {
- mobileMenu.classList.remove('open');
- });
- });
- }
+    function toggleMenu() {
+      mobileMenu.classList.toggle('open');
+    }
 
- function debounce(func , wait) {
- let timeout;
- return function executedFunction(...args) {
- const later = () => {
- clearTimeout(timeout);
- func(...args);
- };
- clearTimeout(timeout);
- timeout = setTimeout(later, wait);
- };
- }
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', toggleMenu);
+      const menuLinks = mobileMenu.querySelectorAll('a');
+      menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('open');
+        });
+      });
+    }
 
- const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
- const canvas = document.getElementById("gameCanvas");
- const ctx = canvas.getContext("2d");
- const jumpSound = document.getElementById("jumpSound");
- jumpSound.preload = 'auto';
- jumpSound.volume = 0.8;
- const failSound = document.getElementById("failSound");
- failSound.preload = 'auto';
- failSound.volume = 0.5;
- const victorySound = document.getElementById("victorySound");
- victorySound.preload = 'auto';
- victorySound.volume = 0.3;
- const backgroundMusic = document.getElementById("backgroundMusic");
- backgroundMusic.preload = 'auto';
- backgroundMusic.volume = 0.5;
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
 
- const startBanner = document.getElementById("start-banner");
- const gameOverBanner = document.getElementById("game-over-banner");
- const finalScore = document.getElementById("final-score");
- const restartButton = document.getElementById("restart-button");
- const victoryBanner = document.getElementById("victory-banner");
- const victoryScore = document.getElementById("victory-score");
- const playAgainButton = document.getElementById("play-again-button");
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const jumpSound = document.getElementById("jumpSound");
+    jumpSound.preload = 'auto';
+    jumpSound.volume = 0.8;
+    const failSound = document.getElementById("failSound");
+    const victorySound = document.getElementById("victorySound");
+    victorySound.preload = 'auto';
+    victorySound.volume = 0.3;
+    const backgroundMusic = document.getElementById("backgroundMusic");
+    backgroundMusic.preload = 'auto';
+    backgroundMusic.volume = 0.5;
 
- const fases = ["primavera", "verão", "outono", "inverno"];
- const coresFase = {
- primavera: { fundo: "#dcedc8", chao: "#81c784" },
- verão: { fundo: "#fff9c4", chao: "#fbc02d" },
- outono: { fundo: "#ffe0b2", chao: "#ff8f00" },
- inverno: { fundo: "#e0f7fa", chao: "#4dd0e1" }
- };
+    const startBanner = document.getElementById("start-banner");
+    const gameOverBanner = document.getElementById("game-over-banner");
+    const finalScore = document.getElementById("final-score");
+    const restartButton = document.getElementById("restart-button");
+    const victoryBanner = document.getElementById("victory-banner");
+    const victoryScore = document.getElementById("victory-score");
+    const playAgainButton = document.getElementById("play-again-button");
 
- const PONTUACAO_VITORIA = 5000;
- const GRAVIDADE = 1.5;
- const BASE_WIDTH = 800;
- const BASE_HEIGHT = 400;
- let ALTURA_CHAO = isMobile ? 150 : 300;
- const ALTURA_SAPO = 40;
- const ESPESSURA_CHAO = isMobile ? 20 : 50;
- const SAPO_OFFSET_VISUAL = 47;
- let scaleX = 1;
- let scaleY = 1;
+    const fases = ["primavera", "verão", "outono", "inverno"];
+    const coresFase = {
+      primavera: { fundo: "#dcedc8", chao: "#81c784" },
+      verão: { fundo: "#fff9c4", chao: "#fbc02d" },
+      outono: { fundo: "#ffe0b2", chao: "#ff8f00" },
+      inverno: { fundo: "#e0f7fa", chao: "#4dd0e1" }
+    };
 
- let gameStarted = false;
- let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
- let poeira = [];
- let jumpButton;
- let animationFrameId;
+    const PONTUACAO_VITORIA = 5000;
+    const GRAVIDADE = 1.5;
+    const BASE_WIDTH = 800;
+    const BASE_HEIGHT = 400;
+    let ALTURA_CHAO = isMobile ? 150 : 300;
+    const ALTURA_SAPO = 40;
+    const ESPESSURA_CHAO = isMobile ? 20 : 50;
+    const SAPO_OFFSET_VISUAL = 47;
+    let scaleX = 1;
+    let scaleY = 1;
 
- function positionBanners() {
- const banners = [startBanner, gameOverBanner, victoryBanner];
- banners.forEach(banner => {
- if (banner.classList.contains('active')) {
- console.log(`Banner ${banner.id} visível, posicionado via CSS: left=50%, top=50%, transform=translate(-50%, -50%)`);
- console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
- }
- });
- console.log('Canvas dimensions:', document.getElementById('gameCanvas').getBoundingClientRect());
- if (!isMobile) {
- console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
- console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
- } else {
- console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
- console.log('Bottom Ad:', document.getElementById('bottom-ad').getBoundingClientRect());
- }
- }
+    let gameStarted = false;
+    let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
+    let poeira = [];
+    let jumpButton;
+    let animationFrameId;
 
- function resizeCanvas() {
- if (isMobile) {
- const maxWidth = window.innerWidth - 20;
- const aspectRatio = BASE_WIDTH / BASE_HEIGHT;
- canvas.width = Math.min(maxWidth, 400);
- canvas.height = canvas.width / aspectRatio;
- scaleX = canvas.width / BASE_WIDTH;
- scaleY = canvas.height / BASE_HEIGHT;
- ALTURA_CHAO = canvas.height;
- } else {
- canvas.width = BASE_WIDTH;
- canvas.height = BASE_HEIGHT;
- scaleX = 1;
- scaleY = 1;
- ALTURA_CHAO = BASE_HEIGHT;
- }
- if (sapo) {
- sapo.x = BASE_WIDTH * 0.2 * scaleX;
- sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY;
- }
- positionBanners();
- console.log('Canvas:', canvas.width, canvas.height, 'Scale:', scaleX, scaleY);
- if (!isMobile) {
- console.log('Left Ad Size:', document.getElementById('left-ad').getBoundingClientRect());
- console.log('Right Ad Size:', document.getElementById('right-ad').getBoundingClientRect());
- } else {
- console.log('Top Ad Size:', document.getElementById('top-ad').getBoundingClientRect());
- console.log('Bottom Ad Size:', document.getElementById('bottom-ad').getBoundingClientRect());
- }
- }
+    function positionBanners() {
+      const banners = [startBanner, gameOverBanner, victoryBanner];
+      banners.forEach(banner => {
+        if (banner.classList.contains('active')) {
+          console.log(`Banner ${banner.id} visível, posicionado via CSS: left=50%, top=50%, transform=translate(-50%, -50%)`);
+          console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
+        }
+      });
+      console.log('Canvas dimensions:', document.getElementById('gameCanvas').getBoundingClientRect());
+      if (!isMobile) {
+        console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
+        console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
+      } else {
+        console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
+        console.log('Bottom Ad:', document.getElementById('bottom-ad').getBoundingClientRect());
+      }
+    }
 
- function handleOrientation() {
- const gameContainer = document.getElementById('game-container');
- gameContainer.style.display = 'flex';
- resizeCanvas();
- window.addEventListener('resize', debounce(() => {
- resizeCanvas();
- positionBanners();
- }, 100));
- }
+    function resizeCanvas() {
+      if (isMobile) {
+        const maxWidth = window.innerWidth - 20;
+        const aspectRatio = BASE_WIDTH / BASE_HEIGHT;
+        canvas.width = Math.min(maxWidth, 400);
+        canvas.height = canvas.width / aspectRatio;
+        scaleX = canvas.width / BASE_WIDTH;
+        scaleY = canvas.height / BASE_HEIGHT;
+        ALTURA_CHAO = canvas.height;
+      } else {
+        canvas.width = BASE_WIDTH;
+        canvas.height = BASE_HEIGHT;
+        scaleX = 1;
+        scaleY = 1;
+        ALTURA_CHAO = BASE_HEIGHT;
+      }
+      if (sapo) {
+        sapo.x = BASE_WIDTH * 0.2 * scaleX;
+        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY;
+      }
+      positionBanners();
+      console.log('Canvas:', canvas.width, canvas.height, 'Scale:', scaleX, scaleY);
+      if (!isMobile) {
+        console.log('Left Ad Size:', document.getElementById('left-ad').getBoundingClientRect());
+        console.log('Right Ad Size:', document.getElementById('right-ad').getBoundingClientRect());
+      } else {
+        console.log('Top Ad Size:', document.getElementById('top-ad').getBoundingClientRect());
+        console.log('Bottom Ad Size:', document.getElementById('bottom-ad').getBoundingClientRect());
+      }
+    }
 
- function setupControls() {
- if (jumpButton) {
- jumpButton.remove();
- }
- if (isMobile) {
- jumpButton = document.createElement('button');
- jumpButton.id = 'jumpButtonMobile';
- jumpButton.textContent = '';
- document.body.appendChild(jumpButton);
+    function handleOrientation() {
+      const gameContainer = document.getElementById('game-container');
+      gameContainer.style.display = 'flex';
+      resizeCanvas();
+      window.addEventListener('resize', debounce(() => {
+        resizeCanvas();
+        positionBanners();
+      }, 100));
+    }
 
- jumpButton.addEventListener('touchstart', (e) => {
- e.preventDefault();
- if (gameStarted && !sapo.jumping) {
- handleJump();
- }
- });
- }
- }
+    function setupControls() {
+      if (jumpButton) {
+        jumpButton.remove();
+      }
+      if (isMobile) {
+        jumpButton = document.createElement('button');
+        jumpButton.id = 'jumpButtonMobile';
+        jumpButton.textContent = '';
+        document.body.appendChild(jumpButton);
 
- function handleJump() {
- if (gameStarted && !sapo.jumping) {
- sapo.vy = -20 * scaleY;
- sapo.jumping = true;
- jumpSound.currentTime = 0;
- jumpSound.play().catch(e => console.log("Erro ao tocar som:", e));
- for (let i = 0; i < 10; i++) {
- poeira.push({
- x: sapo.x + 15 * scaleX + Math.random() * 10 * scaleX,
- y: sapo.y + 30 * scaleY,
- raio: (3 + Math.random() * 5) * scaleX,
- alpha: 0.7,
- vy: (-1 - Math.random() * 2) * scaleY,
- vx: (Math.random() * 2 - 1) * scaleX
- });
- }
- }
- }
+        jumpButton.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          if (gameStarted && !sapo.jumping) {
+            handleJump();
+          }
+        });
+      }
+    }
 
- const handleKeyJump = (e) => {
- if ((e.code === 'Space' || e.code === 'ArrowUp') && gameStarted && !sapo.jumping) {
- handleJump();
- }
- };
+    function handleJump() {
+      if (gameStarted && !sapo.jumping) {
+        sapo.vy = -20 * scaleY;
+        sapo.jumping = true;
+        jumpSound.currentTime = 0;
+        jumpSound.play().catch(e => console.log("Erro ao tocar som:", e));
+        for (let i = 0; i < 10; i++) {
+          poeira.push({
+            x: sapo.x + 15 * scaleX + Math.random() * 10 * scaleX,
+            y: sapo.y + 30 * scaleY,
+            raio: (3 + Math.random() * 5) * scaleX,
+            alpha: 0.7,
+            vy: (-1 - Math.random() * 2) * scaleY,
+            vx: (Math.random() * 2 - 1) * scaleX
+          });
+        }
+      }
+    }
 
- const startGameHandler = (e) => {
- e.preventDefault();
- if (!gameStarted && startBanner.classList.contains('active')) {
- startBanner.classList.remove('active');
- iniciarJogo();
- console.log("Jogo iniciado!");
- }
- };
+    const handleKeyJump = (e) => {
+      if ((e.code === 'Space' || e.code === 'ArrowUp') && gameStarted && !sapo.jumping) {
+        handleJump();
+      }
+    };
 
- function resetGame() {
- if (animationFrameId) {
- cancelAnimationFrame(animationFrameId);
- }
- ALTURA_CHAO = isMobile ? canvas.height : BASE_HEIGHT;
- sapo = { x: BASE_WIDTH * 0.2 * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY, width: 40 * scaleX, height: ALTURA_SAPO * scaleY, vy: 0, jumping: false };
- obstaculos = [];
- poeira = [];
- tempo = 0;
- intervaloObstaculo = 120;
- faseAtual = 0;
- pontuacao = 0;
- gameOverBanner.classList.remove('active');
- victoryBanner.classList.remove('active');
- startBanner.classList.add('active');
- gameStarted = false;
+    const startGameHandler = (e) => {
+      e.preventDefault();
+      if (!gameStarted && startBanner.classList.contains('active')) {
+        startBanner.classList.remove('active');
+        iniciarJogo();
+        console.log("Jogo iniciado!");
+      }
+    };
 
- backgroundMusic.pause();
- backgroundMusic.currentTime = 0;
+    function resetGame() {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      ALTURA_CHAO = isMobile ? canvas.height : BASE_HEIGHT;
+      sapo = { x: BASE_WIDTH * 0.2 * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY, width: 40 * scaleX, height: ALTURA_SAPO * scaleY, vy: 0, jumping: false };
+      obstaculos = [];
+      poeira = [];
+      tempo = 0;
+      intervaloObstaculo = 120;
+      faseAtual = 0;
+      pontuacao = 0;
+      gameOverBanner.classList.remove('active');
+      victoryBanner.classList.remove('active');
+      startBanner.classList.add('active');
+      gameStarted = false;
 
- document.removeEventListener('keydown', handleKeyJump);
- document.removeEventListener('keydown', startGameHandler);
- document.removeEventListener('touchstart', startGameHandler);
- if (jumpButton) {
- jumpButton.removeEventListener('touchstart', handleJump);
- jumpButton.style.display = 'none';
- }
+      backgroundMusic.pause();
+      backgroundMusic.currentTime = 0;
 
- setupControls();
- startBanner.addEventListener('click', startGameHandler);
- startBanner.addEventListener('touchstart', startGameHandler, { passive: true });
- document.addEventListener('keydown', startGameHandler);
+      document.removeEventListener('keydown', handleKeyJump);
+      document.removeEventListener('keydown', startGameHandler);
+      document.removeEventListener('touchstart', startGameHandler);
+      if (jumpButton) {
+        jumpButton.removeEventListener('touchstart', handleJump);
+        jumpButton.style.display = 'none';
+      }
 
- resizeCanvas();
- positionBanners();
- }
+      setupControls();
+      startBanner.addEventListener('click', startGameHandler);
+      startBanner.addEventListener('touchstart', startGameHandler);
+      document.addEventListener('keydown', startGameHandler);
 
- function getFaseAtual() {
- return fases[faseAtual % fases.length];
- }
+      resizeCanvas();
+      positionBanners();
+    }
 
- function drawChao() {
- ctx.fillStyle = coresFase[getFaseAtual()].chao;
- ctx.clearRect(0, ALTURA_CHAO - ESPESSURA_CHAO, canvas.width, ESPESSURA_CHAO);
- ctx.fillRect(0, ALTURA_CHAO - ESPESSURA_CHAO, canvas.width, ESPESSURA_CHAO);
- }
+    function getFaseAtual() {
+      return fases[faseAtual % fases.length];
+    }
 
- function drawSapo() {
- ctx.save();
- ctx.scale(scaleX, scaleY);
- const { x, y, jumping } = sapo;
- ctx.fillStyle = "green";
- ctx.beginPath();
- ctx.ellipse(x / scaleX + 25, y / scaleY + 18, 22, 15, 0, 0, Math.PI * 2);
- ctx.fill();
+    function drawChao() {
+      ctx.fillStyle = coresFase[getFaseAtual()].chao;
+      ctx.clearRect(0, ALTURA_CHAO - ESPESSURA_CHAO, canvas.width, ESPESSURA_CHAO);
+      ctx.fillRect(0, ALTURA_CHAO - ESPESSURA_CHAO, canvas.width, ESPESSURA_CHAO);
+    }
 
- ctx.strokeStyle = "green";
- ctx.lineWidth = 3 / scaleX;
- const armAngle = jumping ? Math.PI/2 : Math.PI/4;
- ctx.beginPath();
- ctx.moveTo(x / scaleX + 18, y / scaleY + 20);
- ctx.lineTo(x / scaleX + 5, y / scaleY + 20);
- ctx.lineTo(x / scaleX + 5 - Math.cos(armAngle) * 18, y / scaleY + 20 + Math.sin(armAngle) * 18);
- ctx.stroke();
+    function drawSapo() {
+      ctx.save();
+      ctx.scale(scaleX, scaleY);
+      const { x, y, jumping } = sapo;
+      ctx.fillStyle = "green";
+      ctx.beginPath();
+      ctx.ellipse(x / scaleX + 25, y / scaleY + 18, 22, 15, 0, 0, Math.PI * 2);
+      ctx.fill();
 
- ctx.beginPath();
- ctx.moveTo(x / scaleX + 32, y / scaleY + 20);
- ctx.lineTo(x / scaleX + 45, y / scaleY + 20);
- ctx.lineTo(x / scaleX + 45 + Math.cos(armAngle) * 18, y / scaleY + 20 + Math.sin(armAngle) * 18);
- ctx.stroke();
+      ctx.strokeStyle = "green";
+      ctx.lineWidth = 3 / scaleX;
+      const armAngle = jumping ? Math.PI/2 : Math.PI/4;
+      ctx.beginPath();
+      ctx.moveTo(x / scaleX + 18, y / scaleY + 20);
+      ctx.lineTo(x / scaleX + 5, y / scaleY + 20);
+      ctx.lineTo(x / scaleX + 5 - Math.cos(armAngle) * 18, y / scaleY + 20 + Math.sin(armAngle) * 18);
+      ctx.stroke();
 
- ctx.fillStyle = "yellow";
- ctx.beginPath();
- ctx.arc(x / scaleX + 15, y / scaleY + 8, 6, 0, Math.PI * 2);
- ctx.arc(x / scaleX + 35, y / scaleY + 8, 6, 0, Math.PI * 2);
- ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(x / scaleX + 32, y / scaleY + 20);
+      ctx.lineTo(x / scaleX + 45, y / scaleY + 20);
+      ctx.lineTo(x / scaleX + 45 + Math.cos(armAngle) * 18, y / scaleY + 20 + Math.sin(armAngle) * 18);
+      ctx.stroke();
 
- ctx.fillStyle = "black";
- ctx.beginPath();
- ctx.arc(x / scaleX + 15, y / scaleY + 8, 2, 0, Math.PI * 2);
- ctx.arc(x / scaleX + 35, y / scaleY + 8, 2, 0, Math.PI * 2);
- ctx.fill();
+      ctx.fillStyle = "yellow";
+      ctx.beginPath();
+      ctx.arc(x / scaleX + 15, y / scaleY + 8, 6, 0, Math.PI * 2);
+      ctx.arc(x / scaleX + 35, y / scaleY + 8, 6, 0, Math.PI * 2);
+      ctx.fill();
 
- ctx.strokeStyle = "black";
- ctx.lineWidth = 2 / scaleX;
- ctx.beginPath();
- ctx.arc(x / scaleX + 25, y / scaleY + 18, 8, 0.3, Math.PI - 0.3);
- ctx.stroke();
+      ctx.fillStyle = "black";
+      ctx.beginPath();
+      ctx.arc(x / scaleX + 15, y / scaleY + 8, 2, 0, Math.PI * 2);
+      ctx.arc(x / scaleX + 35, y / scaleY + 8, 2, 0, Math.PI * 2);
+      ctx.fill();
 
- ctx.strokeStyle = "green";
- ctx.lineWidth = 4 / scaleX;
- const legAngle = jumping ? Math.PI/2 : Math.PI/4;
- ctx.beginPath();
- ctx.moveTo(x / scaleX + 15, y / scaleY + 30);
- ctx.lineTo(x / scaleX + 5 - Math.cos(legAngle) * 12, y / scaleY + 30 + Math.sin(legAngle) * 25);
- ctx.moveTo(x / scaleX + 35, y / scaleY + 30);
- ctx.lineTo(x / scaleX + 45 + Math.cos(legAngle) * 12, y / scaleY + 30 + Math.sin(legAngle) * 25);
- ctx.stroke();
- ctx.restore();
- }
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 2 / scaleX;
+      ctx.beginPath();
+      ctx.arc(x / scaleX + 25, y / scaleY + 18, 8, 0.3, Math.PI - 0.3);
+      ctx.stroke();
 
- function drawObstaculo(obs) {
- ctx.save();
- ctx.scale(scaleX, scaleY);
- ctx.fillStyle = obs.color;
- ctx.fillRect(obs.x / scaleX, obs.y / scaleY, obs.width / scaleX, obs.height / scaleY);
- ctx.restore();
- }
+      ctx.strokeStyle = "green";
+      ctx.lineWidth = 4 / scaleX;
+      const legAngle = jumping ? Math.PI/2 : Math.PI/4;
+      ctx.beginPath();
+      ctx.moveTo(x / scaleX + 15, y / scaleY + 30);
+      ctx.lineTo(x / scaleX + 5 - Math.cos(legAngle) * 12, y / scaleY + 30 + Math.sin(legAngle) * 25);
+      ctx.moveTo(x / scaleX + 35, y / scaleY + 30);
+      ctx.lineTo(x / scaleX + 45 + Math.cos(legAngle) * 12, y / scaleY + 30 + Math.sin(legAngle) * 25);
+      ctx.stroke();
+      ctx.restore();
+    }
 
- function atualizarPoeira() {
- ctx.save();
- ctx.scale(scaleX, scaleY);
- for (let i = 0; i < poeira.length; i++) {
- const p = poeira[i];
- ctx.fillStyle = `rgba(143, 188, 143, ${p.alpha})`;
- ctx.beginPath();
- ctx.arc(p.x / scaleX, p.y / scaleY, p.raio / scaleX, 0, Math.PI * 2);
- ctx.fill();
- p.x += p.vx;
- p.y += p.vy;
- p.raio -= 0.1 * scaleX;
- p.alpha -= 0.02;
- p.vy *= 0.98;
- }
- ctx.restore();
- poeira = poeira.filter(p => p.raio > 0.2 * scaleX && p.alpha > 0.05);
- }
+    function drawObstaculo(obs) {
+      ctx.save();
+      ctx.scale(scaleX, scaleY);
+      ctx.fillStyle = obs.color;
+      ctx.fillRect(obs.x / scaleX, obs.y / scaleY, obs.width / scaleX, obs.height / scaleY);
+      ctx.restore();
+    }
 
- function atualizarJogo() {
- if (!gameStarted) return;
- const fase = getFaseAtual();
- canvas.style.background = coresFase[fase].fundo;
- ctx.clearRect(0, 0, canvas.width, canvas.height);
- drawChao();
- sapo.vy += GRAVIDADE * scaleY;
- sapo.y += sapo.vy;
- if (sapo.y > ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY) {
- sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY;
- sapo.vy = 0;
- sapo.jumping = false;
- }
- drawSapo();
- atualizarPoeira();
- if (tempo % intervaloObstaculo === 0 && tempo >= 120) {
- let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
- let cor = cores[Math.floor(Math.random() * cores.length)];
- obstaculos.push({ x: BASE_WIDTH * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - 30 * scaleY, width: 30 * scaleX, height: 30 * scaleY, color: cor });
- }
- for (let i = 0; i < obstaculos.length; i++) {
- let obs = obstaculos[i];
- obs.x -= 5 * scaleX;
- drawObstaculo(obs);
- }
- obstaculos = obstaculos.filter(obs => obs.x + obs.width > 0);
- tempo++;
- pontu acao++;
- if (tempo % 1500 === 0) {
- faseAtual++;
- intervaloObstaculo = Math.max(60, intervaloObstaculo - 10);
- }
- ctx.save();
- ctx.font = isMobile ? "bold 16px Arial" : "bold 18px Arial";
- ctx.fillStyle = "#000";
- ctx.fillText("Score: " + pontuacao, 10, isMobile ? 20 : 25);
- ctx.restore();
- }
+    function atualizarPoeira() {
+      ctx.save();
+      ctx.scale(scaleX, scaleY);
+      for (let i = 0; i < poeira.length; i++) {
+        const p = poeira[i];
+        ctx.fillStyle = `rgba(143, 188, 143, ${p.alpha})`;
+        ctx.beginPath();
+        ctx.arc(p.x / scaleX, p.y / scaleY, p.raio / scaleX, 0, Math.PI * 2);
+        ctx.fill();
+        p.x += p.vx;
+        p.y += p.vy;
+        p.raio -= 0.1 * scaleX;
+        p.alpha -= 0.02;
+        p.vy *= 0.98;
+      }
+      ctx.restore();
+      poeira = poeira.filter(p => p.raio > 0.2 * scaleX && p.alpha > 0.05);
+    }
 
- function verificarColisao() {
- for (let obs of obstaculos) {
- const sapoHitboxY = sapo.y + 7 * scaleY;
- if (
- sapo.x < obs.x + obs.width &&
- sapo.x + sapo.width > obs.x &&
- sapoHitboxY < obs.y + obs.height &&
- sapoHitboxY + ALTURA_SAPO * scaleY > obs.y
- ) {
- return true;
- }
- }
- return false;
- }
+    function atualizarJogo() {
+      if (!gameStarted) return;
+      const fase = getFaseAtual();
+      canvas.style.background = coresFase[fase].fundo;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawChao();
+      sapo.vy += GRAVIDADE * scaleY;
+      sapo.y += sapo.vy;
+      if (sapo.y > ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY) {
+        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY;
+        sapo.vy = 0;
+        sapo.jumping = false;
+      }
+      drawSapo();
+      atualizarPoeira();
+      if (tempo % intervaloObstaculo === 0 && tempo >= 120) {
+        let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
+        let cor = cores[Math.floor(Math.random() * cores.length)];
+        obstaculos.push({ x: BASE_WIDTH * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - 30 * scaleY, width: 30 * scaleX, height: 30 * scaleY, color: cor });
+      }
+      for (let i = 0; i < obstaculos.length; i++) {
+        let obs = obstaculos[i];
+        obs.x -= 5 * scaleX;
+        drawObstaculo(obs);
+      }
+      obstaculos = obstaculos.filter(obs => obs.x + obs.width > 0);
+      tempo++;
+      pontuacao++;
+      if (tempo % 1500 === 0) {
+        faseAtual++;
+        intervaloObstaculo = Math.max(60, intervaloObstaculo - 10);
+      }
+      ctx.save();
+      ctx.font = isMobile ? "bold 16px Arial" : "bold 18px Arial";
+      ctx.fillStyle = "#000";
+      ctx.fillText("Score: " + pontuacao, 10, isMobile ? 20 : 25);
+      ctx.restore();
+    }
 
- function iniciarJogo() {
- if (gameStarted) return;
- gameStarted = true;
- document.addEventListener('keydown', handleKeyJump);
- if (jumpButton) {
- jumpButton.style.display = 'block';
- }
- backgroundMusic.play().then(() => {
- console.log('Música de fundo iniciada com sucesso!');
- }).catch(e => console.log("Erro ao tocar música de fundo:", e));
- animationFrameId = requestAnimationFrame(gameLoop);
- }
+    function verificarColisao() {
+      for (let obs of obstaculos) {
+        const sapoHitboxY = sapo.y + 7 * scaleY;
+        if (
+          sapo.x < obs.x + obs.width &&
+          sapo.x + sapo.width > obs.x &&
+          sapoHitboxY < obs.y + obs.height &&
+          sapoHitboxY + ALTURA_SAPO * scaleY > obs.y
+        ) {
+          return true;
+        }
+      }
+      return false;
+    }
 
- function gameLoop() {
- if (!gameStarted) {
- return;
- }
- atualizarJogo();
- if (verificarColisao()) {
- gameStarted = false;
- cancelAnimationFrame(animationFrameId);
- failSound.play().then(() => {
- console.log("Som de game over tocado!");
- }).catch(e => console.log("Erro ao tocar som:", e));
- backgroundMusic.pause();
- backgroundMusic.currentTime = 0;
- finalScore.textContent = pontuacao;
- gameOverBanner.classList.add('active');
- positionBanners();
- document.removeEventListener('keydown', handleKeyJump);
- document.removeEventListener('keydown', startGameHandler);
- document.removeEventListener('touchstart', startGameHandler);
- if (jumpButton) {
- jumpButton.style.display = 'none';
- }
- return;
- }
- if (pontuacao >= PONTUACAO_VITORIA) {
- gameStarted = false;
- cancelAnimationFrame(animationFrameId);
- victorySound.play().then(() => {
- console.log("Som de vitória tocado!");
- }).catch(e => console.log("Erro ao tocar som:", e));
- backgroundMusic.pause();
- backgroundMusic.currentTime = 0;
- victoryScore.textContent = pontuacao;
- victoryBanner.classList.add('active');
- positionBanners();
- document.removeEventListener('keydown', handleKeyJump);
- document.removeEventListener('keydown', startGameHandler);
- document.removeEventListener('touchstart', startGameHandler);
- if (jumpButton) {
- jumpButton.style.display = 'none';
- }
- return;
- }
- animationFrameId = requestAnimationFrame(gameLoop);
- }
+    function iniciarJogo() {
+      if (gameStarted) return;
+      gameStarted = true;
+      document.addEventListener('keydown', handleKeyJump);
+      if (jumpButton) {
+        jumpButton.style.display = 'block';
+      }
+      backgroundMusic.play().catch(e => console.log("Erro ao tocar música de fundo:", e));
+      animationFrameId = requestAnimationFrame(gameLoop);
+    }
 
- const weatherElement = document.getElementById("weather");
- const clockElement = document.getElementById("clock");
+    function gameLoop() {
+      if (!gameStarted) {
+        return;
+      }
+      atualizarJogo();
+      if (verificarColisao()) {
+        gameStarted = false;
+        cancelAnimationFrame(animationFrameId);
+        failSound.play().catch(e => console.log("Erro ao tocar som:", e));
+        backgroundMusic.pause();
+        backgroundMusic.currentTime = 0;
+        finalScore.textContent = pontuacao;
+        gameOverBanner.classList.add('active');
+        positionBanners();
+        document.removeEventListener('keydown', handleKeyJump);
+        document.removeEventListener('keydown', startGameHandler);
+        document.removeEventListener('touchstart', startGameHandler);
+        if (jumpButton) {
+          jumpButton.style.display = 'none';
+        }
+        return;
+      }
+      if (pontuacao >= PONTUACAO_VITORIA) {
+        gameStarted = false;
+        cancelAnimationFrame(animationFrameId);
+        victorySound.play().catch(e => console.log("Erro ao tocar som:", e));
+        backgroundMusic.pause();
+        backgroundMusic.currentTime = 0;
+        victoryScore.textContent = pontuacao;
+        victoryBanner.classList.add('active');
+        positionBanners();
+        document.removeEventListener('keydown', handleKeyJump);
+        document.removeEventListener('keydown', startGameHandler);
+        document.removeEventListener('touchstart', startGameHandler);
+        if (jumpButton) {
+          jumpButton.style.display = 'none';
+        }
+        return;
+      }
+      animationFrameId = requestAnimationFrame(gameLoop);
+    }
 
- let lastWeatherData = null;
- let lastWeatherFetch = 0;
- const CACHE_DURATION = 10 * 60 * 1000;
+    const weatherElement = document.getElementById("weather");
+    const clockElement = document.getElementById("clock");
 
- let lastTimeData = null;
- let lastTimeFetch = 0;
- const TIME_CACHE_DURATION = 60 * 1000;
+    let lastWeatherData = null;
+    let lastWeatherFetch = 0;
+    const CACHE_DURATION = 10 * 60 * 1000;
 
- async function fetchWeather() {
- try {
- const now = Date.now();
- if (lastWeatherData && now - lastWeatherFetch < CACHE_DURATION) {
- weatherElement.textContent = lastWeatherData;
- return;
- }
- const API_KEY = "b8a0cd03c689322da2746720be31d534";
- const city = "São Paulo";
- const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&lang=pt_br&units=metric`, { mode: 'cors' });
- if (!response.ok) throw new Error(`Falha na API OpenWeatherMap: ${response.status}`);
- const data = await response.json();
- const temp = Math.round(data.main.temp);
- const description = data.weather[0].description;
- lastWeatherData = ` ${city}: ${temp}°C, ${description}`;
- lastWeatherFetch = now;
- weatherElement.textContent = lastWeatherData;
- } catch (error) {
- console.error("Erro ao buscar previsão do tempo:", error);
- weatherElement.textContent = "Clima indisponível";
- }
- }
+    let lastTimeData = null;
+    let lastTimeFetch = 0;
+    const TIME_CACHE_DURATION = 60 * 1000;
 
- async function atualizarHora() {
- try {
- const now = Date.now();
- if (lastTimeData && now - lastTimeFetch < TIME_CACHE_DURATION) {
- clockElement.textContent = lastTimeData;
- return;
- }
- const response = await fetch("https://worldtimeapi.org/api/timezone/America/Sao_Paulo", { mode: 'cors' });
- if (!response.ok) throw new Error(`Falha na API WorldTimeAPI: ${response.status}`);
- const data = await response.json();
- const dateTime = new Date(data.datetime);
- lastTimeData = ` ${dateTime.toLocaleDateString('pt-BR')} - ${dateTime.toLocaleTimeString('pt-BR')}`;
- lastTimeFetch = now;
- clockElement.textContent = lastTimeData;
- } catch (error) {
- console.error("Erro ao buscar hora:", error);
- const now = new Date();
- lastTimeData = ` ${now.toLocaleDateString('pt-BR')} - ${now.toLocaleTimeString('pt-BR')}`;
- clockElement.textContent = lastTimeData;
- setTimeout(atualizarHora, 2000);
- }
- }
+    async function fetchWeather() {
+      try {
+        const now = Date.now();
+        if (lastWeatherData && now - lastWeatherFetch < CACHE_DURATION) {
+          weatherElement.textContent = lastWeatherData;
+          return;
+        }
+        const API_KEY = "b8a0cd03c689322da2746720be31d534";
+        const city = "São Paulo";
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&lang=pt_br&units=metric`, { mode: 'cors' });
+        if (!response.ok) throw new Error(`Falha na API OpenWeatherMap: ${response.status}`);
+        const data = await response.json();
+        const temp = Math.round(data.main.temp);
+        const description = data.weather[0].description;
+        lastWeatherData = ` ${city}: ${temp}°C, ${description}`;
+        lastWeatherFetch = now;
+        weatherElement.textContent = lastWeatherData;
+      } catch (error) {
+        console.error("Erro ao buscar previsão do tempo:", error);
+        weatherElement.textContent = "Clima indisponível";
+      }
+    }
 
- window.addEventListener('load', () => {
- handleOrientation();
- resizeCanvas();
- window.addEventListener('resize', debounce(resizeCanvas, 100));
- setupControls();
- resetGame();
+    async function atualizarHora() {
+      try {
+        const now = Date.now();
+        if (lastTimeData && now - lastTimeFetch < TIME_CACHE_DURATION) {
+          clockElement.textContent = lastTimeData;
+          return;
+        }
+        const response = await fetch("https://worldtimeapi.org/api/timezone/America/Sao_Paulo", { mode: 'cors' });
+        if (!response.ok) throw new Error(`Falha na API WorldTimeAPI: ${response.status}`);
+        const data = await response.json();
+        const dateTime = new Date(data.datetime);
+        lastTimeData = ` ${dateTime.toLocaleDateString('pt-BR')} - ${dateTime.toLocaleTimeString('pt-BR')}`;
+        lastTimeFetch = now;
+        clockElement.textContent = lastTimeData;
+      } catch (error) {
+        console.error("Erro ao buscar hora:", error);
+        setTimeout(atualizarHora, 2000);
+        const now = new Date();
+        lastTimeData = ` ${now.toLocaleDateString('pt-BR')} - ${now.toLocaleTimeString('pt-BR')}`;
+        clockElement.textContent = lastTimeData;
+      }
+    }
 
- fetchWeather();
- atualizarHora();
+    window.addEventListener('load', () => {
+      handleOrientation();
+      resizeCanvas();
+      window.addEventListener('resize', debounce(resizeCanvas, 100));
+      setupControls();
+      resetGame();
 
- setInterval(fetchWeather, 10 * 60 * 1000);
- setInterval(atualizarHora, 60 * 1000);
+      fetchWeather();
+      atualizarHora();
 
- document.body.addEventListener('touchstart', () => {
- jumpSound.play().then(() => jumpSound.pause()).catch(e => console.log("Erro ao desbloquear jumpSound:", e));
- failSound.play().then(() => failSound.pause()).catch(e => console.log("Erro ao desbloquear failSound:", e));
- victorySound.play().then(() => victorySound.pause()).catch(e => console.log("Erro ao desbloquear victorySound:", e));
- backgroundMusic.play().then(() => backgroundMusic.pause()).catch(e => console.log("Erro ao desbloquear backgroundMusic:", e));
- }, { once: true });
+      setInterval(fetchWeather, 10 * 60 * 1000);
+      setInterval(atualizarHora, 60 * 1000);
 
- positionBanners();
- });
+      document.body.addEventListener('touchstart', () => {
+        jumpSound.play().then(() => jumpSound.pause()).catch(e => console.log("Erro ao desbloquear jumpSound:", e));
+        failSound.play().then(() => failSound.pause()).catch(e => console.log("Erro ao desbloquear failSound:", e));
+        victorySound.play().then(() => victorySound.pause()).catch(e => console.log("Erro ao desbloquear victorySound:", e));
+        backgroundMusic.play().then(() => backgroundMusic.pause()).catch(e => console.log("Erro ao desbloquear backgroundMusic:", e));
+      }, { once: true });
 
- restartButton.addEventListener("click", resetGame);
- playAgainButton.addEventListener("click", resetGame);
- </script>
+      positionBanners();
+    });
+
+    restartButton.addEventListener("click", resetGame);
+    playAgainButton.addEventListener("click", resetGame);
+  </script>
 </body>
 </html>
