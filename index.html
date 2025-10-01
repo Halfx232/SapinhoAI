@@ -28,7 +28,7 @@
   <link rel="preload" href="styles-mobile.css" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="styles-desktop.css" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles-mobile.css?v=4" media="screen and (max-width: 1023px)">
+  <link rel="stylesheet" href="styles-mobile.css?v=5" media="screen and (max-width: 1023px)">
   <link rel="stylesheet" href="styles-desktop.css" media="screen and (min-width: 1024px)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
@@ -122,36 +122,34 @@
       if (!isMobile) {
         const ads = document.querySelectorAll('#left-ad > ins, #right-ad > ins');
         ads.forEach(ad => {
-          ad.style.width = '300px';
-          ad.style.height = '400px';
-          ad.style.maxWidth = '300px';
-          ad.style.maxHeight = '400px';
-          ad.style.minWidth = '300px';
-          ad.style.minHeight = '400px';
-          ad.style.overflow = 'hidden';
-          (adsbygoogle = window.adsbygoogle || []).push({});
+          if (!ad.closest('#left-ad, #right-ad').classList.contains('loaded')) {
+            ad.style.width = '300px';
+            ad.style.height = '400px';
+            ad.style.maxWidth = '300px';
+            ad.style.maxHeight = '400px';
+            ad.style.minWidth = '300px';
+            ad.style.minHeight = '400px';
+            ad.style.overflow = 'hidden';
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            ad.closest('#left-ad, #right-ad').classList.add('loaded');
+          }
         });
         console.log('Banners laterais forçados para 300x400px no load (desktop)');
       } else {
         const ads = document.querySelectorAll('#top-ad > ins, #bottom-ad > ins');
         ads.forEach(ad => {
-          ad.style.width = '100%';
-          ad.style.maxWidth = '100%';
-          ad.style.height = '100px';
-          ad.style.maxHeight = '100px';
-          ad.style.overflow = 'hidden';
-          (adsbygoogle = window.adsbygoogle || []).push({});
+          if (!ad.closest('#top-ad, #bottom-ad').classList.contains('loaded')) {
+            ad.style.width = '100%';
+            ad.style.maxWidth = '100%';
+            ad.style.height = '100px';
+            ad.style.maxHeight = '100px';
+            ad.style.overflow = 'hidden';
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            ad.closest('#top-ad, #bottom-ad').classList.add('loaded');
+          }
         });
         console.log('Banners superior e inferior forçados para 320x100px no load (mobile)');
       }
-
-      setTimeout(() => {
-        document.getElementById('left-ad').style.visibility = 'visible';
-        document.getElementById('right-ad').style.visibility = 'visible';
-        document.getElementById('top-ad').style.visibility = 'visible';
-        document.getElementById('bottom-ad').style.visibility = 'visible';
-        console.log('Banners forçados visíveis após timeout');
-      }, 3000);
     });
 
     const menuToggle = document.getElementById('menu-toggle');
