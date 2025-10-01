@@ -26,10 +26,10 @@
   </style>
   <!-- Pré-carregar fontes e CSS -->
   <link rel="preload" href="styles-mobile.css?v=6" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
-  <link rel="preload" href="styles-desktop.css?v=3" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="styles-desktop.css?v=5" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles-mobile.css?v=6" media="screen and (max-width: 1023px)">
-  <link rel="stylesheet" href="styles-desktop.css?v=3" media="screen and (min-width: 1024px)">
+  <link rel="stylesheet" href="styles-desktop.css?v=5" media="screen and (min-width: 1024px)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
@@ -635,7 +635,10 @@
     window.addEventListener('load', () => {
       handleOrientation();
       resizeCanvas();
-      window.addEventListener('resize', debounce(resizeCanvas, 100));
+      window.addEventListener('resize', debounce(() => {
+        resizeCanvas();
+        positionBanners();
+      }, 100));
       setupControls();
       resetGame();
 
