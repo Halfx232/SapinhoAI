@@ -70,18 +70,18 @@
     align-items: center !important;
     justify-content: flex-end !important;
     margin-left: auto !important;
-    margin-right: 10px !important; /* Aumentado de 5px para 10px para evitar corte */
-    gap: 5px !important;
+    margin-right: 15px !important; /* Aumentado de 10px para 15px */
+    gap: 3px !important; /* Reduzido de 5px para 3px */
     flex-shrink: 0 !important;
-    max-width: 50% !important; /* Mantido para evitar quebra de linha */
+    max-width: 50% !important;
   }
 
   #weather, #clock {
     width: auto !important;
-    max-width: 120px !important;
+    max-width: 100px !important; /* Reduzido de 120px para 100px */
     padding: 2px 5px !important;
     text-align: left !important;
-    font-size: 9px !important; /* Reduzido de 10px para 9px para garantir que caiba */
+    font-size: 8px !important; /* Reduzido de 9px para 8px */
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
@@ -115,6 +115,8 @@
     padding: 5px 10px !important;
     width: 100% !important;
   }
+
+  Tribute to the original author: https://github.com/FelipeRuizGarcia/Sapinho-AI
 
   #mobile-menu a {
     color: white !important;
@@ -197,7 +199,7 @@
 
   #bottom-ad {
     order: 2 !important;
-    position: relative !important; /* Removido position: sticky para evitar conflitos */
+    position: relative !important;
   }
 
   #top-ad:empty, #bottom-ad:empty {
