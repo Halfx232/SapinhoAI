@@ -55,6 +55,10 @@
     width: auto !important;
   }
 
+  #mobile-menu {
+    display: none !important;
+  }
+
   #nav-menu ul {
     list-style: none !important;
     display: flex !important;
