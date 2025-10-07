@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="Jogo do Sapinho: uma aventura divertida com um sapo, desenvolvida com IA. Jogue agora!">
+  <meta name="description" content="Jogo do Sapinho: uma aventura divertida com um sapo, desenvolvailability com IA. Jogue agora!">
   <meta name="keywords" content="jogo, sapinho, inteligência artificial, arcade">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jogo do Sapinho</title>
@@ -25,55 +25,45 @@
     canvas:not(.ready) { display: none; }
   </style>
   <!-- Pré-carregar fontes e CSS -->
-  <link rel="preload" href="styles-mobile.css" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
-  <link rel="preload" href="styles-desktop.css" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="styles-mobile.css?v=7" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="styles-desktop.css?v=5" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles-mobile.css" media="screen and (max-width: 1023px)">
-  <link rel="stylesheet" href="styles-desktop.css" media="screen and (min-width: 1024px)">
+  <link rel="stylesheet" href="styles-mobile.css?v=7" media="screen and (max-width: 1023px)">
+  <link rel="stylesheet" href="styles-desktop.css?v=5" media="screen and (min-width: 1024px)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
 </head>
 <body>
   <div id="top-bar">
-    <nav>
-      <button id="menu-toggle"></button> <!-- Botão hambúrguer -->
-      <div id="mobile-menu">
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="sobre.html">Sobre</a></li>
-          <li><a href="contato.html">Contato</a></li>
-          <li><a href="politicas.html">Políticas</a></li>
-        </ul>
-      </div>
-      <div class="weather-clock">
-        <div id="weather">Previsão do Tempo</div>
-        <div id="clock">Relógio</div>
-      </div>
+    <button id="menu-toggle" class="fa fa-bars"></button>
+    <div class="weather-clock">
+      <div id="weather">Previsão do Tempo</div>
+      <div id="clock">Relógio</div>
+    </div>
+    <nav id="nav-menu">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li><a href="politicas.html">Políticas</a></li>
+      </ul>
     </nav>
   </div>
 
   <div id="game-container">
     <div id="top-ad">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
       <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-TOP" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
     <div id="left-ad">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
-      <ins class="adsbygoogle" style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
     </div>
     <canvas id="gameCanvas"></canvas>
     <div id="right-ad">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
-      <ins class="adsbygoogle" style="display:block; width:300px !important; height:400px !important; max-width:300px !important; max-height:400px !important; min-width:300px !important; min-height:400px !important;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
     </div>
     <div id="bottom-ad">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
       <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-BOTTOM" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
     <div id="start-banner" class="active">
@@ -118,7 +108,6 @@
       canvas.classList.add('ready');
       document.getElementById('top-bar').style.display = 'flex';
       document.getElementById('game-container').style.display = 'flex';
-      // Garantir que start-banner seja clicável
       const startBanner = document.getElementById('start-banner');
       startBanner.style.pointerEvents = 'auto';
     });
@@ -133,51 +122,49 @@
       if (!isMobile) {
         const ads = document.querySelectorAll('#left-ad > ins, #right-ad > ins');
         ads.forEach(ad => {
-          ad.style.width = '300px';
-          ad.style.height = '400px';
-          ad.style.maxWidth = '300px';
-          ad.style.maxHeight = '400px';
-          ad.style.minWidth = '300px';
-          ad.style.minHeight = '400px';
-          ad.style.overflow = 'hidden';
+          if (!ad.closest('#left-ad, #right-ad').classList.contains('loaded')) {
+            ad.style.width = '300px';
+            ad.style.height = '400px';
+            ad.style.maxWidth = '300px';
+            ad.style.maxHeight = '400px';
+            ad.style.minWidth = '300px';
+            ad.style.minHeight = '400px';
+            ad.style.overflow = 'hidden';
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            ad.closest('#left-ad, #right-ad').classList.add('loaded');
+          }
         });
         console.log('Banners laterais forçados para 300x400px no load (desktop)');
       } else {
         const ads = document.querySelectorAll('#top-ad > ins, #bottom-ad > ins');
         ads.forEach(ad => {
-          ad.style.width = '100%';
-          ad.style.maxWidth = '100%';
-          ad.style.height = '100px';
-          ad.style.maxHeight = '100px';
-          ad.style.overflow = 'hidden';
+          if (!ad.closest('#top-ad, #bottom-ad').classList.contains('loaded')) {
+            ad.style.width = '100%';
+            ad.style.maxWidth = '100%';
+            ad.style.height = '100px';
+            ad.style.maxHeight = '100px';
+            ad.style.overflow = 'hidden';
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            ad.closest('#top-ad, #bottom-ad').classList.add('loaded');
+          }
         });
         console.log('Banners superior e inferior forçados para 320x100px no load (mobile)');
       }
-
-      setTimeout(() => {
-        document.getElementById('left-ad').style.visibility = 'visible';
-        document.getElementById('right-ad').style.visibility = 'visible';
-        document.getElementById('top-ad').style.visibility = 'visible';
-        document.getElementById('bottom-ad').style.visibility = 'visible';
-        console.log('Banners forçados visíveis após timeout');
-      }, 3000);
     });
 
-    // Menu Hambúrguer para Mobile
     const menuToggle = document.getElementById('menu-toggle');
-    const mobileMenu = document.getElementById('mobile-menu');
+    const navMenu = document.getElementById('nav-menu');
 
     function toggleMenu() {
-      mobileMenu.classList.toggle('open');
+      navMenu.classList.toggle('open');
     }
 
-    if (menuToggle && mobileMenu) {
+    if (menuToggle && navMenu) {
       menuToggle.addEventListener('click', toggleMenu);
-      // Fechar menu ao clicar em um link
-      const menuLinks = mobileMenu.querySelectorAll('a');
+      const menuLinks = navMenu.querySelectorAll('a');
       menuLinks.forEach(link => {
         link.addEventListener('click', () => {
-          mobileMenu.classList.remove('open');
+          navMenu.classList.remove('open');
         });
       });
     }
@@ -648,7 +635,10 @@
     window.addEventListener('load', () => {
       handleOrientation();
       resizeCanvas();
-      window.addEventListener('resize', debounce(resizeCanvas, 100));
+      window.addEventListener('resize', debounce(() => {
+        resizeCanvas();
+        positionBanners();
+      }, 100));
       setupControls();
       resetGame();
 
