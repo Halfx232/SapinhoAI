@@ -58,6 +58,7 @@
   #nav-menu ul {
     list-style: none !important;
     display: flex !important;
+    flex-direction: row !important;
     gap: 20px !important;
     margin: 0 !important;
     padding: 10px !important;
@@ -181,7 +182,7 @@
     font-size: 14px !important;
     margin: 20px auto !important;
     width: 100% !important;
-    max-width: 800px !important;
+    max-width: 1460px !important;
   }
 
   #about-section, #contact-section {
@@ -192,7 +193,7 @@
     color: #000 !important;
     border-radius: 8px !important;
     width: 100% !important;
-    max-width: 800px !important;
+    max-width: 1460px !important;
     box-sizing: border-box !important;
     display: block !important;
   }
