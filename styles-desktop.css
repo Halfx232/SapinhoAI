@@ -1,3 +1,4 @@
+/* styles-desktop.css?v=6.1 */
 @media only screen and (min-width: 1024px) {
   html:not(.loaded) body {
     visibility: hidden !important;
@@ -194,6 +195,8 @@
     background: #fff !important;
     text-align: center !important;
     margin: 20px auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
     color: #000 !important;
     border-radius: 8px !important;
     width: 100% !important;
