@@ -1,32 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="description" content="Saiba mais sobre o Jogo do Sapinho, desenvolvido com inteligência artificial.">
-  <meta name="keywords" content="jogo, sapinho, inteligência artificial, arcade">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sobre - Jogo do Sapinho</title>
-  <link rel="icon" href="https://em-content.zobj.net/thumbs/160/twitter/322/frog_1f438.png" type="image/png">
-  <!-- Meta tags Open Graph -->
-  <meta property="og:title" content="Sobre - Jogo do Sapinho">
-  <meta property="og:description" content="Saiba mais sobre o Jogo do Sapinho!">
-  <meta property="og:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
-  <meta property="og:url" content="https://sapinho-ai.vercel.app/sobre.html">
-  <meta property="og:type" content="website">
-  <!-- Meta tags Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
-  <!-- Estilo inline inicial como fallback -->
-  <style>
-    html:not(.loaded) body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
-    #top-bar, #about-section, #footer { display: none; }
-    a { color: white; text-decoration: none; }
-  </style>
-  <!-- Pré-carregar fontes e CSS -->
-  <link rel="preload" href="styles-mobile.css?v=8" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
-  <link rel="preload" href="styles-desktop.css?v=6" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
-  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles-mobile.css?v=8" media="screen and (max-width: 1023px)">
-  <link rel="stylesheet" href="styles-desktop.css?v=6" media="screen and (min-width: 1024px)">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
+ <meta charset="UTF-8">
+ <meta name="description" content="Saiba mais sobre o Jogo do Sapinho, desenvolvido com inteligência artificial.">
+ <meta name="keywords" content="jogo, sapinho, inteligência artificial, arcade">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Sobre - Jogo do Sapinho</title>
+ <link rel="icon" href="https://em-content.zobj.net/thumbs/160/twitter/322/frog_1f438.png" type="image/png">
+ <!-- Meta tags Open Graph -->
+ <meta property="og:title" content="Sobre - Jogo do Sapinho">
+ <meta property="og:description" content="Saiba mais sobre o Jogo do Sapinho!">
+ <meta property="og:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
+ <meta property="og:url" content="https://sapinho-ai.vercel.app/sobre.html">
+ <meta property="og:type" content="website">
+ <!-- Meta tags Twitter -->
+ <meta name="twitter:card" content="summary_large_image">
+ <meta name="twitter:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
+ <!-- Estilo inline inicial como fallback -->
+ <style>
+ html:not(.loaded) body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
+ #top-bar, #about-section, #footer { display: none; }
+ a { color: white; text-decoration: none; }
+ </style>
+ <!-- Pré-carregar fontes e CSS -->
+ <link rel="preload" href="styles-mobile.css?v=8" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
+ <link rel="preload" href="styles-desktop.css?v=6" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
+ <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+ <link rel="stylesheet" href="styles-mobile.css?v=8" media="screen and (max-width: 1023px)">
+ <link rel="stylesheet" href="styles-desktop.css?v=6" media="screen and (min-width: 1024px)">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+ <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
 </head>
+<body>
+ <div id="top-bar ">
+ <button id="menu-toggle" class="fa fa-bars"></button>
+ <div class="weather-clock">
+ <div id="weather">Previsão do Tempo</div>
+ <div id="clock">Relógio</div>
+ </div>
+ <nav id="nav-menu">
+ <ul>
+ <li><a href="index.html">Home</a></li>
+ <li><a href="sobre.html">Sobre</a></li>
+ <li><a href="contato.html">Contato</a></li>
+ <li><a href="politicas.html">Políticas</a></li>
+ </ul>
+ </nav>
+ </div>
+ <div id="about-section">
+ <h2>Sobre o Jogo do Sapinho</h2>
+ <p>O Jogo do Sapinho é um projeto divertido criado com auxílio de inteligência artificial. Nesta versão de teste, você controla um sapo que pula obstáculos em diferentes estações do ano. Fique ligado para atualizações!</p>
+ </div>
+ <div id="footer">Siga o Sapinho nas redes sociais! <a href="#">Instagram</a> | <a href="#">YouTube</a> | <a href="#">TikTok</a></div>
+ <script src="script.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+ <script>
+ window.addEventListener('load', function() {
+ document.documentElement.classList.add('loaded');
+ });
+ window.cookieconsent.initialise({
+ "palette": {
+ "popup": { "background": "#1b5e20" },
+ "button": { "background": "#00ff00" }
+ },
+ "theme": "classic",
+ "position": "bottom-right",
+ "content": {
+ "message": "Este site usa cookies para garantir que você obtenha a melhor experiência em nosso site.",
+ "dismiss": "Entendido!",
+ "link": "Saiba mais",
+ "href": "politicas.html"
+ }
+ });
+ </script>
+</body>
+</html>
