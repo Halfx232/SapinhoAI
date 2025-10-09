@@ -1,4 +1,4 @@
-/* styles-desktop.css?v=6.3 */
+/* styles-desktop.css?v=6.4 */
 @media only screen and (min-width: 1024px) {
   html:not(.loaded) body {
     visibility: hidden !important;
@@ -201,7 +201,6 @@
     color: #000 !important;
     border-radius: 8px !important;
     width: 100% !important;
-    max-width: 1460px !important;
     box-sizing: border-box !important;
     display: block !important;
   }
@@ -217,7 +216,6 @@
     color: #000 !important;
     border-radius: 8px !important;
     width: 100% !important;
-    max-width: 1460px !important;
     box-sizing: border-box !important;
     display: block !important;
   }
@@ -246,8 +244,6 @@
     box-sizing: border-box !important;
     font-size: 14px !important;
     display: block !important;
-    max-width: 1460px !important;
-    margin: 0 auto !important;
   }
 
   #footer a {
