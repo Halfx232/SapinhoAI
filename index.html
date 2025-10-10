@@ -26,10 +26,10 @@
     #top-bar { background: #1b5e20; display: flex; }
   </style>
   <!-- Pré-carregar fontes e CSS -->
-  <link rel="preload" href="styles-mobile.css?v=9" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="styles-mobile.css?v=10" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="styles-desktop.css?v=6" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles-mobile.css?v=9" media="screen and (max-width: 1023px)">
+  <link rel="stylesheet" href="styles-mobile.css?v=10" media="screen and (max-width: 1023px)">
   <link rel="stylesheet" href="styles-desktop.css?v=6" media="screen and (min-width: 1024px)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
@@ -230,20 +230,33 @@
       const banners = [startBanner, gameOverBanner, victoryBanner];
       banners.forEach(banner => {
         if (banner.classList.contains('active')) {
-          console.log(`Banner ${banner.id} visível, posicionado via CSS: left=50%, top=50%, transform=translate(-50%, -50%)`);
+          banner.style.position = 'fixed';
+          banner.style.top = '50%';
+          banner.style.left = '50%';
+          banner.style.transform = 'translate(-50%, -50%)';
+          banner.style.zIndex = '1000';
+          console.log(`Banner ${banner.id} visível, posicionado: left=50%, top=50%, transform=translate(-50%, -50%)`);
           console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
         }
       });
-      console.log('Canvas dimensions:', document.getElementById('gameCanvas').getBoundingClientRect());
+      console.log('Canvas dimensions:', canvas.getBoundingClientRect());
       if (!isMobile) {
         console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
         console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
       } else {
         console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
       }
+      // Forçar reposicionamento dos descritivos
+      const testVersion = document.getElementById('test-version');
+      const aboutSection = document.getElementById('about-section');
+      testVersion.style.position = 'relative';
+      testVersion.style.zIndex = '2';
+      aboutSection.style.position = 'relative';
+      aboutSection.style.zIndex = '2';
     }
 
     function resizeCanvas() {
+      console.log('resizeCanvas chamado');
       if (isMobile) {
         const maxWidth = Math.min(window.innerWidth - 20, 400);
         canvas.width = maxWidth;
@@ -251,12 +264,14 @@
         scaleX = canvas.width / BASE_WIDTH;
         scaleY = canvas.height / BASE_HEIGHT;
         ALTURA_CHAO = canvas.height;
+        canvas.style.margin = '15px auto'; // Margem para evitar sobreposição
       } else {
         canvas.width = BASE_WIDTH;
         canvas.height = BASE_HEIGHT;
         scaleX = 1;
         scaleY = 1;
         ALTURA_CHAO = BASE_HEIGHT;
+        canvas.style.margin = '20px auto';
       }
       if (sapo) {
         sapo.x = BASE_WIDTH * 0.2 * scaleX;
@@ -269,11 +284,19 @@
     function handleOrientation() {
       const gameContainer = document.getElementById('game-container');
       gameContainer.style.display = 'flex';
+      gameContainer.style.flexDirection = 'column';
+      gameContainer.style.alignItems = 'center';
       resizeCanvas();
       window.addEventListener('resize', debounce(() => {
         resizeCanvas();
         positionBanners();
       }, 100));
+      window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+          resizeCanvas();
+          positionBanners();
+        }, 200);
+      });
     }
 
     function handleJump() {
@@ -282,6 +305,7 @@
         sapo.jumping = true;
         jumpSound.currentTime = 0;
         jumpSound.play().catch(e => console.log("Erro ao tocar som:", e));
+        console.log('Sapo pulou!');
         for (let i = 0; i < 10; i++) {
           poeira.push({
             x: sapo.x + 15 * scaleX + Math.random() * 10 * scaleX,
@@ -339,6 +363,7 @@
       startBanner.addEventListener('touchstart', startGameHandler);
       document.addEventListener('keydown', startGameHandler);
       canvas.addEventListener('touchstart', (e) => {
+        console.log('Toque no canvas');
         e.preventDefault();
         if (gameStarted && !sapo.jumping) {
           handleJump();
@@ -499,6 +524,7 @@
       gameStarted = true;
       document.addEventListener('keydown', handleKeyJump);
       canvas.addEventListener('touchstart', (e) => {
+        console.log('Toque no canvas');
         e.preventDefault();
         if (gameStarted && !sapo.jumping) {
           handleJump();
