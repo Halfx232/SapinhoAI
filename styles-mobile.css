@@ -1,55 +1,40 @@
-/* styles-mobile.css?v=9 */
 @media only screen and (max-width: 1023px) {
-  html:not(.loaded) body {
-    visibility: hidden !important;
-  }
-
-  html.loaded body {
-    visibility: visible !important;
-  }
-
   body {
     margin: 0 !important;
     padding: 0 !important;
     font-family: sans-serif !important;
     background: linear-gradient(180deg, #1a1a1a, #2e2e2e) !important;
     color: #fff !important;
-    height: 100vh !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    touch-action: manipulation !important;
-  }
-
-  button:focus {
-    outline: none !important;
   }
 
   #top-bar {
+    background: #1b5e20 !important;
+    padding: 10px !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    background: #1b5e20 !important;
-    color: white !important;
-    padding: 10px 20px !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 1000 !important;
-    min-height: 50px !important;
+    position: relative !important;
+    z-index: 20 !important;
   }
 
   #menu-toggle {
-    display: block !important;
     background: none !important;
     border: none !important;
-    color: white !important;
+    color: #fff !important;
     font-size: 24px !important;
     cursor: pointer !important;
-    padding: 0 10px !important;
-    line-height: 1 !important;
+  }
+
+  .weather-clock {
+    display: flex !important;
+    gap: 10px !important;
+    font-size: 14px !important;
+  }
+
+  #weather, #clock {
+    color: #fff !important;
   }
 
   #nav-menu {
@@ -57,9 +42,9 @@
     position: absolute !important;
     top: 50px !important;
     left: 0 !important;
-    width: 100% !important;
     background: #1b5e20 !important;
-    z-index: 999 !important;
+    width: 100% !important;
+    z-index: 100 !important;
   }
 
   #nav-menu.open {
@@ -68,78 +53,42 @@
 
   #nav-menu ul {
     list-style: none !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 10px !important;
-    margin: 0 !important;
     padding: 10px !important;
+    margin: 0 !important;
   }
 
-  #nav-menu a {
-    color: white !important;
+  #nav-menu ul li {
+    margin: 10px 0 !important;
+  }
+
+  #nav-menu ul li a {
+    color: #fff !important;
     text-decoration: none !important;
     font-size: 16px !important;
-    transition: color 0.3s ease !important;
-  }
-
-  #nav-menu a:hover {
-    color: #00ff00 !important;
-  }
-
-  .weather-clock {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 10px !important;
-    margin-right: 10px !important;
-    font-size: 12px !important;
-    color: white !important;
-  }
-
-  #weather, #clock {
-    max-width: 120px !important;
-    padding: 0 5px !important;
-    text-align: center !important;
-    font-size: 12px !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
   }
 
   #game-container {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    flex-grow: 1 !important;
-    padding: 10px !important;
-    box-sizing: border-box !important;
-    max-width: 100vw !important;
-    min-height: 300px !important;
-  }
-
-  #top-ad, #bottom-ad {
-    display: block !important;
-    width: 100% !important;
-    max-width: 320px !important;
-    height: 100px !important;
-    background: #cfd8dc !important;
-    text-align: center !important;
-    font-size: 12px !important;
-    color: #455a64 !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
     margin: 10px auto !important;
-  }
-
-  #top-ad > ins, #bottom-ad > ins {
     width: 100% !important;
-    height: 100px !important;
-    max-width: 320px !important;
-    max-height: 100px !important;
-    display: block !important;
+    max-width: 400px !important;
+    position: relative !important;
+    z-index: 5 !important;
   }
 
-  #left-ad, #right-ad {
+  #top-ad {
+    margin: 10px auto 15px auto !important;
+    text-align: center !important;
+    width: 100% !important;
+    max-width: 400px !important;
+    height: 100px !important;
+    position: relative !important;
+    z-index: 10 !important;
+  }
+
+  #left-ad, #right-ad, #bottom-ad {
     display: none !important;
   }
 
@@ -147,25 +96,64 @@
     width: 100% !important;
     max-width: 400px !important;
     aspect-ratio: 2/1 !important;
+    border: 2px solid #000 !important;
+    margin: 15px auto !important;
+    position: relative !important;
+    z-index: 5 !important;
+  }
+
+  #start-banner, #game-over-banner, #victory-banner {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: #fff !important;
+    padding: 20px !important;
+    border-radius: 10px !important;
+    text-align: center !important;
+    z-index: 1000 !important;
+    display: none !important;
+    max-width: 90% !important;
+  }
+
+  #start-banner.active, #game-over-banner.active, #victory-banner.active {
+    display: block !important;
+  }
+
+  #start-banner h1, #game-over-banner h2, #victory-banner h2 {
+    margin: 0 0 10px !important;
+    font-size: 24px !important;
+  }
+
+  #start-banner p, #game-over-banner p, #victory-banner p {
+    margin: 0 0 20px !important;
+    font-size: 16px !important;
+  }
+
+  #restart-button, #play-again-button {
+    background: #00ff00 !important;
     border: none !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-    border-radius: 8px !important;
-    z-index: 1 !important;
+    padding: 10px 20px !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+    border-radius: 5px !important;
   }
 
   #test-version {
-    text-align: center !important;
-    padding: 10px !important;
     background: #ffd700 !important;
+    padding: 10px !important;
+    text-align: center !important;
+    margin: 15px auto 10px auto !important;
     color: #000 !important;
-    font-size: 14px !important;
-    margin: 10px auto !important;
     width: 100% !important;
     max-width: 400px !important;
-    box-sizing: border-box !important;
+    border-radius: 8px !important;
+    position: relative !important;
+    z-index: 2 !important;
   }
 
-  #about-section, #contact-section {
+  #about-section {
     padding: 20px !important;
     background: #fff !important;
     text-align: center !important;
@@ -175,130 +163,28 @@
     width: 100% !important;
     max-width: 400px !important;
     box-sizing: border-box !important;
+    position: relative !important;
+    z-index: 2 !important;
   }
 
-  #about-section h2, #contact-section h2 {
+  #about-section h2 {
     font-size: 20px !important;
     color: #1b5e20 !important;
   }
 
-  #contact-section a {
-    color: #1b5e20 !important;
-    text-decoration: underline !important;
-    transition: color 0.3s ease !important;
-  }
-
-  #contact-section a:hover {
-    color: #00ff00 !important;
-  }
-
   #footer {
-    width: 100% !important;
     text-align: center !important;
-    background: #1b5e20 !important;
-    color: white !important;
     padding: 10px !important;
-    box-sizing: border-box !important;
     font-size: 14px !important;
+    width: 100% !important;
+    max-width: 400px !important;
+    margin: 10px auto !important;
+    position: relative !important;
+    z-index: 2 !important;
   }
 
   #footer a {
     color: #00ff00 !important;
-    text-decoration: none !important;
     margin: 0 5px !important;
-    transition: color 0.3s ease !important;
-  }
-
-  #footer a:hover {
-    color: #ccff90 !important;
-  }
-
-  #start-banner, #game-over-banner, #victory-banner {
-    position: absolute !important;
-    background: rgba(0, 0, 0, 0.9) !important;
-    padding: 15px !important;
-    text-align: center !important;
-    border: 3px solid #00ff00 !important;
-    border-radius: 12px !important;
-    z-index: 2 !important;
-    pointer-events: auto !important;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5) !important;
-    display: none !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 90% !important;
-    max-width: 300px !important;
-    min-height: 150px !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-  }
-
-  #start-banner.active, #game-over-banner.active, #victory-banner.active {
-    display: flex !important;
-  }
-
-  #start-banner h1 {
-    font-size: 18px !important;
-    color: #00ff00 !important;
-    margin-bottom: 10px !important;
-  }
-
-  #start-banner p {
-    font-size: 14px !important;
-    color: #d32f2f !important;
-    animation: blink 1s infinite !important;
-  }
-
-  #game-over-banner h2, #victory-banner h2 {
-    font-size: 16px !important;
-    color: #00ff00 !important;
-  }
-
-  #game-over-banner p, #victory-banner p {
-    font-size: 14px !important;
-    margin-top: 8px !important;
-    color: #fff !important;
-  }
-
-  #restart-button, #play-again-button {
-    margin-top: 10px !important;
-    padding: 8px 16px !important;
-    font-size: 14px !important;
-    background-color: #00ff00 !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 8px !important;
-    cursor: pointer !important;
-    transition: background-color 0.3s ease !important;
-  }
-
-  #restart-button:hover, #play-again-button:hover {
-    background-color: #ccff90 !important;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  @media (orientation: landscape) {
-    #game-container {
-      padding: 10px !important;
-      max-width: 100vw !important;
-    }
-
-    #top-ad, #bottom-ad {
-      margin: 10px auto !important;
-    }
-
-    canvas {
-      margin: 10px auto !important;
-    }
-
-    #test-version, #about-section, #contact-section {
-      margin: 10px auto !important;
-    }
   }
 }
