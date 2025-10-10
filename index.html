@@ -63,9 +63,6 @@
     <div id="right-ad">
       <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
     </div>
-    <div id="bottom-ad">
-      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-BOTTOM" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-    </div>
 
     <div id="start-banner" class="active">
       <h1>Sejam bem-vindos ao Jogo do Sapinho!</h1>
@@ -138,19 +135,19 @@
         });
         console.log('Banners laterais forçados para 300x400px no load (desktop)');
       } else {
-        const ads = document.querySelectorAll('#top-ad > ins, #bottom-ad > ins');
+        const ads = document.querySelectorAll('#top-ad > ins');
         ads.forEach(ad => {
-          if (!ad.closest('#top-ad, #bottom-ad').classList.contains('loaded')) {
+          if (!ad.closest('#top-ad').classList.contains('loaded')) {
             ad.style.width = '100%';
             ad.style.maxWidth = '100%';
             ad.style.height = '100px';
             ad.style.maxHeight = '100px';
             ad.style.overflow = 'hidden';
             (adsbygoogle = window.adsbygoogle || []).push({});
-            ad.closest('#top-ad, #bottom-ad').classList.add('loaded');
+            ad.closest('#top-ad').classList.add('loaded');
           }
         });
-        console.log('Banners superior e inferior forçados para 320x100px no load (mobile)');
+        console.log('Banner superior forçado para 320x100px no load (mobile)');
       }
     });
 
@@ -243,7 +240,6 @@
         console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
       } else {
         console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
-        console.log('Bottom Ad:', document.getElementById('bottom-ad').getBoundingClientRect());
       }
     }
 
