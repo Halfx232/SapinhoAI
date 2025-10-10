@@ -19,16 +19,17 @@
   <!-- Estilo inline inicial como fallback -->
   <style>
     html:not(.loaded) body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
-    #top-bar, #game-container { display: none; }
+    #top-bar, #game-container, #test-version, #footer { display: none; }
     a { color: white; text-decoration: none; }
     #start-banner, #game-over-banner, #victory-banner { display: none; }
     canvas:not(.ready) { display: none; }
+    #top-bar { background: #1b5e20; display: flex; }
   </style>
   <!-- Pré-carregar fontes e CSS -->
-  <link rel="preload" href="styles-mobile.css?v=8" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="styles-mobile.css?v=9" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="styles-desktop.css?v=6" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles-mobile.css?v=8" media="screen and (max-width: 1023px)">
+  <link rel="stylesheet" href="styles-mobile.css?v=9" media="screen and (max-width: 1023px)">
   <link rel="stylesheet" href="styles-desktop.css?v=6" media="screen and (min-width: 1024px)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
@@ -88,17 +89,12 @@
     <p>Versão de teste do SapinhoAI, desenvolvida com auxílio de inteligência artificial. Atualizações em breve!</p>
   </div>
 
-  <div id="about-section">
-    <h2>Sobre o Jogo do Sapinho</h2>
-    <p>O Jogo do Sapinho é uma aventura divertida desenvolvida com auxílio de inteligência artificial. Esta é uma versão de teste, e novas atualizações estão a caminho!</p>
-  </div>
+  <div id="footer">Siga o Sapinho nas redes sociais! <a href="#">Instagram</a> | <a href="#">YouTube</a> | <a href="#">TikTok</a></div>
 
   <audio id="jumpSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
   <audio id="failSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
   <audio id="victorySound" src="Victory.mp3"></audio>
   <audio id="backgroundMusic" src="Musicgame.mp3" loop></audio>
-
-  <div id="footer">Siga o Sapinho nas redes sociais! <a href="#">Instagram</a> | <a href="#">YouTube</a> | <a href="#">TikTok</a></div>
 
   <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
   <script>
@@ -108,8 +104,8 @@
       canvas.classList.add('ready');
       document.getElementById('top-bar').style.display = 'flex';
       document.getElementById('game-container').style.display = 'flex';
-      const startBanner = document.getElementById('start-banner');
-      startBanner.style.pointerEvents = 'auto';
+      document.getElementById('test-version').style.display = 'block';
+      document.getElementById('footer').style.display = 'block';
     });
 
     window.addEventListener('load', () => {
@@ -225,7 +221,6 @@
     let gameStarted = false;
     let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
     let poeira = [];
-    let jumpButton;
     let animationFrameId;
 
     function positionBanners() {
@@ -248,10 +243,9 @@
 
     function resizeCanvas() {
       if (isMobile) {
-        const maxWidth = window.innerWidth - 20;
-        const aspectRatio = BASE_WIDTH / BASE_HEIGHT;
-        canvas.width = Math.min(maxWidth, 400);
-        canvas.height = canvas.width / aspectRatio;
+        const maxWidth = Math.min(window.innerWidth - 20, 400);
+        canvas.width = maxWidth;
+        canvas.height = maxWidth / 2; // Proporção 2:1
         scaleX = canvas.width / BASE_WIDTH;
         scaleY = canvas.height / BASE_HEIGHT;
         ALTURA_CHAO = canvas.height;
@@ -268,13 +262,6 @@
       }
       positionBanners();
       console.log('Canvas:', canvas.width, canvas.height, 'Scale:', scaleX, scaleY);
-      if (!isMobile) {
-        console.log('Left Ad Size:', document.getElementById('left-ad').getBoundingClientRect());
-        console.log('Right Ad Size:', document.getElementById('right-ad').getBoundingClientRect());
-      } else {
-        console.log('Top Ad Size:', document.getElementById('top-ad').getBoundingClientRect());
-        console.log('Bottom Ad Size:', document.getElementById('bottom-ad').getBoundingClientRect());
-      }
     }
 
     function handleOrientation() {
@@ -285,25 +272,6 @@
         resizeCanvas();
         positionBanners();
       }, 100));
-    }
-
-    function setupControls() {
-      if (jumpButton) {
-        jumpButton.remove();
-      }
-      if (isMobile) {
-        jumpButton = document.createElement('button');
-        jumpButton.id = 'jumpButtonMobile';
-        jumpButton.textContent = '';
-        document.body.appendChild(jumpButton);
-
-        jumpButton.addEventListener('touchstart', (e) => {
-          e.preventDefault();
-          if (gameStarted && !sapo.jumping) {
-            handleJump();
-          }
-        });
-      }
     }
 
     function handleJump() {
@@ -363,15 +331,17 @@
       document.removeEventListener('keydown', handleKeyJump);
       document.removeEventListener('keydown', startGameHandler);
       document.removeEventListener('touchstart', startGameHandler);
-      if (jumpButton) {
-        jumpButton.removeEventListener('touchstart', handleJump);
-        jumpButton.style.display = 'none';
-      }
+      canvas.removeEventListener('touchstart', handleJump);
 
-      setupControls();
       startBanner.addEventListener('click', startGameHandler);
       startBanner.addEventListener('touchstart', startGameHandler);
       document.addEventListener('keydown', startGameHandler);
+      canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (gameStarted && !sapo.jumping) {
+          handleJump();
+        }
+      });
 
       resizeCanvas();
       positionBanners();
@@ -526,9 +496,12 @@
       if (gameStarted) return;
       gameStarted = true;
       document.addEventListener('keydown', handleKeyJump);
-      if (jumpButton) {
-        jumpButton.style.display = 'block';
-      }
+      canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (gameStarted && !sapo.jumping) {
+          handleJump();
+        }
+      });
       backgroundMusic.play().catch(e => console.log("Erro ao tocar música de fundo:", e));
       animationFrameId = requestAnimationFrame(gameLoop);
     }
@@ -550,9 +523,7 @@
         document.removeEventListener('keydown', handleKeyJump);
         document.removeEventListener('keydown', startGameHandler);
         document.removeEventListener('touchstart', startGameHandler);
-        if (jumpButton) {
-          jumpButton.style.display = 'none';
-        }
+        canvas.removeEventListener('touchstart', handleJump);
         return;
       }
       if (pontuacao >= PONTUACAO_VITORIA) {
@@ -567,9 +538,7 @@
         document.removeEventListener('keydown', handleKeyJump);
         document.removeEventListener('keydown', startGameHandler);
         document.removeEventListener('touchstart', startGameHandler);
-        if (jumpButton) {
-          jumpButton.style.display = 'none';
-        }
+        canvas.removeEventListener('touchstart', handleJump);
         return;
       }
       animationFrameId = requestAnimationFrame(gameLoop);
@@ -639,7 +608,6 @@
         resizeCanvas();
         positionBanners();
       }, 100));
-      setupControls();
       resetGame();
 
       fetchWeather();
