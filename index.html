@@ -26,10 +26,10 @@
     #top-bar { background: #1b5e20; display: flex; }
   </style>
   <!-- Pré-carregar fontes e CSS -->
-  <link rel="preload" href="styles-mobile.css?v=10" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="styles-mobile.css?v=11" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="styles-desktop.css?v=6" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles-mobile.css?v=10" media="screen and (max-width: 1023px)">
+  <link rel="stylesheet" href="styles-mobile.css?v=11" media="screen and (max-width: 1023px)">
   <link rel="stylesheet" href="styles-desktop.css?v=6" media="screen and (min-width: 1024px)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
@@ -54,8 +54,8 @@
 
   <div id="game-container">
     <div id="top-ad">
-      <ins class="adsbygoogle" style="display:block; width:320px; height:100px; max-width:100%;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-TOP" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-      <div class="ad-fallback" style="display:none; background:#fff; color:#000; line-height:100px; text-align:center; font-size:14px;">
+      <ins class="adsbygoogle" style="display:block; width:100%; max-width:320px; height:100px; background:#fff;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-MOBILE-TOP" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+      <div class="ad-fallback">
         Anúncio não disponível
       </div>
     </div>
@@ -149,6 +149,13 @@
             try {
               (adsbygoogle = window.adsbygoogle || []).push({});
               console.log('Anúncio superior inicializado com sucesso');
+              setTimeout(() => {
+                if (ad.getAttribute('data-ad-status') === 'filled') {
+                  console.log('Anúncio superior carregado com sucesso');
+                } else {
+                  console.warn('Anúncio superior não carregado, status:', ad.getAttribute('data-ad-status'));
+                }
+              }, 2000);
             } catch (e) {
               console.error('Erro ao inicializar anúncio superior:', e);
             }
@@ -254,7 +261,6 @@
       } else {
         console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
       }
-      // Forçar reposicionamento dos descritivos
       const testVersion = document.getElementById('test-version');
       const aboutSection = document.getElementById('about-section');
       testVersion.style.position = 'relative';
@@ -268,11 +274,13 @@
       if (isMobile) {
         const maxWidth = Math.min(window.innerWidth - 20, 400);
         canvas.width = maxWidth;
-        canvas.height = maxWidth / 2; // Proporção 2:1
+        canvas.height = maxWidth / 2;
         scaleX = canvas.width / BASE_WIDTH;
         scaleY = canvas.height / BASE_HEIGHT;
         ALTURA_CHAO = canvas.height;
-        canvas.style.margin = '15px auto'; // Margem para evitar sobreposição
+        canvas.style.margin = '15px auto';
+        document.body.style.overflowY = 'auto';
+        document.getElementById('game-container').style.minHeight = `calc(100vh - 60px)`;
       } else {
         canvas.width = BASE_WIDTH;
         canvas.height = BASE_HEIGHT;
@@ -303,6 +311,8 @@
         setTimeout(() => {
           resizeCanvas();
           positionBanners();
+          window.scrollTo(0, 0);
+          document.body.style.overflowY = 'auto';
         }, 200);
       });
     }
