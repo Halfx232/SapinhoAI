@@ -1,5 +1,4 @@
 @media only screen and (max-width: 1023px) {
-  /* Estilos existentes mantidos */
   body {
     margin: 0 !important;
     padding: 0 !important;
@@ -10,12 +9,12 @@
     min-height: 100vh !important;
   }
 
-  /* Estilo genérico para seções descritivas */
+  /* Estilo genérico para seções descritivas, com centralização reforçada */
   #about-section, #contact-section, #policy-section, .descritivo {
     padding: 20px !important;
-    background: #fff !important; /* Fundo branco garantido */
+    background: #fff !important;
     text-align: center !important;
-    margin: 10px auto !important;
+    margin: 10px auto !important; /* Centraliza horizontalmente */
     color: #000 !important;
     border-radius: 8px !important;
     width: 100% !important;
@@ -23,11 +22,24 @@
     box-sizing: border-box !important;
     position: relative !important;
     z-index: 2 !important;
+    display: block !important; /* Garante que o elemento seja um bloco */
+    left: 0 !important; /* Evita deslocamentos indesejados */
+    right: 0 !important;
   }
 
   #about-section h2, #contact-section h2, #policy-section h2, .descritivo h2 {
     font-size: 20px !important;
     color: #00ff00 !important;
+    margin: 0 0 10px !important;
+  }
+
+  /* Garantir que o contêiner pai não interfira na centralização */
+  body > div:not(#top-bar):not(#footer) {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-direction: column !important;
+    width: 100% !important;
   }
 
   /* Resto dos estilos mantidos */
