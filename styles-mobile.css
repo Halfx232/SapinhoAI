@@ -91,22 +91,6 @@
     z-index: 10 !important;
   }
 
-  #top-ad .ad-fallback {
-    display: none !important;
-    background: #1b5e20 !important;
-    color: #fff !important;
-    line-height: 100px !important;
-    text-align: center !important;
-    font-size: 14px !important;
-    border-radius: 5px !important;
-    width: 320px !important;
-    height: 100px !important;
-  }
-
-  #top-ad:empty .ad-fallback, #top-ad:not(:has(.adsbygoogle[data-ad-status="filled"])) .ad-fallback {
-    display: block !important;
-  }
-
   #left-ad, #right-ad, #bottom-ad {
     display: none !important;
   }
@@ -176,10 +160,10 @@
 
   #about-section {
     padding: 20px !important;
-    background: #2e2e2e !important;
+    background: #fff !important;
     text-align: center !important;
     margin: 10px auto !important;
-    color: #fff !important;
+    color: #000 !important;
     border-radius: 8px !important;
     width: 100% !important;
     max-width: 400px !important;
