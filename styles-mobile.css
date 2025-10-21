@@ -84,7 +84,8 @@
   #top-ad {
     margin: 10px auto 15px auto !important;
     text-align: center !important;
-    width: 320px !important;
+    width: 100% !important;
+    max-width: 400px !important;
     height: 100px !important;
     background: transparent !important;
     position: relative !important;
@@ -156,6 +157,7 @@
     border-radius: 8px !important;
     position: relative !important;
     z-index: 2 !important;
+    box-sizing: border-box !important;
   }
 
   #about-section {
