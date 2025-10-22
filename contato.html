@@ -28,6 +28,7 @@
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
+      width: 100% !important;
     }
     #contact-section {
       padding: 20px !important;
@@ -52,17 +53,19 @@
       color: #00ff00 !important; /* Verde para o e-mail */
       text-decoration: underline !important;
     }
-    /* Desktop: Aumentar largura e alinhar */
+    /* Desktop: Remover max-width para ocupar toda a largura */
     @media only screen and (min-width: 1024px) {
       body {
         margin: 0 !important;
         padding: 0 !important;
+        width: 100% !important;
       }
       #contact-section {
         padding: 30px !important;
-        margin: 20px auto !important;
-        width: 100% !important; /* Ocupar toda a largura disponível */
-        max-width: 1600px !important; /* Alinhado com layouts largos */
+        margin: 20px 0 !important; /* Remover margens laterais */
+        width: 100% !important; /* Ocupar toda a largura */
+        /* max-width: none !important; */ /* Sem limite, se necessário */
+        max-width: 1800px !important; /* Alinhado com layouts largos */
       }
       #contact-section h2 {
         font-size: 24px !important;
@@ -73,10 +76,10 @@
     }
   </style>
   <!-- Pré-carregar fontes e CSS -->
-  <link rel="preload" href="styles-mobile.css?v=22" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="styles-mobile.css?v=23" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="styles-desktop.css?v=6" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles-mobile.css?v=22" media="screen and (max-width: 1023px)">
+  <link rel="stylesheet" href="styles-mobile.css?v=23" media="screen and (max-width: 1023px)">
   <link rel="stylesheet" href="styles-desktop.css?v=6" media="screen and (min-width: 1024px)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
@@ -106,16 +109,17 @@
   <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOMContentLoaded disparado');
       document.documentElement.classList.add('loaded');
       document.getElementById('top-bar').style.display = 'flex';
       document.getElementById('contact-section').style.display = 'block';
       document.getElementById('footer').style.display = 'block';
       // Verificar carregamento do styles-mobile.css
-      const mobileStyles = document.querySelector('link[href="styles-mobile.css?v=22"]');
+      const mobileStyles = document.querySelector('link[href="styles-mobile.css?v=23"]');
       if (mobileStyles) {
-        console.log('styles-mobile.css v=22 carregado com sucesso');
+        console.log('styles-mobile.css v=23 carregado com sucesso');
       } else {
-        console.warn('styles-mobile.css v=22 não encontrado');
+        console.warn('styles-mobile.css v=23 não encontrado');
       }
       // Remover qualquer link de stylesheet no body
       const invalidLinks = document.body.querySelectorAll('link[rel="stylesheet"]');
@@ -128,35 +132,45 @@
       if (contactSection) {
         contactSection.style.margin = '10px auto';
         contactSection.style.width = '100%';
-        contactSection.style.maxWidth = window.innerWidth <= 1023 ? '400px' : '1600px';
+        contactSection.style.maxWidth = window.innerWidth <= 1023 ? '400px' : '1800px';
         contactSection.style.display = 'block';
         contactSection.style.position = 'relative';
         contactSection.style.left = '0';
         contactSection.style.right = '0';
         contactSection.style.transform = 'none';
-        console.log('contact-section centralizado via JavaScript:', {
+        const computedStyle = window.getComputedStyle(contactSection);
+        console.log('contact-section estilos aplicados:', {
           mode: window.innerWidth <= 1023 ? 'mobile' : 'desktop',
           rect: contactSection.getBoundingClientRect(),
           windowWidth: window.innerWidth,
           computedStyle: {
-            margin: window.getComputedStyle(contactSection).margin,
-            width: window.getComputedStyle(contactSection).width,
-            maxWidth: window.getComputedStyle(contactSection).maxWidth,
-            color: window.getComputedStyle(contactSection.querySelector('a')).color
+            margin: computedStyle.margin,
+            padding: computedStyle.padding,
+            width: computedStyle.width,
+            maxWidth: computedStyle.maxWidth,
+            color: computedStyle.color,
+            emailColor: window.getComputedStyle(contactSection.querySelector('a')).color
           }
         });
       }
-      // Chamar APIs em bloco separado
-      try {
-        console.log('Iniciando chamadas às APIs...');
-        fetchWeather();
-        atualizarHora();
-      } catch (error) {
-        console.error('Erro ao iniciar APIs:', error.message);
-      }
+      // Chamar APIs com fallback
+      setTimeout(() => {
+        console.log('Iniciando chamadas às APIs via setTimeout...');
+        try {
+          fetchWeather();
+        } catch (error) {
+          console.error('Erro ao chamar fetchWeather:', error.message);
+        }
+        try {
+          atualizarHora();
+        } catch (error) {
+          console.error('Erro ao chamar atualizarHora:', error.message);
+        }
+      }, 100);
     });
 
     window.addEventListener('load', () => {
+      console.log('Evento load disparado');
       window.cookieconsent.initialise({
         "palette": { "popup": { "background": "#1b5e20" }, "button": { "background": "#00ff00" } },
         "content": { "message": "Este site usa cookies para melhorar sua experiência.", "dismiss": "Entendido", "link": "Saiba mais", "href": "/politicas.html" }
@@ -179,82 +193,80 @@
         });
       }
 
-      let lastWeatherData = null;
-      let lastWeatherFetch = 0;
-      const CACHE_DURATION = 10 * 60 * 1000;
-
-      let lastTimeData = null;
-      let lastTimeFetch = 0;
-      const TIME_CACHE_DURATION = 60 * 1000;
-
-      async function fetchWeather() {
-        try {
-          console.log('Tentando buscar previsão do tempo...');
-          const now = Date.now();
-          if (lastWeatherData && now - lastWeatherFetch < CACHE_DURATION) {
-            document.getElementById('weather').textContent = lastWeatherData;
-            console.log('Usando cache para previsão do tempo:', lastWeatherData);
-            return;
-          }
-          const API_KEY = "b8a0cd03c689322da2746720be31d534";
-          const city = "São Paulo";
-          const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&lang=pt_br&units=metric`;
-          console.log('URL da API de tempo:', url);
-          const response = await fetch(url, { mode: 'cors' });
-          if (!response.ok) throw new Error(`Falha na API OpenWeatherMap: ${response.status} ${response.statusText}`);
-          const data = await response.json();
-          const temp = Math.round(data.main.temp);
-          const description = data.weather[0].description;
-          lastWeatherData = ` ${city}: ${temp}°C, ${description}`;
-          lastWeatherFetch = now;
-          document.getElementById('weather').textContent = lastWeatherData;
-          console.log('Previsão do tempo atualizada:', lastWeatherData);
-        } catch (error) {
-          console.error("Erro ao buscar previsão do tempo:", error.message);
-          document.getElementById('weather').textContent = "Clima indisponível";
-        }
+      console.log('Chamando APIs no load...');
+      try {
+        fetchWeather();
+        atualizarHora();
+        setInterval(fetchWeather, 10 * 60 * 1000);
+        setInterval(atualizarHora, 60 * 1000);
+      } catch (error) {
+        console.error('Erro ao iniciar APIs no load:', error.message);
       }
-
-      async function atualizarHora() {
-        try {
-          console.log('Tentando buscar hora...');
-          const now = Date.now();
-          if (lastTimeData && now - lastTimeFetch < TIME_CACHE_DURATION) {
-            document.getElementById('clock').textContent = lastTimeData;
-            console.log('Usando cache para hora:', lastTimeData);
-            return;
-          }
-          const url = "https://worldtimeapi.org/api/timezone/America/Sao_Paulo";
-          console.log('URL da API de hora:', url);
-          const response = await fetch(url, { mode: 'cors' });
-          if (!response.ok) throw new Error(`Falha na API WorldTimeAPI: ${response.status} ${response.statusText}`);
-          const data = await response.json();
-          const dateTime = new Date(data.datetime);
-          lastTimeData = ` ${dateTime.toLocaleDateString('pt-BR')} - ${dateTime.toLocaleTimeString('pt-BR')}`;
-          lastTimeFetch = now;
-          document.getElementById('clock').textContent = lastTimeData;
-          console.log('Hora atualizada:', lastTimeData);
-        } catch (error) {
-          console.error("Erro ao buscar hora:", error.message);
-          document.getElementById('clock').textContent = "Hora indisponível";
-          const now = new Date();
-          lastTimeData = ` ${now.toLocaleDateString('pt-BR')} - ${now.toLocaleTimeString('pt-BR')}`;
-          document.getElementById('clock').textContent = lastTimeData;
-        }
-      }
-
-      window.addEventListener('load', () => {
-        console.log('Evento load disparado, chamando APIs...');
-        try {
-          fetchWeather();
-          atualizarHora();
-          setInterval(fetchWeather, 10 * 60 * 1000);
-          setInterval(atualizarHora, 60 * 1000);
-        } catch (error) {
-          console.error('Erro ao iniciar APIs no load:', error.message);
-        }
-      });
     });
+
+    let lastWeatherData = null;
+    let lastWeatherFetch = 0;
+    const CACHE_DURATION = 10 * 60 * 1000;
+
+    let lastTimeData = null;
+    let lastTimeFetch = 0;
+    const TIME_CACHE_DURATION = 60 * 1000;
+
+    async function fetchWeather() {
+      try {
+        console.log('Tentando buscar previsão do tempo...');
+        const now = Date.now();
+        if (lastWeatherData && now - lastWeatherFetch < CACHE_DURATION) {
+          document.getElementById('weather').textContent = lastWeatherData;
+          console.log('Usando cache para previsão do tempo:', lastWeatherData);
+          return;
+        }
+        const API_KEY = "b8a0cd03c689322da2746720be31d534";
+        const city = "São Paulo";
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&lang=pt_br&units=metric`;
+        console.log('URL da API de tempo:', url);
+        const response = await fetch(url, { mode: 'cors' });
+        if (!response.ok) throw new Error(`Falha na API OpenWeatherMap: ${response.status} ${response.statusText}`);
+        const data = await response.json();
+        const temp = Math.round(data.main.temp);
+        const description = data.weather[0].description;
+        lastWeatherData = ` ${city}: ${temp}°C, ${description}`;
+        lastWeatherFetch = now;
+        document.getElementById('weather').textContent = lastWeatherData;
+        console.log('Previsão do tempo atualizada:', lastWeatherData);
+      } catch (error) {
+        console.error("Erro ao buscar previsão do tempo:", error.message);
+        document.getElementById('weather').textContent = "Clima indisponível";
+      }
+    }
+
+    async function atualizarHora() {
+      try {
+        console.log('Tentando buscar hora...');
+        const now = Date.now();
+        if (lastTimeData && now - lastTimeFetch < TIME_CACHE_DURATION) {
+          document.getElementById('clock').textContent = lastTimeData;
+          console.log('Usando cache para hora:', lastTimeData);
+          return;
+        }
+        const url = "https://worldtimeapi.org/api/timezone/America/Sao_Paulo";
+        console.log('URL da API de hora:', url);
+        const response = await fetch(url, { mode: 'cors' });
+        if (!response.ok) throw new Error(`Falha na API WorldTimeAPI: ${response.status} ${response.statusText}`);
+        const data = await response.json();
+        const dateTime = new Date(data.datetime);
+        lastTimeData = ` ${dateTime.toLocaleDateString('pt-BR')} - ${dateTime.toLocaleTimeString('pt-BR')}`;
+        lastTimeFetch = now;
+        document.getElementById('clock').textContent = lastTimeData;
+        console.log('Hora atualizada:', lastTimeData);
+      } catch (error) {
+        console.error("Erro ao buscar hora:", error.message);
+        document.getElementById('clock').textContent = "Hora indisponível";
+        const now = new Date();
+        lastTimeData = ` ${now.toLocaleDateString('pt-BR')} - ${now.toLocaleTimeString('pt-BR')}`;
+        document.getElementById('clock').textContent = lastTimeData;
+      }
+    }
   </script>
 </body>
 </html>
