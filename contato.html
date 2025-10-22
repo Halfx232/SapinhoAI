@@ -21,12 +21,34 @@
     html:not(.loaded) body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
     #top-bar, #contact-section, #footer { display: none; }
     a { color: white; text-decoration: none; }
+    /* Estilos específicos para contact-section no desktop */
+    @media only screen and (min-width: 1024px) {
+      #contact-section {
+        padding: 30px !important;
+        background: #fff !important;
+        text-align: center !important;
+        margin: 20px auto !important;
+        color: #000 !important;
+        border-radius: 8px !important;
+        width: 80% !important;
+        max-width: 800px !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+        z-index: 2 !important;
+        display: block !important;
+      }
+      #contact-section h2 {
+        font-size: 24px !important;
+        color: #00ff00 !important;
+        margin: 0 0 15px !important;
+      }
+    }
   </style>
   <!-- Pré-carregar fontes e CSS -->
-  <link rel="preload" href="styles-mobile.css?v=17" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
+  <link rel="preload" href="styles-mobile.css?v=19" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="styles-desktop.css?v=6" as="style" media="screen and (min-width: 1024px)" onload="this.rel='stylesheet'">
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles-mobile.css?v=17" media="screen and (max-width: 1023px)">
+  <link rel="stylesheet" href="styles-mobile.css?v=19" media="screen and (max-width: 1023px)">
   <link rel="stylesheet" href="styles-desktop.css?v=6" media="screen and (min-width: 1024px)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
@@ -61,11 +83,11 @@
       document.getElementById('contact-section').style.display = 'block';
       document.getElementById('footer').style.display = 'block';
       // Verificar carregamento do styles-mobile.css
-      const mobileStyles = document.querySelector('link[href="styles-mobile.css?v=17"]');
+      const mobileStyles = document.querySelector('link[href="styles-mobile.css?v=19"]');
       if (mobileStyles) {
-        console.log('styles-mobile.css carregado com sucesso');
+        console.log('styles-mobile.css v=19 carregado com sucesso');
       } else {
-        console.warn('styles-mobile.css não encontrado');
+        console.warn('styles-mobile.css v=19 não encontrado');
       }
       // Remover qualquer link de stylesheet no body
       const invalidLinks = document.body.querySelectorAll('link[rel="stylesheet"]');
@@ -78,9 +100,16 @@
       if (contactSection) {
         contactSection.style.margin = '10px auto';
         contactSection.style.width = '100%';
-        contactSection.style.maxWidth = '400px';
+        contactSection.style.maxWidth = window.innerWidth <= 1023 ? '400px' : '800px';
         contactSection.style.display = 'block';
-        console.log('contact-section centralizado via JavaScript:', contactSection.getBoundingClientRect());
+        contactSection.style.position = 'relative';
+        contactSection.style.left = '0';
+        contactSection.style.right = '0';
+        console.log('contact-section centralizado via JavaScript:', {
+          mode: window.innerWidth <= 1023 ? 'mobile' : 'desktop',
+          rect: contactSection.getBoundingClientRect(),
+          windowWidth: window.innerWidth
+        });
       }
     });
 
