@@ -7,6 +7,9 @@
     color: #fff !important;
     overflow-y: auto !important;
     min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important; /* Centraliza conteúdo no body */
   }
 
   /* Estilo genérico para seções descritivas, com centralização reforçada */
@@ -25,6 +28,14 @@
     display: block !important; /* Garante que o elemento seja um bloco */
     left: 0 !important; /* Evita deslocamentos indesejados */
     right: 0 !important;
+  }
+
+  /* Reforçar centralização específica para contact-section */
+  #contact-section {
+    margin: 10px auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important; /* Remove qualquer transformação */
   }
 
   #about-section h2, #contact-section h2, #policy-section h2, .descritivo h2 {
