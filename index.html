@@ -47,7 +47,7 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="sobre.html">Sobre</a></li>
         <li><a href="contato.html">Contato</a></li>
-        <li><a href="politicas.html">Políticas</a></li>
+        <ter><a href="politicas.html">Políticas</a></li>
       </ul>
     </nav>
   </div>
@@ -64,22 +64,23 @@
       <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
     </div>
 
-<div id="start-banner" class="active">
-  <h1>Sejam bem-vindos ao Jogo do Sapinho!</h1>
-  <p>Pressione qualquer tecla ou toque para iniciar o jogo</p>
-</div>
+    <div id="start-banner" class="active">
+      <h1>Sejam bem-vindos ao Jogo do Sapinho!</h1>
+      <p>Pressione qualquer tecla ou toque para iniciar o jogo</p>
+    </div>
 
-<div id="game-over-banner">
-  <h2>Game Over!</h2>
-  <p>Sua pontuação: <span id="final-score"></span></p>
-  <button id="restart-button">Reiniciar Jogo</button>
-</div>
+    <div id="game-over-banner">
+      <h2>Game Over!</h2>
+      <p>Sua pontuação: <span id="final-score"></span></p>
+      <button id="restart-button">Reiniciar Jogo</button>
+    </div>
 
-<div id="victory-banner">
-  <h2>Parabéns! Você venceu!</h2>
-  <p>Pontuação Final: <span id="victory-score"></span></p>
-  <button id="play-again-button">Jogar Novamente</button>
-</div>  </div>
+    <div id="victory-banner">
+      <h2>Parabéns! Você venceu!</h2>
+      <p>Pontuação Final: <span id="victory-score"></span></p>
+      <button id="play-again-button">Jogar Novamente</button>
+    </div>
+  </div>
 
   <div id="test-version">
     <p>Versão de teste do SapinhoAI, desenvolvida com auxílio de inteligência artificial. Atualizações em breve!</p>
@@ -95,7 +96,9 @@
   <audio id="jumpSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
   <audio id="failSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
   <audio id="victorySound" src="Victory.mp3"></audio>
-  <audio id="backgroundMusic" src="Musicgame.mp3" loop></audio>  <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
+  <audio id="backgroundMusic" src="Musicgame.mp3" loop></audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       document.documentElement.classList.add('loaded');
@@ -106,7 +109,6 @@
       document.getElementById('test-version').style.display = 'block';
       document.getElementById('about-section').style.display = 'block';
       document.getElementById('footer').style.display = 'block';
-      // Remover qualquer link de stylesheet no body
       const invalidLinks = document.body.querySelectorAll('link[rel="stylesheet"]');
       invalidLinks.forEach(link => {
         console.warn('Link de stylesheet encontrado no body, removendo:', link);
@@ -153,14 +155,10 @@
                   console.log('Anúncio superior carregado com sucesso');
                 } else {
                   console.warn('Anúncio superior não carregado, status:', ad.getAttribute('data-ad-status'));
-                  // Opcional: Ocultar #top-ad se não houver anúncio
-                  // ad.closest('#top-ad').style.display = 'none';
                 }
               }, 2000);
             } catch (e) {
               console.error('Erro ao inicializar anúncio superior:', e);
-              // Opcional: Ocultar #top-ad em caso de erro
-              // ad.closest('#top-ad').style.display = 'none';
             }
             ad.closest('#top-ad').classList.add('loaded');
           }
@@ -244,6 +242,12 @@
     let poeira = [];
     let animationFrameId;
 
+    // === FUNÇÃO NOVA: TOCA MÚSICA NA PRIMEIRA INTERAÇÃO (MOBILE) ===
+    function unlockAndPlayMusic() {
+      if (!isMobile) return;
+      backgroundMusic.play().catch(() => {});
+    }
+
     function positionBanners() {
       const banners = [startBanner, gameOverBanner, victoryBanner];
       const canvas = document.getElementById('gameCanvas');
@@ -259,18 +263,8 @@
           banner.style.top = `${canvasCenterY}px`;
           banner.style.transform = 'translate(-50%, -50%)';
           banner.style.zIndex = '1000';
-          console.log(`Banner ${banner.id} visível, posicionado no centro do canvas: left=${canvasCenterX}px, top=${canvasCenterY}px`);
-          console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
         }
       });
-
-      console.log('Canvas dimensions:', canvasRect);
-      if (!isMobile) {
-        console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
-        console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
-      } else {
-        console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
-      }
 
       const testVersion = document.getElementById('test-version');
       const aboutSection = document.getElementById('about-section');
@@ -291,7 +285,6 @@
     }
 
     function resizeCanvas() {
-      console.log('resizeCanvas chamado');
       if (isMobile) {
         const maxWidth = Math.min(window.innerWidth - 20, 400);
         canvas.width = maxWidth;
@@ -314,7 +307,6 @@
         sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY;
       }
       positionBanners();
-      console.log('Canvas:', canvas.width, canvas.height, 'Scale:', scaleX, scaleY);
     }
 
     function handleOrientation() {
@@ -354,7 +346,6 @@
         sapo.jumping = true;
         jumpSound.currentTime = 0;
         jumpSound.play().catch(e => console.log("Erro ao tocar som:", e));
-        console.log('Sapo pulou!');
         for (let i = 0; i < 10; i++) {
           poeira.push({
             x: sapo.x + 15 * scaleX + Math.random() * 10 * scaleX,
@@ -374,10 +365,12 @@
       }
     };
 
+    // === MODIFICADO: startGameHandler (música na 1ª jogada) ===
     const startGameHandler = (e) => {
       e.preventDefault();
       if (!gameStarted && startBanner.classList.contains('active')) {
         startBanner.classList.remove('active');
+        unlockAndPlayMusic(); // MÚSICA TOCA AQUI NA PRIMEIRA VEZ!
         iniciarJogo();
         console.log("Jogo iniciado!");
       }
@@ -403,6 +396,13 @@
       backgroundMusic.pause();
       backgroundMusic.currentTime = 0;
 
+      // Só tenta tocar novamente se já foi desbloqueada
+      if (isMobile) {
+        setTimeout(() => {
+          backgroundMusic.play().catch(() => {});
+        }, 100);
+      }
+
       document.removeEventListener('keydown', handleKeyJump);
       document.removeEventListener('keydown', startGameHandler);
       document.removeEventListener('touchstart', startGameHandler);
@@ -412,7 +412,6 @@
       startBanner.addEventListener('touchstart', startGameHandler);
       document.addEventListener('keydown', startGameHandler);
       canvas.addEventListener('touchstart', (e) => {
-        console.log('Toque no canvas');
         e.preventDefault();
         if (gameStarted && !sapo.jumping) {
           handleJump();
@@ -568,25 +567,22 @@
       return false;
     }
 
+    // === MODIFICADO: iniciarJogo() sem backgroundMusic.play() ===
     function iniciarJogo() {
       if (gameStarted) return;
       gameStarted = true;
       document.addEventListener('keydown', handleKeyJump);
       canvas.addEventListener('touchstart', (e) => {
-        console.log('Toque no canvas');
         e.preventDefault();
         if (gameStarted && !sapo.jumping) {
           handleJump();
         }
       });
-      backgroundMusic.play().catch(e => console.log("Erro ao tocar música de fundo:", e));
       animationFrameId = requestAnimationFrame(gameLoop);
     }
 
     function gameLoop() {
-      if (!gameStarted) {
-        return;
-      }
+      if (!gameStarted) return;
       atualizarJogo();
       if (verificarColisao()) {
         gameStarted = false;
