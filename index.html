@@ -10,7 +10,7 @@
   <!-- Meta tags Open Graph -->
   <meta property="og:title" content="Jogo do Sapinho">
   <meta property="og:description" content="Uma aventura divertida com um sapo!">
-  <meta property="og:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
+  <meta property="og:image" content="https://sapinho-ai.vercel.app=Tthumbnail.jpg">
   <meta property="og:url" content="https://sapinho-ai.vercel.app">
   <meta property="og:type" content="website">
   <!-- Meta tags Twitter -->
@@ -21,7 +21,7 @@
     html:not(.loaded) body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
     #top-bar, #game-container, #test-version, #about-section, #footer { display: none; }
     a { color: white; text-decoration: none; }
-    #start-banner, #game-over-banner, #victory-banner { display: none; }
+    #start-banner, #game-over-banner, #victory-banner { display: none;; }
     canvas:not(.ready) { display: none; }
     #top-bar { background: #1b5e20; display: flex; }
   </style>
@@ -47,7 +47,7 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="sobre.html">Sobre</a></li>
         <li><a href="contato.html">Contato</a></li>
-        <ter><a href="politicas.html">Políticas</a></li>
+        <li><a href="politicas.html">Políticas</a></li>
       </ul>
     </nav>
   </div>
@@ -118,7 +118,7 @@
 
     window.addEventListener('load', () => {
       window.cookieconsent.initialise({
-        "palette": { "popup": { "background": "#1b5e20" }, "button": { "background": "#00ff00" } },
+        "palette": { " --popup": { "background": "#1b5e20" }, "button": { "background": "#00ff00" } },
         "content": { "message": "Este site usa cookies para melhorar sua experiência.", "dismiss": "Entendido", "link": "Saiba mais", "href": "/politicas.html" }
       });
 
@@ -132,7 +132,7 @@
             ad.style.maxWidth = '300px';
             ad.style.maxHeight = '400px';
             ad.style.minWidth = '300px';
-            ad.style.minHeight = '400px';
+            ad.style.min(/(300px;
             ad.style.overflow = 'hidden';
             (adsbygoogle = window.adsbygoogle || []).push({});
             ad.closest('#left-ad, #right-ad').classList.add('loaded');
@@ -241,12 +241,6 @@
     let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
     let poeira = [];
     let animationFrameId;
-
-    // === FUNÇÃO NOVA: TOCA MÚSICA NA PRIMEIRA INTERAÇÃO (MOBILE) ===
-    function unlockAndPlayMusic() {
-      if (!isMobile) return;
-      backgroundMusic.play().catch(() => {});
-    }
 
     function positionBanners() {
       const banners = [startBanner, gameOverBanner, victoryBanner];
@@ -365,12 +359,14 @@
       }
     };
 
-    // === MODIFICADO: startGameHandler (música na 1ª jogada) ===
+    // === MODIFICADO: MÚSICA TOCA NA 1ª INTERAÇÃO (mobile + desktop) ===
     const startGameHandler = (e) => {
       e.preventDefault();
       if (!gameStarted && startBanner.classList.contains('active')) {
         startBanner.classList.remove('active');
-        unlockAndPlayMusic(); // MÚSICA TOCA AQUI NA PRIMEIRA VEZ!
+        backgroundMusic.play().catch(() => {
+          console.log("Música bloqueada na 1ª tentativa — aguarde interação");
+        });
         iniciarJogo();
         console.log("Jogo iniciado!");
       }
@@ -396,8 +392,8 @@
       backgroundMusic.pause();
       backgroundMusic.currentTime = 0;
 
-      // Só tenta tocar novamente se já foi desbloqueada
-      if (isMobile) {
+      // Só tenta tocar novamente se já foi carregada
+      if (backgroundMusic.readyState > 0) {
         setTimeout(() => {
           backgroundMusic.play().catch(() => {});
         }, 100);
@@ -481,7 +477,8 @@
       ctx.moveTo(x / scaleX + 15, y / scaleY + 30);
       ctx.lineTo(x / scaleX + 5 - Math.cos(legAngle) * 12, y / scaleY + 30 + Math.sin(legAngle) * 25);
       ctx.moveTo(x / scaleX + 35, y / scaleY + 30);
-      ctx.lineTo(x / scaleX + 45 + Math.cos(legAngle) * 12, y / scaleY + 30 + Math.sin(legAngle) * 25);
+      ctx.lineTo
+            ctx.lineTo(x / scaleX + 45 + Math.cos(legAngle) * 12, y / scaleY + 30 + Math.sin(legAngle) * 25);
       ctx.stroke();
       ctx.restore();
     }
@@ -567,7 +564,6 @@
       return false;
     }
 
-    // === MODIFICADO: iniciarJogo() sem backgroundMusic.play() ===
     function iniciarJogo() {
       if (gameStarted) return;
       gameStarted = true;
@@ -688,13 +684,6 @@
 
       setInterval(fetchWeather, 10 * 60 * 1000);
       setInterval(atualizarHora, 60 * 1000);
-
-      document.body.addEventListener('touchstart', () => {
-        jumpSound.play().then(() => jumpSound.pause()).catch(e => console.log("Erro ao desbloquear jumpSound:", e));
-        failSound.play().then(() => failSound.pause()).catch(e => console.log("Erro ao desbloquear failSound:", e));
-        victorySound.play().then(() => victorySound.pause()).catch(e => console.log("Erro ao desbloquear victorySound:", e));
-        backgroundMusic.play().then(() => backgroundMusic.pause()).catch(e => console.log("Erro ao desbloquear backgroundMusic:", e));
-      }, { once: true });
 
       positionBanners();
     });
