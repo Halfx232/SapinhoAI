@@ -349,3 +349,28 @@
  50% { opacity: 0; }
  }
 }
+/* ===== ALINHAMENTO À ESQUERDA SÓ NA PÁGINA DE POLÍTICAS - DESKTOP ===== */
+@media screen and (min-width: 1024px) {
+  .pagina-politicas #contact-section {
+    text-align: left !important;
+  }
+
+  .pagina-politicas #contact-section h2,
+  .pagina-politicas #contact-section h3,
+  .pagina-politicas #contact-section h4,
+  .pagina-politicas #contact-section p,
+  .pagina-politicas #contact-section ul,
+  .pagina-politicas #contact-section li {
+    text-align: left !important;
+  }
+
+  /* Exceções: título principal e data ficam centralizados na política */
+  .pagina-politicas #contact-section h2 {
+    text-align: center !important;
+  }
+
+  .pagina-politicas #contact-section > p:first-of-type {
+    text-align: center !important;
+    margin-bottom: 2rem;
+  }
+}
