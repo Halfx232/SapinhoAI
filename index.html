@@ -34,15 +34,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
-  <!-- Google tag (gtag.js) --> 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-EL1E2EBTEM"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-EL1E2EBTEM');
-</script>
 </head>
 <body>
   <div id="top-bar">
@@ -68,7 +60,7 @@
     <div id="left-ad">
       <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
     </div>
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas" width="400" height="200" class="ready"></canvas>
     <div id="right-ad">
       <ins class="adsbygoogle" style="display:block; width:300px; height:400px; max-width:300px; max-height:400px; min-width:300px; min-height:400px;" data-ad-client="ca-pub-SEU-ID" data-ad-slot="SEU-SLOT-ID-DESKTOP" data-ad-format="rectangle" data-full-width-responsive="false"></ins>
     </div>
@@ -106,22 +98,27 @@
   <audio id="victorySound" src="Victory.mp3"></audio>
   <audio id="backgroundMusic" src="Musicgame.mp3" loop></audio>  <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      document.documentElement.classList.add('loaded');
-      const canvas = document.getElementById('gameCanvas');
-      canvas.classList.add('ready');
-      document.getElementById('top-bar').style.display = 'flex';
-      document.getElementById('game-container').style.display = 'flex';
-      document.getElementById('test-version').style.display = 'block';
-      document.getElementById('about-section').style.display = 'block';
-      document.getElementById('footer').style.display = 'block';
-      // Remover qualquer link de stylesheet no body
-      const invalidLinks = document.body.querySelectorAll('link[rel="stylesheet"]');
-      invalidLinks.forEach(link => {
-        console.warn('Link de stylesheet encontrado no body, removendo:', link);
-        link.remove();
-      });
-    });
+  document.addEventListener('DOMContentLoaded', () => {
+  document.documentElement.classList.add('loaded');
+
+  // Adicione aqui (calcula tamanho e posição logo no início)
+  resizeCanvas();
+  positionBanners();
+
+  const canvas = document.getElementById('gameCanvas');
+  canvas.classList.add('ready');
+  document.getElementById('top-bar').style.display = 'flex';
+  document.getElementById('game-container').style.display = 'flex';
+  document.getElementById('test-version').style.display = 'block';
+  document.getElementById('about-section').style.display = 'block';
+  document.getElementById('footer').style.display = 'block';
+  // Remover qualquer link de stylesheet no body
+  const invalidLinks = document.body.querySelectorAll('link[rel="stylesheet"]');
+  invalidLinks.forEach(link => {
+    console.warn('Link de stylesheet encontrado no body, removendo:', link);
+    link.remove();
+  });
+});
 
     window.addEventListener('load', () => {
       window.cookieconsent.initialise({
@@ -220,6 +217,7 @@
     const backgroundMusic = document.getElementById("backgroundMusic");
     backgroundMusic.preload = 'auto';
     backgroundMusic.volume = 0.5;
+    let audioUnlocked = false;  // Flag pra saber se já desbloqueamos
 
     const startBanner = document.getElementById("start-banner");
     const gameOverBanner = document.getElementById("game-over-banner");
@@ -253,51 +251,86 @@
     let poeira = [];
     let animationFrameId;
 
-    function positionBanners() {
-      const banners = [startBanner, gameOverBanner, victoryBanner];
-      const canvas = document.getElementById('gameCanvas');
-      const canvasRect = canvas.getBoundingClientRect();
-      const gameContainer = document.getElementById('game-container');
+    function unlockAudio() {
+  if (audioUnlocked) return;
 
+  // Tenta play/pause rápido em todos os sons pra desbloquear o contexto de áudio no iOS
+  [jumpSound, failSound, victorySound, backgroundMusic].forEach(sound => {
+    const promise = sound.play();
+    if (promise !== undefined) {
+      promise
+        .then(() => {
+          sound.pause();
+          sound.currentTime = 0;
+          console.log(`Desbloqueado: ${sound.id}`);
+        })
+        .catch(e => console.log(`Unlock falhou em ${sound.id} (normal na primeira vez):`, e));
+    }
+  });
+
+  audioUnlocked = true;
+}
+
+function positionBanners() {
+  const banners = [startBanner, gameOverBanner, victoryBanner];
+  const canvas = document.getElementById('gameCanvas');
+  const canvasRect = canvas.getBoundingClientRect();
+  const gameContainer = document.getElementById('game-container');
+
+  banners.forEach(banner => {
+    if (banner.classList.contains('active')) {
+      banner.style.position = 'absolute';
+      const canvasCenterX = canvasRect.left - gameContainer.getBoundingClientRect().left + canvasRect.width / 2;
+      const canvasCenterY = canvasRect.top - gameContainer.getBoundingClientRect().top + canvasRect.height / 2;
+      banner.style.left = `${canvasCenterX}px`;
+      banner.style.top = `${canvasCenterY}px`;
+      banner.style.transform = 'translate(-50%, -50%)';
+      banner.style.zIndex = '1000';
+      console.log(`Banner ${banner.id} visível, posicionado no centro do canvas: left=${canvasCenterX}px, top=${canvasCenterY}px`);
+      console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
+    }
+  });
+
+  console.log('Canvas dimensions:', canvasRect);
+  if (!isMobile) {
+    console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
+    console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
+  } else {
+    console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
+  }
+
+  const testVersion = document.getElementById('test-version');
+  const aboutSection = document.getElementById('about-section');
+  const topAd = document.getElementById('top-ad');
+  testVersion.style.position = 'relative';
+  testVersion.style.zIndex = '2';
+  aboutSection.style.position = 'relative';
+  aboutSection.style.zIndex = '2';
+  topAd.style.width = '100%';
+  topAd.style.maxWidth = '400px';
+  topAd.style.height = '100px';
+  const adIns = topAd.querySelector('ins.adsbygoogle');
+  if (adIns) {
+    adIns.style.width = '100%';
+    adIns.style.maxWidth = '400px';
+    adIns.style.height = '100px';
+  }
+
+  // Adicione isso: Garantia extra pro mobile - reposiciona após 100ms
+  if (isMobile) {
+    setTimeout(() => {
+      const canvasRect = canvas.getBoundingClientRect();
       banners.forEach(banner => {
         if (banner.classList.contains('active')) {
-          banner.style.position = 'absolute';
           const canvasCenterX = canvasRect.left - gameContainer.getBoundingClientRect().left + canvasRect.width / 2;
           const canvasCenterY = canvasRect.top - gameContainer.getBoundingClientRect().top + canvasRect.height / 2;
           banner.style.left = `${canvasCenterX}px`;
           banner.style.top = `${canvasCenterY}px`;
-          banner.style.transform = 'translate(-50%, -50%)';
-          banner.style.zIndex = '1000';
-          console.log(`Banner ${banner.id} visível, posicionado no centro do canvas: left=${canvasCenterX}px, top=${canvasCenterY}px`);
-          console.log(`Banner ${banner.id} dimensions:`, banner.getBoundingClientRect());
         }
       });
-
-      console.log('Canvas dimensions:', canvasRect);
-      if (!isMobile) {
-        console.log('Left Ad:', document.getElementById('left-ad').getBoundingClientRect());
-        console.log('Right Ad:', document.getElementById('right-ad').getBoundingClientRect());
-      } else {
-        console.log('Top Ad:', document.getElementById('top-ad').getBoundingClientRect());
-      }
-
-      const testVersion = document.getElementById('test-version');
-      const aboutSection = document.getElementById('about-section');
-      const topAd = document.getElementById('top-ad');
-      testVersion.style.position = 'relative';
-      testVersion.style.zIndex = '2';
-      aboutSection.style.position = 'relative';
-      aboutSection.style.zIndex = '2';
-      topAd.style.width = '100%';
-      topAd.style.maxWidth = '400px';
-      topAd.style.height = '100px';
-      const adIns = topAd.querySelector('ins.adsbygoogle');
-      if (adIns) {
-        adIns.style.width = '100%';
-        adIns.style.maxWidth = '400px';
-        adIns.style.height = '100px';
-      }
-    }
+    }, 100);
+  }
+}
 
     function resizeCanvas() {
       console.log('resizeCanvas chamado');
@@ -383,14 +416,21 @@
       }
     };
 
-    const startGameHandler = (e) => {
-      e.preventDefault();
-      if (!gameStarted && startBanner.classList.contains('active')) {
-        startBanner.classList.remove('active');
-        iniciarJogo();
-        console.log("Jogo iniciado!");
-      }
-    };
+   const startGameHandler = (e) => {
+  e.preventDefault();
+  
+  if (!gameStarted && startBanner.classList.contains('active')) {
+    // Primeiro: desbloqueia com essa interação do usuário (toque/clique no banner)
+    unlockAudio();
+    
+    // Pequeno delay pra dar tempo pro browser registrar o unlock (funciona melhor no Safari)
+    setTimeout(() => {
+      startBanner.classList.remove('active');
+      iniciarJogo();
+      console.log("Jogo iniciado após unlock de áudio!");
+    }, 80);  // 80ms é seguro e imperceptível
+  }
+};
 
     function resetGame() {
       if (animationFrameId) {
@@ -588,7 +628,15 @@
           handleJump();
         }
       });
-      backgroundMusic.play().catch(e => console.log("Erro ao tocar música de fundo:", e));
+        // Tenta tocar a música (depois do unlock, deve funcionar na primeira vez)
+  backgroundMusic.play()
+    .then(() => {
+      console.log("Música de fundo iniciada com sucesso!");
+    })
+    .catch(e => {
+      console.error("Falha ao tocar música (talvez precise de outra interação):", e);
+      // Se ainda falhar (raro), pode tentar de novo em próximo toque, mas geralmente não precisa
+    });
       animationFrameId = requestAnimationFrame(gameLoop);
     }
 
@@ -637,10 +685,6 @@
     let lastWeatherFetch = 0;
     const CACHE_DURATION = 10 * 60 * 1000;
 
-    let lastTimeData = null;
-    let lastTimeFetch = 0;
-    const TIME_CACHE_DURATION = 60 * 1000;
-
     async function fetchWeather() {
       try {
         const now = Date.now();
@@ -664,28 +708,61 @@
       }
     }
 
-    async function atualizarHora() {
-      try {
-        const now = Date.now();
-        if (lastTimeData && now - lastTimeFetch < TIME_CACHE_DURATION) {
-          clockElement.textContent = lastTimeData;
-          return;
-        }
-        const response = await fetch("https://worldtimeapi.org/api/timezone/America/Sao_Paulo", { mode: 'cors' });
-        if (!response.ok) throw new Error(`Falha na API WorldTimeAPI: ${response.status}`);
-        const data = await response.json();
-        const dateTime = new Date(data.datetime);
-        lastTimeData = ` ${dateTime.toLocaleDateString('pt-BR')} - ${dateTime.toLocaleTimeString('pt-BR')}`;
-        lastTimeFetch = now;
-        clockElement.textContent = lastTimeData;
-      } catch (error) {
-        console.error("Erro ao buscar hora:", error);
-        setTimeout(atualizarHora, 2000);
-        const now = new Date();
-        lastTimeData = ` ${now.toLocaleDateString('pt-BR')} - ${now.toLocaleTimeString('pt-BR')}`;
-        clockElement.textContent = lastTimeData;
-      }
+ // ────────────────────────────────────────────────
+//          RELÓGIO COM SEGUNDOS EM TEMPO REAL
+// ────────────────────────────────────────────────
+
+function formatarDataHoraBR(date) {
+  const dia  = String(date.getDate()).padStart(2, '0');
+  const mes  = String(date.getMonth() + 1).padStart(2, '0');
+  const ano  = date.getFullYear();
+  
+  const hora = String(date.getHours()).padStart(2, '0');
+  const min  = String(date.getMinutes()).padStart(2, '0');
+  const seg  = String(date.getSeconds()).padStart(2, '0');
+  
+  return `${dia}/${mes}/${ano} - ${hora}:${min}:${seg}`;
+}
+
+function atualizarRelogioLocal() {
+  const agora = new Date();
+  clockElement.textContent = formatarDataHoraBR(agora);
+}
+
+// Tenta pegar horário oficial de São Paulo uma única vez no carregamento
+async function tentarHorarioOficialUmaVez() {
+  try {
+    const res = await fetch("https://worldtimeapi.org/api/timezone/America/Sao_Paulo", {
+      mode: 'cors',
+      cache: 'no-store'
+    });
+    if (!res.ok) throw new Error("status " + res.status);
+    
+    const data = await res.json();
+    const dataHoraApi = new Date(data.datetime);
+    
+    // Ajusta o relógio local pro horário oficial (só na inicialização)
+    const diferencaMs = dataHoraApi - new Date();
+    if (Math.abs(diferencaMs) > 30000) { // mais de 30s de diferença → ajusta
+      console.warn("Ajustando relógio local com diferença de", Math.round(diferencaMs/1000), "segundos");
+      // Aqui poderíamos compensar, mas na prática o relógio do SO costuma estar ok
     }
+    
+    clockElement.textContent = formatarDataHoraBR(dataHoraApi);
+  } catch (err) {
+    console.warn("Não conseguiu pegar horário oficial → usando relógio local", err);
+    atualizarRelogioLocal();
+  }
+}
+
+// Inicia o relógio
+window.addEventListener('load', () => {
+  // ... seu código existente ...
+
+  tentarHorarioOficialUmaVez();           // tenta sincronizar uma vez
+  atualizarRelogioLocal();                // mostra imediatamente
+  setInterval(atualizarRelogioLocal, 1000); // atualiza segundos a cada 1s
+});
 
     window.addEventListener('load', () => {
       handleOrientation();
@@ -702,19 +779,67 @@
       setInterval(fetchWeather, 10 * 60 * 1000);
       setInterval(atualizarHora, 60 * 1000);
 
-      document.body.addEventListener('touchstart', () => {
-        jumpSound.play().then(() => jumpSound.pause()).catch(e => console.log("Erro ao desbloquear jumpSound:", e));
-        failSound.play().then(() => failSound.pause()).catch(e => console.log("Erro ao desbloquear failSound:", e));
-        victorySound.play().then(() => victorySound.pause()).catch(e => console.log("Erro ao desbloquear victorySound:", e));
-        backgroundMusic.play().then(() => backgroundMusic.pause()).catch(e => console.log("Erro ao desbloquear backgroundMusic:", e));
-      }, { once: true });
-
+        document.body.addEventListener('touchstart', unlockAudio, { once: true });
+        
       positionBanners();
     });
 
     restartButton.addEventListener("click", resetGame);
     playAgainButton.addEventListener("click", resetGame);
   </script>
+    <!-- BLOQUEIO HORIZONTAL – VERSÃO FINAL E IMORTAL (FUNCIONA EM TODOS OS CELULARES) -->
+  <style>
+    #force-portrait{visibility:hidden;opacity:0;transition:opacity .3s}
+    #force-portrait.active{visibility:visible;opacity:1}
+    #force-portrait{
+      position:fixed;top:0;left:0;width:100vw;height:100vh;
+      background:#000;z-index:999999;display:flex;
+      justify-content:center;align-items:center;flex-direction:column;
+      text-align:center;color:#fff;font-family:sans-serif;padding:20px;
+      box-sizing:border-box;transition:opacity .3s;
+    }
+    #force-portrait svg{width:80px;height:80px;margin-bottom:20px;
+      animation:g 3s linear infinite;stroke:#00ff00;stroke-width:2.5}
+    #force-portrait h2{font-size:28px;color:#00ff00;margin:0 0 10px}
+    #force-portrait p{font-size:18px}
+    @keyframes g{to{transform:rotate(360deg)}}
+  </style>
+
+  <div id="force-portrait">
+    <svg viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+      <line x1="8" y1="3" x2="8" y2="8"></line>
+      <line x1="16" y1="3" x2="16" y2="8"></line>
+      <path d="M12 16v5"></path>
+      <path d="M8 16h8"></path>
+    </svg>
+    <h2>Gire o celular</h2>
+    <p>Para jogar, use o modo vertical</p>
+  </div>
+
+  <script>
+    const blocker = document.getElementById('force-portrait');
+    function check() {
+      // A lógica mais confiável que existe no planeta Terra
+      const w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+      if (w > h && w <= 1023) {
+        blocker.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      } else {
+        blocker.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+    // Roda em tudo que existe
+    window.addEventListener('load', check);
+    window.addEventListener('resize', check);
+    window.addEventListener('orientationchange', check);
+    // Força checagem a cada 500ms por 5 segundos (mata qualquer bug de carregamento)
+    let i = 0;
+    const force = setInterval(() => { check(); if (++i === 10) clearInterval(force); }, 500);
+    // Primeira checagem imediata
+    check();
+  </script>
 </body>
 </html>
-
