@@ -35,6 +35,23 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-SEU-ID" crossorigin="anonymous"></script>
 
+  <style>
+  #mute-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 15px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    transition: opacity 0.2s;
+  }
+  #mute-btn:hover { opacity: 0.7; }
+  #mute-btn:active { transform: scale(0.95); }
+</style>
+
 </head>
 <body>
   <div id="top-bar">
@@ -51,6 +68,7 @@
         <li><a href="politicas.html">Políticas</a></li>
       </ul>
     </nav>
+   <button id="mute-btn" title="Mutar/Ativar música"><i class="fas fa-volume-up"></i></button>
   </div>
 
   <div id="game-container">
@@ -217,6 +235,20 @@
     const backgroundMusic = document.getElementById("backgroundMusic");
     backgroundMusic.preload = 'auto';
     backgroundMusic.volume = 0.5;
+
+    let isMuted = false;
+const muteBtn = document.getElementById('mute-btn');
+if (muteBtn) {
+  muteBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    isMuted = !isMuted;
+    backgroundMusic.volume = isMuted ? 0 : 0.5;
+    const icon = muteBtn.querySelector('i');
+    icon.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+    console.log('Música ' + (isMuted ? 'mutada' : 'ativada'));
+  });
+}
     let audioUnlocked = false;  // Flag pra saber se já desbloqueamos
 
     const startBanner = document.getElementById("start-banner");
@@ -416,6 +448,12 @@ function positionBanners() {
       }
     };
 
+   const canvasTouchHandler = (e) => {
+    e.preventDefault();
+     if (!gameStarted || sapo.jumping) return;
+      handleJump();
+    };
+
    const startGameHandler = (e) => {
   e.preventDefault();
   
@@ -432,12 +470,18 @@ function positionBanners() {
   }
 };
 
-    function resetGame() {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
+      function resetGame() {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
       ALTURA_CHAO = isMobile ? canvas.height : BASE_HEIGHT;
-      sapo = { x: BASE_WIDTH * 0.2 * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY, width: 40 * scaleX, height: ALTURA_SAPO * scaleY, vy: 0, jumping: false };
+      sapo = { 
+        x: BASE_WIDTH * 0.2 * scaleX, 
+        y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY, 
+        width: 40 * scaleX, 
+        height: ALTURA_SAPO * scaleY, 
+        vy: 0, 
+        jumping: false 
+      };
       obstaculos = [];
       poeira = [];
       tempo = 0;
@@ -452,21 +496,17 @@ function positionBanners() {
       backgroundMusic.pause();
       backgroundMusic.currentTime = 0;
 
-      document.removeEventListener('keydown', handleKeyJump);
+      // Limpar todos os listeners possíveis
+      startBanner.removeEventListener('click', startGameHandler);
+      startBanner.removeEventListener('touchstart', startGameHandler);
       document.removeEventListener('keydown', startGameHandler);
-      document.removeEventListener('touchstart', startGameHandler);
-      canvas.removeEventListener('touchstart', handleJump);
+      document.removeEventListener('keydown', handleKeyJump);
+      canvas.removeEventListener('touchstart', canvasTouchHandler);
 
+      // Adicionar só os de início
       startBanner.addEventListener('click', startGameHandler);
       startBanner.addEventListener('touchstart', startGameHandler);
       document.addEventListener('keydown', startGameHandler);
-      canvas.addEventListener('touchstart', (e) => {
-        console.log('Toque no canvas');
-        e.preventDefault();
-        if (gameStarted && !sapo.jumping) {
-          handleJump();
-        }
-      });
 
       resizeCanvas();
       positionBanners();
@@ -595,12 +635,10 @@ function positionBanners() {
         faseAtual++;
         intervaloObstaculo = Math.max(60, intervaloObstaculo - 10);
       }
-      ctx.save();
-      ctx.font = isMobile ? "bold 16px Arial" : "bold 18px Arial";
       ctx.fillStyle = "#000";
-      ctx.fillText("Score: " + pontuacao, 10, isMobile ? 20 : 25);
-      ctx.restore();
-    }
+      ctx.font = "bold 18px Arial";
+      ctx.fillText("Score: " + pontuacao, 10, 25);
+      }
 
     function verificarColisao() {
       for (let obs of obstaculos) {
@@ -617,28 +655,25 @@ function positionBanners() {
       return false;
     }
 
-    function iniciarJogo() {
+        function iniciarJogo() {
       if (gameStarted) return;
       gameStarted = true;
+      // Adicionar listeners de JOGO
       document.addEventListener('keydown', handleKeyJump);
-      canvas.addEventListener('touchstart', (e) => {
-        console.log('Toque no canvas');
-        e.preventDefault();
-        if (gameStarted && !sapo.jumping) {
-          handleJump();
-        }
-      });
-        // Tenta tocar a música (depois do unlock, deve funcionar na primeira vez)
-  backgroundMusic.play()
-    .then(() => {
-      console.log("Música de fundo iniciada com sucesso!");
-    })
-    .catch(e => {
-      console.error("Falha ao tocar música (talvez precise de outra interação):", e);
-      // Se ainda falhar (raro), pode tentar de novo em próximo toque, mas geralmente não precisa
-    });
+      canvas.addEventListener('touchstart', canvasTouchHandler);
+
+      // Música com mute
+      backgroundMusic.volume = isMuted ? 0 : 0.5;
+      backgroundMusic.play()
+        .then(() => {
+          console.log("Música de fundo iniciada com sucesso!");
+        })
+        .catch(e => {
+          console.error("Falha ao tocar música:", e);
+        });
+
       animationFrameId = requestAnimationFrame(gameLoop);
-    }
+    }   // ← fechou aqui corretamente
 
     function gameLoop() {
       if (!gameStarted) {
@@ -654,11 +689,10 @@ function positionBanners() {
         finalScore.textContent = pontuacao;
         gameOverBanner.classList.add('active');
         positionBanners();
+        // Remover APENAS listeners de JOGO
         document.removeEventListener('keydown', handleKeyJump);
-        document.removeEventListener('keydown', startGameHandler);
-        document.removeEventListener('touchstart', startGameHandler);
-        canvas.removeEventListener('touchstart', handleJump);
-        return;
+        canvas.removeEventListener('touchstart', canvasTouchHandler);
+        return;  // ← bom ter return aqui
       }
       if (pontuacao >= PONTUACAO_VITORIA) {
         gameStarted = false;
@@ -670,14 +704,13 @@ function positionBanners() {
         victoryBanner.classList.add('active');
         positionBanners();
         document.removeEventListener('keydown', handleKeyJump);
-        document.removeEventListener('keydown', startGameHandler);
-        document.removeEventListener('touchstart', startGameHandler);
-        canvas.removeEventListener('touchstart', handleJump);
+        canvas.removeEventListener('touchstart', canvasTouchHandler);
         return;
       }
       animationFrameId = requestAnimationFrame(gameLoop);
     }
-
+    //Parte da previsão do tempo
+  
     const weatherElement = document.getElementById("weather");
     const clockElement = document.getElementById("clock");
 
@@ -707,8 +740,7 @@ function positionBanners() {
         weatherElement.textContent = "Clima indisponível";
       }
     }
-
- // ────────────────────────────────────────────────
+  // ────────────────────────────────────────────────
 //          RELÓGIO COM SEGUNDOS EM TEMPO REAL
 // ────────────────────────────────────────────────
 
