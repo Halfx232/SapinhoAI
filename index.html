@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-EL1E2EBTEM"></script>
-<script>
+  <!-- GOOGLE ANALYTICS tag (gtag.js) --> 
+  <!--<script async src="https://www.googletagmanager.com/gtag/js?id=G-EL1E2EBTEM"></script>
+  <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-EL1E2EBTEM');
-</script>
+  </script> -->
   <meta charset="UTF-8">
   <meta name="description" content="Jogo do Sapinho: uma aventura divertida com um sapo, desenvolvida com IA. Jogue agora!">
   <meta name="keywords" content="jogo, sapinho, inteligência artificial, arcade">
@@ -123,6 +123,7 @@
   <audio id="jumpSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
   <audio id="failSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
   <audio id="victorySound" src="Victory.mp3"></audio>
+  <audio id="gameOverSound" src="gameover.mp3" preload="auto"></audio>
   <audio id="backgroundMusic" src="Musicgame.mp3" loop></audio>  <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
@@ -276,8 +277,24 @@ if (muteBtn) {
       inverno: { fundo: "#e0f7fa", chao: "#4dd0e1" }
     };
 
-    const PONTUACAO_VITORIA = 5000;
-    const GRAVIDADE = 1.5;
+    // === CONFIGURAÇÃO NOVA - JOGO LONGO COM 4 FASES ===
+    
+    const PONTUACAO_VITORIA = 100000;
+    const PONTOS_POR_FASE = 25000;
+
+    const DIFICULDADE_FASE = {
+      0: { intervalo: 220, gameSpeed: 1.5,  gravidade: 1.1 },   // Primavera
+      1: { intervalo: 170, gameSpeed: 1.8,  gravidade: 1.2 },   // Verão
+      2: { intervalo: 130, gameSpeed: 2.2,  gravidade: 1.35 },  // Outono
+      3: { intervalo: 95,  gameSpeed: 2.7,  gravidade: 1.55 }   // Inverno - Expert
+    };
+    
+    let GRAVIDADE = 1.1;           // ← Gravidade (quanto maior = cai mais rápido)
+    let GAME_SPEED = 1.5;           // ← Velocidade dos obstáculos (você gosta assim)
+    
+    const PULO_FORCA = -17.0;         // ← VELOCIDADE DE SUBIDA (principal ajuste agora)
+                                      // quanto mais negativo = subida MAIS RÁPIDA
+    
     const BASE_WIDTH = 800;
     const BASE_HEIGHT = 400;
     let ALTURA_CHAO = isMobile ? 150 : 300;
@@ -290,7 +307,17 @@ if (muteBtn) {
     let gameStarted = false;
     let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
     let poeira = [];
+    let vidas = 3;
+    let piscandoSapo = false;
+    let tempoPiscadaSapo = 0;
+    const DURACAO_PISCADA_SAPO = 1200;     // 1.2 segundos de piscar/invencibilidade
+    let ultimoTogglePiscada = 0;
+    let flashCoracoes = 0;
+    const DURACAO_FLASH_CORACOES = 1200;   // mesmo tempo do flash
     let animationFrameId;
+
+    // Nova variável para controlar o Game Over
+    let gameOverTriggered = false;
 
     function unlockAudio() {
   if (audioUnlocked) return;
@@ -431,13 +458,16 @@ function positionBanners() {
       });
     }
 
-    function handleJump() {
+         function handleJump() {
       if (gameStarted && !sapo.jumping) {
-        sapo.vy = -20 * scaleY;
+        sapo.vy = PULO_FORCA * scaleY;     // ← sem multiplicador extra
         sapo.jumping = true;
+        
         jumpSound.currentTime = 0;
         jumpSound.play().catch(e => console.log("Erro ao tocar som:", e));
-        console.log('Sapo pulou!');
+        
+        console.log('Pulo! vy inicial =', sapo.vy.toFixed(2));
+
         for (let i = 0; i < 10; i++) {
           poeira.push({
             x: sapo.x + 15 * scaleX + Math.random() * 10 * scaleX,
@@ -479,47 +509,59 @@ function positionBanners() {
   }
 };
 
-      function resetGame() {
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+function resetGame() {
+  if (animationFrameId) cancelAnimationFrame(animationFrameId);
 
-      ALTURA_CHAO = isMobile ? canvas.height : BASE_HEIGHT;
-      sapo = { 
-        x: BASE_WIDTH * 0.2 * scaleX, 
-        y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY, 
-        width: 40 * scaleX, 
-        height: ALTURA_SAPO * scaleY, 
-        vy: 0, 
-        jumping: false 
-      };
-      obstaculos = [];
-      poeira = [];
-      tempo = 0;
-      intervaloObstaculo = 120;
-      faseAtual = 0;
-      pontuacao = 0;
-      gameOverBanner.classList.remove('active');
-      victoryBanner.classList.remove('active');
-      startBanner.classList.add('active');
-      gameStarted = false;
+  vidas = 3;
+  piscandoSapo = false;
+  flashCoracoes = 0;
+  tempoPiscadaSapo = 0;
+  gameOverTriggered = false;
 
-      backgroundMusic.pause();
-      backgroundMusic.currentTime = 0;
+  ALTURA_CHAO = isMobile ? canvas.height : BASE_HEIGHT;
 
-      // Limpar todos os listeners possíveis
-      startBanner.removeEventListener('click', startGameHandler);
-      startBanner.removeEventListener('touchstart', startGameHandler);
-      document.removeEventListener('keydown', startGameHandler);
-      document.removeEventListener('keydown', handleKeyJump);
-      canvas.removeEventListener('touchstart', canvasTouchHandler);
+  sapo = { 
+    x: BASE_WIDTH * 0.2 * scaleX, 
+    y: ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY, 
+    width: 40 * scaleX, 
+    height: ALTURA_SAPO * scaleY, 
+    vy: 0, 
+    jumping: false 
+  };
 
-      // Adicionar só os de início
-      startBanner.addEventListener('click', startGameHandler);
-      startBanner.addEventListener('touchstart', startGameHandler);
-      document.addEventListener('keydown', startGameHandler);
+  obstaculos = [];
+  poeira = [];
+  tempo = 0;
+  faseAtual = 0;
+  pontuacao = 0;
 
-      resizeCanvas();
-      positionBanners();
-    }
+  // Configuração inicial da primeira fase
+  intervaloObstaculo = DIFICULDADE_FASE[0].intervalo;
+  GAME_SPEED = DIFICULDADE_FASE[0].gameSpeed;   // ← vai ser variável agora
+  GRAVIDADE = DIFICULDADE_FASE[0].gravidade;    // ← também variável
+
+  gameOverBanner.classList.remove('active');
+  victoryBanner.classList.remove('active');
+  startBanner.classList.add('active');
+  gameStarted = false;
+
+  backgroundMusic.pause();
+  backgroundMusic.currentTime = 0;
+
+  // Reset de listeners (manter como estava)
+  startBanner.removeEventListener('click', startGameHandler);
+  startBanner.removeEventListener('touchstart', startGameHandler);
+  document.removeEventListener('keydown', startGameHandler);
+  document.removeEventListener('keydown', handleKeyJump);
+  canvas.removeEventListener('touchstart', canvasTouchHandler);
+
+  startBanner.addEventListener('click', startGameHandler);
+  startBanner.addEventListener('touchstart', startGameHandler);
+  document.addEventListener('keydown', startGameHandler);
+
+  resizeCanvas();
+  positionBanners();
+}
 
     function getFaseAtual() {
       return fases[faseAtual % fases.length];
@@ -531,67 +573,132 @@ function positionBanners() {
       ctx.fillRect(0, ALTURA_CHAO - ESPESSURA_CHAO, canvas.width, ESPESSURA_CHAO);
     }
 
-    function drawSapo() {
-      ctx.save();
-      ctx.scale(scaleX, scaleY);
-      const { x, y, jumping } = sapo;
-      ctx.fillStyle = "green";
-      ctx.beginPath();
-      ctx.ellipse(x / scaleX + 25, y / scaleY + 18, 22, 15, 0, 0, Math.PI * 2);
-      ctx.fill();
+       function drawSapo() {
+    if (piscandoSapo) {
+    const agora = performance.now();
+    if (agora - ultimoTogglePiscada > 120) {  // troca a cada 120ms
+      ultimoTogglePiscada = agora;
+    }
+    if (Math.floor(agora / 120) % 2 === 1) {
+    return;  // não desenha nessa frame → efeito piscar
+    }
+  }
 
-      ctx.strokeStyle = "green";
-      ctx.lineWidth = 3 / scaleX;
-      const armAngle = jumping ? Math.PI/2 : Math.PI/4;
-      ctx.beginPath();
-      ctx.moveTo(x / scaleX + 18, y / scaleY + 20);
-      ctx.lineTo(x / scaleX + 5, y / scaleY + 20);
-      ctx.lineTo(x / scaleX + 5 - Math.cos(armAngle) * 18, y / scaleY + 20 + Math.sin(armAngle) * 18);
-      ctx.stroke();
+  ctx.save();
+  ctx.scale(scaleX, scaleY);
+  const { x, y, jumping } = sapo;
+  ctx.fillStyle = "green";
+  ctx.beginPath();
+  ctx.ellipse(x / scaleX + 25, y / scaleY + 18, 22, 15, 0, 0, Math.PI * 2);
+  ctx.fill();
 
-      ctx.beginPath();
-      ctx.moveTo(x / scaleX + 32, y / scaleY + 20);
-      ctx.lineTo(x / scaleX + 45, y / scaleY + 20);
-      ctx.lineTo(x / scaleX + 45 + Math.cos(armAngle) * 18, y / scaleY + 20 + Math.sin(armAngle) * 18);
-      ctx.stroke();
+  ctx.strokeStyle = "green";
+  ctx.lineWidth = 3 / scaleX;
+  const armAngle = jumping ? Math.PI/2 : Math.PI/4;
+  ctx.beginPath();
+  ctx.moveTo(x / scaleX + 18, y / scaleY + 20);
+  ctx.lineTo(x / scaleX + 5, y / scaleY + 20);
+  ctx.lineTo(x / scaleX + 5 - Math.cos(armAngle) * 18, y / scaleY + 20 + Math.sin(armAngle) * 18);
+  ctx.stroke();
 
-      ctx.fillStyle = "yellow";
-      ctx.beginPath();
-      ctx.arc(x / scaleX + 15, y / scaleY + 8, 6, 0, Math.PI * 2);
-      ctx.arc(x / scaleX + 35, y / scaleY + 8, 6, 0, Math.PI * 2);
-      ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(x / scaleX + 32, y / scaleY + 20);
+  ctx.lineTo(x / scaleX + 45, y / scaleY + 20);
+  ctx.lineTo(x / scaleX + 45 + Math.cos(armAngle) * 18, y / scaleY + 20 + Math.sin(armAngle) * 18);
+  ctx.stroke();
 
-      ctx.fillStyle = "black";
-      ctx.beginPath();
-      ctx.arc(x / scaleX + 15, y / scaleY + 8, 2, 0, Math.PI * 2);
-      ctx.arc(x / scaleX + 35, y / scaleY + 8, 2, 0, Math.PI * 2);
-      ctx.fill();
+  ctx.fillStyle = "yellow";
+  ctx.beginPath();
+  ctx.arc(x / scaleX + 15, y / scaleY + 8, 6, 0, Math.PI * 2);
+  ctx.arc(x / scaleX + 35, y / scaleY + 8, 6, 0, Math.PI * 2);
+  ctx.fill();
 
-      ctx.strokeStyle = "black";
-      ctx.lineWidth = 2 / scaleX;
-      ctx.beginPath();
-      ctx.arc(x / scaleX + 25, y / scaleY + 18, 8, 0.3, Math.PI - 0.3);
-      ctx.stroke();
+  ctx.fillStyle = "black";
+  ctx.beginPath();
+  ctx.arc(x / scaleX + 15, y / scaleY + 8, 2, 0, Math.PI * 2);
+  ctx.arc(x / scaleX + 35, y / scaleY + 8, 2, 0, Math.PI * 2);
+  ctx.fill();
 
-      ctx.strokeStyle = "green";
-      ctx.lineWidth = 4 / scaleX;
-      const legAngle = jumping ? Math.PI/2 : Math.PI/4;
-      ctx.beginPath();
-      ctx.moveTo(x / scaleX + 15, y / scaleY + 30);
-      ctx.lineTo(x / scaleX + 5 - Math.cos(legAngle) * 12, y / scaleY + 30 + Math.sin(legAngle) * 25);
-      ctx.moveTo(x / scaleX + 35, y / scaleY + 30);
-      ctx.lineTo(x / scaleX + 45 + Math.cos(legAngle) * 12, y / scaleY + 30 + Math.sin(legAngle) * 25);
-      ctx.stroke();
-      ctx.restore();
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 2 / scaleX;
+  ctx.beginPath();
+  ctx.arc(x / scaleX + 25, y / scaleY + 18, 8, 0.3, Math.PI - 0.3);
+  ctx.stroke();
+
+  ctx.strokeStyle = "green";
+  ctx.lineWidth = 4 / scaleX;
+  const legAngle = jumping ? Math.PI/2 : Math.PI/4;
+  ctx.beginPath();
+  ctx.moveTo(x / scaleX + 15, y / scaleY + 30);
+  ctx.lineTo(x / scaleX + 5 - Math.cos(legAngle) * 12, y / scaleY + 30 + Math.sin(legAngle) * 25);
+  ctx.moveTo(x / scaleX + 35, y / scaleY + 30);
+  ctx.lineTo(x / scaleX + 45 + Math.cos(legAngle) * 12, y / scaleY + 30 + Math.sin(legAngle) * 25);
+  ctx.stroke();
+  ctx.restore();
+}
+ function drawCoracoes() {
+  // ==================== AJUSTES MOBILE ====================
+  let tamanhoBase = 22;                    // base desktop (não mexa)
+
+  if (isMobile) {
+    tamanhoBase = 70;                      // ← Diminua aqui para corações menores no mobile
+    // Exemplo: 32 = um pouco menor | 30 = menor ainda | 28 = bem menor
+  }
+
+  const tamanho = tamanhoBase * Math.min(scaleX, scaleY);
+
+  // Espaçamento (mantendo o que você já ajustou)
+  let espacamento;
+  if (isMobile) {
+    espacamento = tamanho * 0.7;           // seu valor atual
+  } else {
+    espacamento = tamanho * 1.4;
+  }
+
+  // Posições
+  let xInicio, yPos;
+  if (isMobile) {
+    xInicio = 270 * scaleX;
+    yPos    = 5 * scaleY;                 // ← SUBA aqui para subir os corações no mobile
+    // Exemplo: 18 = sobe mais | 20 = sobe médio | 24 = desce um pouco
+  } else {
+    xInicio = 160 * scaleX;
+    yPos    = 5 * scaleY;                  // desktop continua igual
+  }
+  // =======================================================
+
+  for (let i = 0; i < 3; i++) {
+    const x = xInicio + i * espacamento;
+
+    let cor = "#444";
+    if (i < vidas) {
+      cor = "#e53935";
     }
 
-    function drawObstaculo(obs) {
-      ctx.save();
-      ctx.scale(scaleX, scaleY);
-      ctx.fillStyle = obs.color;
-      ctx.fillRect(obs.x / scaleX, obs.y / scaleY, obs.width / scaleX, obs.height / scaleY);
-      ctx.restore();
+    if (flashCoracoes > 0 && i < vidas) {
+      const pulso = Math.sin(flashCoracoes / 60) * 0.5 + 0.5;
+      cor = `rgb(255, ${Math.floor(80 + 175 * pulso)}, ${Math.floor(80 + 175 * pulso)})`;
     }
+
+    ctx.save();
+    ctx.scale(scaleX, scaleY);
+    ctx.fillStyle = cor;
+    ctx.beginPath();
+    const cx = (x / scaleX) + tamanho / 2;
+    const cy = (yPos / scaleY) + tamanho / 4;
+    ctx.moveTo(cx, cy + tamanho * 0.3);
+    ctx.bezierCurveTo(cx, cy, cx - tamanho*0.5, cy, cx - tamanho*0.5, cy + tamanho*0.4);
+    ctx.bezierCurveTo(cx - tamanho*0.5, cy + tamanho*0.8, cx, cy + tamanho*0.9, cx, cy + tamanho*0.6);
+    ctx.bezierCurveTo(cx, cy + tamanho*0.9, cx + tamanho*0.5, cy + tamanho*0.8, cx + tamanho*0.5, cy + tamanho*0.4);
+    ctx.bezierCurveTo(cx + tamanho*0.5, cy, cx, cy, cx, cy + tamanho * 0.3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 1.8 / Math.max(scaleX, scaleY);
+    ctx.stroke();
+    ctx.restore();
+  }
+}
 
     function atualizarPoeira() {
       ctx.save();
@@ -612,43 +719,122 @@ function positionBanners() {
       poeira = poeira.filter(p => p.raio > 0.2 * scaleX && p.alpha > 0.05);
     }
 
-    function atualizarJogo() {
+             function atualizarJogo() {
       if (!gameStarted) return;
+
       const fase = getFaseAtual();
       canvas.style.background = coresFase[fase].fundo;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawChao();
+
+      // Física do sapo
       sapo.vy += GRAVIDADE * scaleY;
       sapo.y += sapo.vy;
+
+      // Segurança de posição
+      if (sapo.y < -100 * scaleY || sapo.y > canvas.height + 100 * scaleY) {
+        sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY;
+        sapo.vy = 0;
+        sapo.jumping = false;
+      }
       if (sapo.y > ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY) {
         sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY;
         sapo.vy = 0;
         sapo.jumping = false;
       }
-      drawSapo();
-      atualizarPoeira();
+
+      // Cria obstáculos
       if (tempo % intervaloObstaculo === 0 && tempo >= 120) {
         let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
         let cor = cores[Math.floor(Math.random() * cores.length)];
-        obstaculos.push({ x: BASE_WIDTH * scaleX, y: ALTURA_CHAO - ESPESSURA_CHAO - 30 * scaleY, width: 30 * scaleX, height: 30 * scaleY, color: cor });
+        obstaculos.push({ 
+          x: BASE_WIDTH * scaleX, 
+          y: ALTURA_CHAO - ESPESSURA_CHAO - 30 * scaleY, 
+          width: 30 * scaleX, 
+          height: 30 * scaleY, 
+          color: cor 
+        });
       }
+
+      // Move obstáculos
       for (let i = 0; i < obstaculos.length; i++) {
         let obs = obstaculos[i];
-        obs.x -= 5 * scaleX;
+        obs.x -= 3.5 * scaleX * GAME_SPEED;
         drawObstaculo(obs);
       }
       obstaculos = obstaculos.filter(obs => obs.x + obs.width > 0);
+
       tempo++;
-      pontuacao++;
-      if (tempo % 1500 === 0) {
-        faseAtual++;
-        intervaloObstaculo = Math.max(60, intervaloObstaculo - 10);
-      }
-      ctx.fillStyle = "#000";
-      ctx.font = "bold 18px Arial";
-      ctx.fillText("Score: " + pontuacao, 10, 25);
+
+      // Aumenta pontuação
+      if (!gameOverTriggered) {
+        pontuacao++;
       }
 
+      // Mudança de fase
+      if (pontuacao > 0 && pontuacao % 25000 === 0 && faseAtual < 3) {
+        const proximaFase = Math.floor(pontuacao / 25000);
+        if (proximaFase > faseAtual) {
+          faseAtual = proximaFase;
+          const config = DIFICULDADE_FASE[faseAtual];
+          intervaloObstaculo = config.intervalo;
+          GAME_SPEED = config.gameSpeed;
+          GRAVIDADE = config.gravidade;
+          console.log(`=== FASE ALTERADA PARA ${fases[faseAtual].toUpperCase()} ===`);
+        }
+      }
+
+      // ==================== DESENHO DA UI ====================
+            // ==================== SCORE - AJUSTADO PARA MOBILE ====================
+      ctx.save();
+      ctx.fillStyle = "#000000";
+      ctx.font = isMobile ? "bold 17px Arial" : "bold 19px Arial";
+      
+      // Posição Y: mais alto no mobile
+      const scoreY = isMobile ? 18 : 27;
+      ctx.fillText("Score: " + pontuacao, 10, scoreY);
+      ctx.restore();
+
+      // Nome da fase atual (canto superior direito) - menor no mobile
+      ctx.save();
+      ctx.fillStyle = "#000000";
+      
+      // Tamanho da fonte: igual ao Score no desktop, menor no mobile
+      ctx.font = isMobile ? "bold 14px Arial" : "bold 19px Arial";
+      
+      const faseY = isMobile ? 18 : 25;
+      const faseX = canvas.width - (isMobile ? 105 : 125);
+      
+      // Primeira letra maiúscula + resto em minúsculo
+      let nomeFase = getFaseAtual();
+      nomeFase = nomeFase.charAt(0).toUpperCase() + nomeFase.slice(1);
+      
+      ctx.fillText(nomeFase, faseX, faseY);
+      ctx.restore();
+
+      // Desenha elementos visuais
+      drawSapo();
+      atualizarPoeira();
+      drawCoracoes();
+
+      // Atualiza timers
+      if (piscandoSapo) {
+        tempoPiscadaSapo -= 16.7;
+        if (tempoPiscadaSapo <= 0) piscandoSapo = false;
+      }
+      if (flashCoracoes > 0) {
+        flashCoracoes -= 16.7;
+      }
+    }
+    
+    function drawObstaculo(obs) {
+      ctx.save();
+      ctx.scale(scaleX, scaleY);
+      ctx.fillStyle = obs.color;
+      ctx.fillRect(obs.x / scaleX, obs.y / scaleY, obs.width / scaleX, obs.height / scaleY);
+      ctx.restore();
+  }
     function verificarColisao() {
       for (let obs of obstaculos) {
         const sapoHitboxY = sapo.y + 7 * scaleY;
@@ -684,25 +870,79 @@ function positionBanners() {
       animationFrameId = requestAnimationFrame(gameLoop);
     }   // ← fechou aqui corretamente
 
-    function gameLoop() {
-      if (!gameStarted) {
-        return;
+        function gameLoop() {
+      if (!gameStarted) return;
+
+      atualizarJogo();  // ÚNICA chamada aqui
+
+      if (verificarColisao() && !piscandoSapo) {
+        // Inicia piscar/invencibilidade
+        piscandoSapo = true;
+        tempoPiscadaSapo = DURACAO_PISCADA_SAPO;
+        ultimoTogglePiscada = performance.now();
+
+        let flashDuration = DURACAO_FLASH_CORACOES;
+        if (vidas === 1) {
+          flashDuration = DURACAO_FLASH_CORACOES * 2;
+        }
+        flashCoracoes = flashDuration;
+
+        vidas--;
+
+        failSound.currentTime = 0;
+        failSound.play().catch(() => {});
+
+        // Remove o obstáculo que colidiu
+        obstaculos = obstaculos.filter(obs => obs.x > sapo.x + sapo.width + 20 * scaleX);
+
+        if (vidas > 0) {
+          // Reset normal (1ª e 2ª vida)
+          sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY;
+          sapo.vy = 0;
+          sapo.jumping = false;
+          console.log("Perdeu vida → reset | vidas restantes:", vidas);
+        } else {
+          // ====================== ÚLTIMA VIDA - GAME OVER ======================
+          console.log("Game Over! vidas agora =", vidas);
+
+          // PARA A PONTUAÇÃO IMEDIATAMENTE
+          gameOverTriggered = true;
+
+          // Desenha o último frame congelado
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawChao();
+          drawSapo();
+          atualizarPoeira();
+          drawCoracoes();
+
+          // Pequeno delay só para ver o flash e o último frame
+          setTimeout(() => {
+            flashCoracoes = 0;
+            gameStarted = false;
+            cancelAnimationFrame(animationFrameId);
+
+            const gameOverSound = document.getElementById("gameOverSound");
+            if (gameOverSound) {
+              gameOverSound.currentTime = 0;
+              gameOverSound.volume = 0.7;
+              gameOverSound.play().catch(e => console.log("Erro ao tocar game over sound:", e));
+            }
+
+            backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
+
+            finalScore.textContent = pontuacao;
+            gameOverBanner.classList.add('active');
+            positionBanners();
+
+            // Remove controles
+            document.removeEventListener('keydown', handleKeyJump);
+            canvas.removeEventListener('touchstart', canvasTouchHandler);
+          }, 800);
+        }
       }
-      atualizarJogo();
-      if (verificarColisao()) {
-        gameStarted = false;
-        cancelAnimationFrame(animationFrameId);
-        failSound.play().catch(e => console.log("Erro ao tocar som:", e));
-        backgroundMusic.pause();
-        backgroundMusic.currentTime = 0;
-        finalScore.textContent = pontuacao;
-        gameOverBanner.classList.add('active');
-        positionBanners();
-        // Remover APENAS listeners de JOGO
-        document.removeEventListener('keydown', handleKeyJump);
-        canvas.removeEventListener('touchstart', canvasTouchHandler);
-        return;  // ← bom ter return aqui
-      }
+
+      // Vitória
       if (pontuacao >= PONTUACAO_VITORIA) {
         gameStarted = false;
         cancelAnimationFrame(animationFrameId);
@@ -716,8 +956,10 @@ function positionBanners() {
         canvas.removeEventListener('touchstart', canvasTouchHandler);
         return;
       }
+
       animationFrameId = requestAnimationFrame(gameLoop);
     }
+
     //Parte da previsão do tempo
   
     const weatherElement = document.getElementById("weather");
@@ -815,10 +1057,10 @@ window.addEventListener('load', () => {
       resetGame();
 
       fetchWeather();
-      atualizarHora();
+      //atualizarHora();
 
       setInterval(fetchWeather, 10 * 60 * 1000);
-      setInterval(atualizarHora, 60 * 1000);
+      //setInterval(atualizarHora, 60 * 1000);
 
         document.body.addEventListener('touchstart', unlockAudio, { once: true });
         
