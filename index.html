@@ -1,37 +1,30 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EL1E2EBTEM"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-EL1E2EBTEM');
-  </script>
-</head>
-  <meta charset="UTF-8">
-  <meta name="description" content="Jogo do Sapinho: uma aventura divertida com um sapo, desenvolvida com IA. Jogue agora!">
-  <meta name="keywords" content="jogo, sapinho, inteligência artificial, arcade">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jogo do Sapinho</title>
-  <link rel="icon" href="https://em-content.zobj.net/thumbs/160/twitter/322/frog_1f438.png" type="image/png">
-  <!-- Meta tags Open Graph -->
-  <meta property="og:title" content="Jogo do Sapinho">
-  <meta property="og:description" content="Uma aventura divertida com um sapo!">
-  <meta property="og:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
-  <meta property="og:url" content="https://sapinho-ai.vercel.app">
-  <meta property="og:type" content="website">
-  <!-- Meta tags Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://sapinho-ai.vercel.app/thumbnail.jpg">
-  <!-- Estilo inline inicial como fallback -->
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Jogo do Sapinho: uma aventura divertida com um sapo, desenvolvida com IA. Jogue agora!">
+    <meta name="keywords" content="jogo, sapinho, inteligência artificial, arcade">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo do Sapinho</title>
+    <link rel="icon" href="https://em-content.zobj.net/thumbs/160/twitter/322/frog_1f438.png" type="image/png">
+    <!-- Meta tags Open Graph -->
+    <meta property="og:title" content="Jogo do Sapinho">
+    <meta property="og:description" content="Uma aventura divertida com um sapo!">
+    <meta property="og:image" content="https://testesapinhoai.vercel.app//thumbnail.jpg">
+    <meta property="og:url" content="https://testesapinhoai.vercel.app/">
+    <meta property="og:type" content="website">
+    <!-- Meta tags Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://testesapinhoai.vercel.app//thumbnail.jpg">
+    <!-- Estilo inline inicial como fallback -->
   <style>
-    html:not(.loaded) body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
-    #top-bar, #game-container, #test-version, #about-section, #footer { display: none; }
-    a { color: white; text-decoration: none; }
-    #start-banner, #game-over-banner, #victory-banner { display: none; }
-    canvas:not(.ready) { display: none; }
-    #top-bar { background: #1b5e20; display: flex; }
+  html:not(.loaded) body { margin: 0; padding: 0; font-family: sans-serif; background: linear-gradient(180deg, #1a1a1a, #2e2e2e); color: #fff; visibility: hidden; }
+  #top-bar, #game-container, #test-version, #about-section, #footer { display: none; }
+  a { color: white; text-decoration: none; }
+  #start-banner, #game-over-banner, #victory-banner { display: none; }
+  canvas:not(.ready) { display: none; }
+  #top-bar { background: #1b5e20; display: flex; }
+  
   </style>
   <!-- Pré-carregar fontes e CSS -->
   <link rel="preload" href="styles-mobile.css?v=17" as="style" media="screen and (max-width: 1023px)" onload="this.rel='stylesheet'">
@@ -123,6 +116,7 @@
   <audio id="failSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
   <audio id="victorySound" src="Victory.mp3"></audio>
   <audio id="gameOverSound" src="gameover.mp3" preload="auto"></audio>
+  <audio id="phaseChangeSound" src="fase.mp3" preload="auto"></audio>
   <audio id="backgroundMusic" src="Musicgame.mp3" loop></audio>  <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
@@ -244,6 +238,10 @@
     const backgroundMusic = document.getElementById("backgroundMusic");
     backgroundMusic.preload = 'auto';
     backgroundMusic.volume = 0.5;
+    
+    const phaseChangeSound = document.getElementById("phaseChangeSound");
+    phaseChangeSound.volume = 0.7;        // Ajuste o volume como preferir (0.5 ~ 0.8 costuma ficar bom)
+    
 
     let isMuted = false;
 const muteBtn = document.getElementById('mute-btn');
@@ -287,11 +285,15 @@ if (muteBtn) {
       2: { intervalo: 130, gameSpeed: 2.2,  gravidade: 1.35 },  // Outono
       3: { intervalo: 95,  gameSpeed: 2.7,  gravidade: 1.55 }   // Inverno - Expert
     };
-    
+    // ==================== NOVAS VARIÁVEIS PARA SEQUÊNCIAS ====================
+    let obstaculoEmSequencia = 0;           // contador de obstáculos na sequência atual
+    let probabilidadeEmpilhado = 0.25;      // 25% de chance de obstáculo empilhado
+    let tamanhoSequenciaAtual = 2;
+    let contadorSequencia = 0;
     let GRAVIDADE = 1.1;           // ← Gravidade (quanto maior = cai mais rápido)
     let GAME_SPEED = 1.5;           // ← Velocidade dos obstáculos (você gosta assim)
     
-    const PULO_FORCA = -17.0;         // ← VELOCIDADE DE SUBIDA (principal ajuste agora)
+    const PULO_FORCA = -19;         // ← VELOCIDADE DE SUBIDA (principal ajuste agora)
                                       // quanto mais negativo = subida MAIS RÁPIDA
     
     const BASE_WIDTH = 800;
@@ -305,6 +307,8 @@ if (muteBtn) {
 
     let gameStarted = false;
     let sapo, obstaculos = [], tempo, intervaloObstaculo, faseAtual, pontuacao;
+    let highScore = 0;                    // ← ADICIONE ESTA LINHA
+    let coracoesOffsetMobile = -40;   // ← AJUSTE AQUI (quanto menor = mais para esquerda)
     let poeira = [];
     let vidas = 3;
     let piscandoSapo = false;
@@ -314,6 +318,7 @@ if (muteBtn) {
     let flashCoracoes = 0;
     const DURACAO_FLASH_CORACOES = 1200;   // mesmo tempo do flash
     let animationFrameId;
+    
 
     // Nova variável para controlar o Game Over
     let gameOverTriggered = false;
@@ -418,10 +423,14 @@ function positionBanners() {
         ALTURA_CHAO = BASE_HEIGHT;
         canvas.style.margin = '20px auto';
       }
-      if (sapo) {
+      
+             if (sapo) {
         sapo.x = BASE_WIDTH * 0.2 * scaleX;
         sapo.y = ALTURA_CHAO - ESPESSURA_CHAO - SAPO_OFFSET_VISUAL * scaleY;
+        sapo.width = 40 * scaleX;
+        sapo.height = ALTURA_SAPO * scaleY;
       }
+      
       positionBanners();
       console.log('Canvas:', canvas.width, canvas.height, 'Scale:', scaleX, scaleY);
     }
@@ -533,6 +542,8 @@ function resetGame() {
   tempo = 0;
   faseAtual = 0;
   pontuacao = 0;
+  obstaculoEmSequencia = 0;
+
 
   // Configuração inicial da primeira fase
   intervaloObstaculo = DIFICULDADE_FASE[0].intervalo;
@@ -558,12 +569,78 @@ function resetGame() {
   startBanner.addEventListener('touchstart', startGameHandler);
   document.addEventListener('keydown', startGameHandler);
 
+  // ==================== CARREGAMENTO DO RECORDE ====================
+  const savedHighScore = localStorage.getItem('sapinhoHighScore');
+  highScore = savedHighScore ? parseInt(savedHighScore) : 0;
+  
   resizeCanvas();
   positionBanners();
 }
+    
+      // ==================== FUNÇÃO PARA CRIAR OBSTÁCULO - VERSÃO ATUALIZADA ====================
+    
+function criarObstaculo() {
+  const cor = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"][Math.floor(Math.random() * 4)];
 
+  // Obstáculo empilhado (a partir da fase 2)
+  
+  if (faseAtual >= 1 && Math.random() < 0.23) {
+    const largura = 28 * scaleX;
+    const alturaBase = 26 * scaleY;
+
+    obstaculos.push({
+      x: BASE_WIDTH * scaleX + 45,
+      y: ALTURA_CHAO - ESPESSURA_CHAO - alturaBase * 2.1,
+      width: largura,
+      height: alturaBase * 2.1,
+      color: cor
+    });
+
+    obstaculos.push({
+      x: BASE_WIDTH * scaleX + 45,
+      y: ALTURA_CHAO - ESPESSURA_CHAO - alturaBase * 3.9,
+      width: largura * 0.85,
+      height: alturaBase * 1.55,
+      color: cor
+    });
+    return;
+  }
+
+  // Decide se é sequência ou único
+  
+  const quantidade = (Math.random() < 0.48) ? SEQUENCIA_POR_FASE[faseAtual] : 1;
+
+  // ESPAÇAMENTO - Valor grande e direto
+  
+  let espaco = 145 * scaleX;     // ← Aumentado bastante
+
+  if (faseAtual === 0) espaco = 260 * scaleX;   // Fase 1
+  else if (faseAtual === 1) espaco = 240 * scaleX;
+  else if (faseAtual === 2) espaco = 225 * scaleX;
+  else espaco = 210 * scaleX;                   // Fase 4
+
+  for (let i = 0; i < quantidade; i++) {
+    obstaculos.push({
+      x: BASE_WIDTH * scaleX + 55 + (i * espaco),   // <--- Ponto principal
+      y: ALTURA_CHAO - ESPESSURA_CHAO - 35 * scaleY,
+      width: 32 * scaleX,
+      height: 35 * scaleY,
+      color: cor
+    });
+  }
+}
+        
+       // ==================== CONFIGURAÇÃO DE SEQUÊNCIA POR FASE ====================
+   
+     const SEQUENCIA_POR_FASE = {
+      0: 2,   // Fase 1 → sequências de 2 obstáculos juntos (aleatoriamente)
+      1: 3,   // Fase 2 → sequências de 3 obstáculos juntos
+      2: 4,   // Fase 3 → sequências de 4 obstáculos juntos
+      3: 5    // Fase 4 → sequências de 5 obstáculos juntos
+    };
+    
     function getFaseAtual() {
-      return fases[faseAtual % fases.length];
+    return fases[faseAtual % fases.length];
     }
 
     function drawChao() {
@@ -656,9 +733,10 @@ function resetGame() {
 
   // Posições
   let xInicio, yPos;
-  if (isMobile) {
-    xInicio = 270 * scaleX;
-    yPos    = 5 * scaleY;                 // ← SUBA aqui para subir os corações no mobile
+   if (isMobile) {
+   xInicio = (270 + coracoesOffsetMobile) * scaleX;   // usa a variável
+   yPos    = 5 * scaleY;
+    
     // Exemplo: 18 = sobe mais | 20 = sobe médio | 24 = desce um pouco
   } else {
     xInicio = 160 * scaleX;
@@ -698,7 +776,24 @@ function resetGame() {
     ctx.restore();
   }
 }
+    
+ function drawUI() {
+  ctx.save();
+  ctx.fillStyle = "#000000";
+  ctx.font = isMobile ? "bold 13px Arial" : "bold 19px Arial";
 
+  // Score
+  ctx.fillText("Score: " + pontuacao, 10, isMobile ? 17 : 28);
+
+  // Record
+  const recordText = "Record: " + highScore;
+
+  let xRecord = isMobile ? (270 - 70) : (160 + 145);
+  let yRecord = isMobile ? 17 : 28;
+
+  ctx.fillText(recordText, xRecord, yRecord);
+  ctx.restore();
+}
     function atualizarPoeira() {
       ctx.save();
       ctx.scale(scaleX, scaleY);
@@ -718,7 +813,7 @@ function resetGame() {
       poeira = poeira.filter(p => p.raio > 0.2 * scaleX && p.alpha > 0.05);
     }
 
-             function atualizarJogo() {
+         function atualizarJogo() {
       if (!gameStarted) return;
 
       const fase = getFaseAtual();
@@ -743,17 +838,9 @@ function resetGame() {
         sapo.jumping = false;
       }
 
-      // Cria obstáculos
-      if (tempo % intervaloObstaculo === 0 && tempo >= 120) {
-        let cores = ["#d32f2f", "#fbc02d", "#7b1fa2", "#00796b"];
-        let cor = cores[Math.floor(Math.random() * cores.length)];
-        obstaculos.push({ 
-          x: BASE_WIDTH * scaleX, 
-          y: ALTURA_CHAO - ESPESSURA_CHAO - 30 * scaleY, 
-          width: 30 * scaleX, 
-          height: 30 * scaleY, 
-          color: cor 
-        });
+      // Criação de obstáculos
+      if (tempo % intervaloObstaculo === 0 && tempo >= 100) {
+        criarObstaculo();
       }
 
       // Move obstáculos
@@ -766,67 +853,65 @@ function resetGame() {
 
       tempo++;
 
-      // Aumenta pontuação
+      // Pontuação
       if (!gameOverTriggered) {
         pontuacao++;
-      }
+      // Atualiza recorde
+     if (pontuacao > highScore) {
+     highScore = pontuacao;
+     localStorage.setItem('sapinhoHighScore', highScore);
+  }
+}
 
-      // Mudança de fase
-      if (pontuacao > 0 && pontuacao % 25000 === 0 && faseAtual < 3) {
-        const proximaFase = Math.floor(pontuacao / 25000);
-        if (proximaFase > faseAtual) {
-          faseAtual = proximaFase;
-          const config = DIFICULDADE_FASE[faseAtual];
-          intervaloObstaculo = config.intervalo;
-          GAME_SPEED = config.gameSpeed;
-          GRAVIDADE = config.gravidade;
-          console.log(`=== FASE ALTERADA PARA ${fases[faseAtual].toUpperCase()} ===`);
-        }
-      }
+    // Mudança de fase
+if (pontuacao > 0 && pontuacao % 25000 === 0 && faseAtual < 3) {
+  const proximaFase = Math.floor(pontuacao / 25000);
+  if (proximaFase > faseAtual) {
+    faseAtual = proximaFase;
+    const config = DIFICULDADE_FASE[faseAtual];
+    intervaloObstaculo = config.intervalo;
+    GAME_SPEED = config.gameSpeed;
+    GRAVIDADE = config.gravidade;
 
-      // ==================== DESENHO DA UI ====================
-            // ==================== SCORE - AJUSTADO PARA MOBILE ====================
-      ctx.save();
-      ctx.fillStyle = "#000000";
-      ctx.font = isMobile ? "bold 17px Arial" : "bold 19px Arial";
-      
-      // Posição Y: mais alto no mobile
-      const scoreY = isMobile ? 18 : 27;
-      ctx.fillText("Score: " + pontuacao, 10, scoreY);
-      ctx.restore();
+    console.log(`=== FASE ${faseAtual + 1} - ${fases[faseAtual].toUpperCase()} ===`);
 
-      // Nome da fase atual (canto superior direito) - menor no mobile
-      ctx.save();
-      ctx.fillStyle = "#000000";
-      
-      // Tamanho da fonte: igual ao Score no desktop, menor no mobile
-      ctx.font = isMobile ? "bold 14px Arial" : "bold 19px Arial";
-      
-      const faseY = isMobile ? 18 : 25;
-      const faseX = canvas.width - (isMobile ? 105 : 125);
-      
-      // Primeira letra maiúscula + resto em minúsculo
-      let nomeFase = getFaseAtual();
-      nomeFase = nomeFase.charAt(0).toUpperCase() + nomeFase.slice(1);
-      
-      ctx.fillText(nomeFase, faseX, faseY);
-      ctx.restore();
+    // 🔥 Toca o som de mudança de fase
+    if (phaseChangeSound) {
+      phaseChangeSound.currentTime = 0;
+      phaseChangeSound.play().catch(e => {
+        console.log("Erro ao tocar som de fase:", e);
+      });
+    }
+  }
+}
 
-      // Desenha elementos visuais
+      // UI
+      // ==================== UI (Score + Record + Fase) ====================
+drawUI();                    // ← Score + Record
+
+   // Nome da fase
+ctx.save();
+ctx.fillStyle = "#000000";
+ctx.font = isMobile ? "bold 13px Arial" : "bold 19px Arial";
+
+const nomeFase = getFaseAtual().charAt(0).toUpperCase() + getFaseAtual().slice(1);
+const faseX = canvas.width - (isMobile ? 72 : 125);   // Empurrado mais para a direita
+
+ctx.fillText(nomeFase, faseX, isMobile ? 17 : 28);
+ctx.restore();
+
       drawSapo();
       atualizarPoeira();
       drawCoracoes();
 
-      // Atualiza timers
+      // Timers
       if (piscandoSapo) {
         tempoPiscadaSapo -= 16.7;
         if (tempoPiscadaSapo <= 0) piscandoSapo = false;
       }
-      if (flashCoracoes > 0) {
-        flashCoracoes -= 16.7;
-      }
+      if (flashCoracoes > 0) flashCoracoes -= 16.7;
     }
-    
+            
     function drawObstaculo(obs) {
       ctx.save();
       ctx.scale(scaleX, scaleY);
@@ -849,8 +934,8 @@ function resetGame() {
       return false;
     }
 
-        function iniciarJogo() {
-      if (gameStarted) return;
+  function iniciarJogo() {
+    if (gameStarted) return;
       gameStarted = true;
       // Adicionar listeners de JOGO
       document.addEventListener('keydown', handleKeyJump);
